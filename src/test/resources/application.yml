@@ -1,0 +1,10 @@
+datasource:
+  auth:
+    url: jdbc:postgresql://35.228.172.119:31527/auth_db
+    driver-class-name: org.postgresql.Driver
+    username: test_auth_user
+    password:
+    configuration:
+      idle-timeout: 10000
+      minimum-idle: 1
+      maximum-pool-size: 6
