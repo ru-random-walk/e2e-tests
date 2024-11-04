@@ -2,12 +2,11 @@ plugins {
     java
     application
     id("io.freefair.lombok") version "6.6.3"
-    id("org.springframework.boot") version "2.7.8"
+    id("org.springframework.boot") version "2.7.5"
     id("org.openapi.generator") version "4.3.0"
-    id("io.qameta.allure") version "2.11.0"
 }
 
-group = "randow-walk.automation"
+group = "random-walk.automation"
 version = "1.0-SNAPSHOT"
 
 repositories {
@@ -60,8 +59,8 @@ dependencies {
     implementation("javax.annotation:javax.annotation-api:1.3.2")
     implementation("com.github.viclovsky:swagger-coverage-rest-assured:1.5.0")
 
-    implementation("org.springframework.boot:spring-boot-starter:$springVersion")
-    implementation("org.springframework.boot:spring-boot-starter-web:$springVersion")
+    implementation("org.springframework.boot:spring-boot-starter-data-jpa:$springVersion")
+    implementation("org.springframework.boot:spring-boot-starter-test:$springVersion")
 
     testImplementation("org.junit.jupiter:junit-jupiter-api:5.2.0")
     testImplementation("org.junit.jupiter:junit-jupiter-engine:5.2.0")
