@@ -23,7 +23,7 @@ dependencies {
 
     implementation("org.postgresql:postgresql:42.6.0")
 
-    implementation("io.rest-assured:rest-assured:4.4.0")
+    implementation("io.rest-assured:rest-assured:5.4.0")
     implementation("io.qameta.allure:allure-rest-assured:$allureVersion")
     implementation("io.qameta.allure:allure-junit5:$allureVersion")
     implementation("org.aspectj:aspectjweaver:1.9.20.1")
@@ -62,6 +62,9 @@ dependencies {
 
     implementation("org.springframework.boot:spring-boot-starter:$springVersion")
     implementation("org.springframework.boot:spring-boot-starter-web:$springVersion")
+
+    testImplementation("org.junit.jupiter:junit-jupiter-api:5.2.0")
+    testImplementation("org.junit.jupiter:junit-jupiter-engine:5.2.0")
 }
 
 tasks.compileJava {
