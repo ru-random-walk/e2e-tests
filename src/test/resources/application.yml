@@ -1,9 +1,9 @@
 datasource:
-  auth:
-    url: jdbc:postgresql://35.228.172.119:31527/auth_db
+  postgres:
+    url: jdbc:postgresql://35.228.172.119:31527/random_walk_postgres
     driver-class-name: org.postgresql.Driver
     username: test_auth_user
-    password:
+    password: g4t!uakAR85iowsu@AgRzAD3vG^w!5
     configuration:
       idle-timeout: 10000
       minimum-idle: 1

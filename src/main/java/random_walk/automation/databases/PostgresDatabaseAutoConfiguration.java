@@ -1,4 +1,4 @@
-package random_walk.automation.databases.auth;
+package random_walk.automation.databases;
 
 import com.zaxxer.hikari.HikariDataSource;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -25,38 +25,38 @@ import java.util.HashMap;
 @ComponentScan("random_walk.automation.databases")
 @Profile("test")
 @EnableTransactionManagement
-@EnableJpaRepositories(basePackages = "random_walk.automation.databases.auth.repos",
-        entityManagerFactoryRef = "authEntityManagerFactory",
-        transactionManagerRef = "authTransactionManager")
+@EnableJpaRepositories(basePackages = "random_walk.automation.databases.repos",
+        entityManagerFactoryRef = "postgresEntityManagerFactory",
+        transactionManagerRef = "postgresTransactionManager")
 @EnableConfigurationProperties
-public class AuthDatabaseAutoConfiguration {
+public class PostgresDatabaseAutoConfiguration {
     @Bean
-    @ConfigurationProperties("datasource.auth")
-    public DataSourceProperties authDataSourceProperties() {
+    @ConfigurationProperties("datasource.postgres")
+    public DataSourceProperties postgresDataSourceProperties() {
         return new DataSourceProperties();
     }
 
     @Bean
-    public JdbcTemplate authJdbcTemplate() { return new JdbcTemplate(authDataSource());}
+    public JdbcTemplate postgresJdbcTemplate() { return new JdbcTemplate(postgresDataSource());}
 
     @Bean
-    @ConfigurationProperties("datasource.auth.configuration")
-    public HikariDataSource authDataSource() {
-        return authDataSourceProperties().initializeDataSourceBuilder().type(HikariDataSource.class).build();
+    @ConfigurationProperties("datasource.postgres.configuration")
+    public HikariDataSource postgresDataSource() {
+        return postgresDataSourceProperties().initializeDataSourceBuilder().type(HikariDataSource.class).build();
     }
 
     @Bean
-    public LocalContainerEntityManagerFactoryBean authEntityManagerFactory(@Qualifier("authBuilder") EntityManagerFactoryBuilder builder, DataSourceProperties dsp) {
-        return builder.dataSource(authDataSource()).packages("api.database.entities").build();
+    public LocalContainerEntityManagerFactoryBean postgresEntityManagerFactory(@Qualifier("postgresBuilder") EntityManagerFactoryBuilder builder) {
+        return builder.dataSource(postgresDataSource()).packages("random_walk.automation.databases.entities").build();
     }
 
     @Bean
-    public PlatformTransactionManager authTransactionManager(@Qualifier("authEntityManagerFactory") EntityManagerFactory emf) {
+    public PlatformTransactionManager postgresTransactionManager(@Qualifier("postgresEntityManagerFactory") EntityManagerFactory emf) {
         return new JpaTransactionManager(emf);
     }
 
-    @Bean(name = "authBuilder")
-    public EntityManagerFactoryBuilder authManagerFactoryBuilder() {
+    @Bean(name = "postgresBuilder")
+    public EntityManagerFactoryBuilder postgresManagerFactoryBuilder() {
         return new EntityManagerFactoryBuilder(new HibernateJpaVendorAdapter(), new HashMap<>(), null);
     }
 
