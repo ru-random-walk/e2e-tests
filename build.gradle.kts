@@ -3,6 +3,7 @@ plugins {
     application
     id("io.freefair.lombok") version "6.6.3"
     id("org.springframework.boot") version "2.7.5"
+    id("com.diffplug.spotless") version "6.19.0"
     id("org.openapi.generator") version "4.3.0"
 }
 
@@ -13,6 +14,13 @@ repositories {
     mavenCentral()
 }
 
+sourceSets {
+    main {
+        java {
+            srcDir("$buildDir/generated/sources/openapi/src/main/java")
+        }
+    }
+}
 apply {
     from("openapi.gradle.kts")
 }
@@ -34,6 +42,9 @@ dependencies {
     implementation("org.springframework.retry:spring-retry:1.3.3")
     implementation("ch.qos.logback:logback-core:1.2.9")
     implementation("org.slf4j:slf4j-api:1.7.26")
+
+    implementation("com.google.code.gson:gson:2.8.5")
+    implementation("io.gsonfire:gson-fire:1.8.4")
 
     implementation("io.qameta.allure:allure-java-commons:$allureVersion")
     implementation("org.awaitility:awaitility:4.2.0")
@@ -73,7 +84,13 @@ tasks.compileJava {
         )
     }
 }
-
+tasks.bootJar {
+    enabled = false
+}
+tasks.clean {
+    delete("$rootDir/allure-results")
+    delete("$rootDir/out")
+}
 tasks.test {
 
     systemProperty("junit.jupiter.extensions.autodetection.enabled", "true")
@@ -96,5 +113,16 @@ tasks.test {
         if (!excludedTags.isNullOrBlank()) {
             excludeTags(excludedTags)
         }
+    }
+}
+
+spotless {
+    java {
+        eclipse("4.26").configFile("src/main/resources/config/codestyle.xml")
+        formatAnnotations()
+        importOrder("", "java|javax", "\\#")
+        removeUnusedImports()
+
+        targetExclude("build/generated/**/*.java")
     }
 }

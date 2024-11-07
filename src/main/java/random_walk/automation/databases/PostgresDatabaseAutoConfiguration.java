@@ -18,8 +18,8 @@ import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
-import javax.persistence.EntityManagerFactory;
 import java.util.HashMap;
+import javax.persistence.EntityManagerFactory;
 
 @Configuration
 @ComponentScan("random_walk.automation.databases")
@@ -37,7 +37,9 @@ public class PostgresDatabaseAutoConfiguration {
     }
 
     @Bean
-    public JdbcTemplate postgresJdbcTemplate() { return new JdbcTemplate(postgresDataSource());}
+    public JdbcTemplate postgresJdbcTemplate() {
+        return new JdbcTemplate(postgresDataSource());
+    }
 
     @Bean
     @ConfigurationProperties("datasource.postgres.configuration")
@@ -61,4 +63,3 @@ public class PostgresDatabaseAutoConfiguration {
     }
 
 }
-

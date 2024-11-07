@@ -8,3 +8,8 @@ datasource:
       idle-timeout: 10000
       minimum-idle: 1
       maximum-pool-size: 6
+api:
+  auth-service:
+    http-endpoint:
+      host: http://random-walk.ru/auth
+
