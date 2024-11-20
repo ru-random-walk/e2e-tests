@@ -12,4 +12,9 @@ api:
   auth-service:
     http-endpoint:
       host: http://random-walk.ru/auth
+    username: ${RW_API_AUTH_USERNAME}
+    password: ${RW_API_AUTH_PASSWORD}
+  google-oauth2:
+    email: ${GOOGLE_USER_EMAIL}
+    password: ${GOOGLE_USER_PASSWORD}
 

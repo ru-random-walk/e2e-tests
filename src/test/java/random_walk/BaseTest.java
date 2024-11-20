@@ -15,7 +15,7 @@ import random_walk.extensions.RestAssuredExtension;
 public abstract class BaseTest {
 
     @Autowired
-    protected AuthServiceApi api;
+    protected AuthServiceApi authServiceApi;
 
     @Autowired
     protected RoleFunctions roleFunctions;

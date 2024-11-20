@@ -55,6 +55,9 @@ dependencies {
     implementation("javax.annotation:javax.annotation-api:1.3.2")
     implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.14.0")
 
+    implementation("com.google.api-client:google-api-client:2.7.0")
+    implementation("org.seleniumhq.selenium:selenium-java:4.26.0")
+
     implementation("com.squareup.okio:okio:1.0.0")
     implementation("io.swagger:swagger-annotations:1.6.1")
     implementation("io.swagger.codegen.v3:swagger-codegen:3.0.30")
