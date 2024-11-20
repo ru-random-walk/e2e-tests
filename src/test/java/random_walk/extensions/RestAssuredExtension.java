@@ -15,7 +15,6 @@ public class RestAssuredExtension implements BeforeAllCallback {
     public void beforeAll(ExtensionContext context) {
         RestAssured.reset();
         RestAssured.enableLoggingOfRequestAndResponseIfValidationFails(LogDetail.ALL);
-        RestAssured
-                .filters(Arrays.asList(new AllureRestAssured(), new RequestLoggingFilter(), new ResponseLoggingFilter()));
+        RestAssured.filters(Arrays.asList(new AllureRestAssured(), new RequestLoggingFilter(), new ResponseLoggingFilter()));
     }
 }

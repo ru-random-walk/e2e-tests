@@ -11,7 +11,7 @@ buildscript {
 }
 
 val outputPath = "$buildDir/generated/sources/openapi"
-val openApiPackage = "ru.tinkoff.swagger"
+val openApiPackage = "ru.random_walk.swagger"
 val swaggerBasePath = "$projectDir/src/main/resources/swagger"
 
 abstract class OpenApiGenerateTask @Inject constructor(
