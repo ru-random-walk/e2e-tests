@@ -1,10 +1,10 @@
 package random_walk.automation.databases.entities;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.UUID;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
@@ -16,10 +16,10 @@ import javax.persistence.Table;
 public class UserRole {
 
     @Id
-    @JsonProperty("user_id")
+    @Column(name = "user_id", nullable = false, unique = true)
     private UUID userId;
 
-    @JsonProperty("role_id")
+    @Column(name = "role_id", nullable = false, unique = true)
     private Integer roleId;
 
 }

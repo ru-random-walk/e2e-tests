@@ -3,6 +3,7 @@ package random_walk.automation.databases.entities;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
 import java.util.UUID;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -12,21 +13,15 @@ import javax.persistence.Table;
 @Data
 @NoArgsConstructor
 @Entity
-@Table(name = "auth_user")
-public class AuthUser {
+@Table(name = "refresh_token")
+public class RefreshToken {
 
     @Id
-    private UUID id;
+    @Column(name = "user_id", unique = true, nullable = false)
+    private UUID userId;
 
-    @Column(name = "full_name")
-    private String fullName;
+    private UUID token;
 
-    private String username;
-
-    private String email;
-
-    private String password;
-
-    private Boolean enabled;
-
+    @Column(name = "expires_at")
+    private LocalDateTime expiresAt;
 }
