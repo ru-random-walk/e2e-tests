@@ -5,6 +5,7 @@ plugins {
     id("org.springframework.boot") version "2.7.5"
     id("com.diffplug.spotless") version "6.19.0"
     id("org.openapi.generator") version "4.3.0"
+    id("io.spring.dependency-management") version "1.1.6"
 }
 
 group = "random-walk.automation"
@@ -24,16 +25,17 @@ sourceSets {
 apply {
     from("openapi.gradle.kts")
 }
+
 dependencies {
     val springVersion = "2.7.5"
     val allureVersion = "2.22.0"
 
     implementation("org.postgresql:postgresql:42.6.0")
 
-    implementation("io.rest-assured:rest-assured:5.4.0")
+    implementation("io.rest-assured:rest-assured")
     implementation("io.qameta.allure:allure-rest-assured:$allureVersion")
     implementation("io.qameta.allure:allure-junit5:$allureVersion")
-    implementation("org.aspectj:aspectjweaver:1.9.20.1")
+    implementation("org.aspectj:aspectjweaver:1.8.3")
 
     implementation("org.springframework.boot:spring-boot-starter-data-jpa:$springVersion")
     implementation("org.springframework.boot:spring-boot-starter-validation:$springVersion")
@@ -41,7 +43,7 @@ dependencies {
 
     implementation("org.springframework.retry:spring-retry:1.3.3")
     implementation("ch.qos.logback:logback-core:1.2.9")
-    implementation("org.slf4j:slf4j-api:1.7.26")
+    implementation("org.slf4j:slf4j-api")
 
     implementation("com.google.code.gson:gson:2.8.5")
     implementation("io.gsonfire:gson-fire:1.8.4")
@@ -76,8 +78,8 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-data-jpa:$springVersion")
     implementation("org.springframework.boot:spring-boot-starter-test:$springVersion")
 
-    testImplementation("org.junit.jupiter:junit-jupiter-api:5.2.0")
-    testImplementation("org.junit.jupiter:junit-jupiter-engine:5.2.0")
+    testImplementation("org.junit.jupiter:junit-jupiter-api")
+    testImplementation("org.junit.jupiter:junit-jupiter-engine")
 }
 
 tasks.compileJava {

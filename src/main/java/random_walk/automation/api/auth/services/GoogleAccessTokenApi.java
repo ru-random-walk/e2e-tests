@@ -4,6 +4,7 @@ import com.google.api.client.googleapis.auth.oauth2.GoogleAuthorizationCodeReque
 import io.qameta.allure.Step;
 import org.openqa.selenium.By;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.springframework.beans.factory.annotation.Value;
@@ -55,7 +56,10 @@ public class GoogleAccessTokenApi {
     public String getGoogleAuthorizationCode() {
         System.setProperty("webdriver.chrome.driver", "/Users/dmi.a.petrov/Downloads/chromedriver-mac-arm64/chromedriver");
 
-        var driver = new ChromeDriver();
+        var option = new ChromeOptions();
+        option.addArguments("--remote-allow-origins=*");
+        var driver = new ChromeDriver(option);
+
         var wait = new WebDriverWait(driver, Duration.of(10L, ChronoUnit.SECONDS));
 
         var authUri = getAuthorizationUrl();
