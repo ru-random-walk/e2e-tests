@@ -6,6 +6,7 @@ on:
     - cron: '0 12 * * *'
   pull_request:
     branches: [ "master" ]
+  workflow_dispatch:
 
 jobs:
   backend-job:
@@ -39,7 +40,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: test-report
-          path: ./tests/build/reports/tests/test
+          path: ./build/reports/tests/test
 
 
 
