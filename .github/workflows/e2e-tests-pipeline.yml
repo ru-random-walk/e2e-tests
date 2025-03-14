@@ -55,17 +55,16 @@ jobs:
           echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/saved_private_key
           chmod 600 ~/.ssh/saved_private_key
 
-      - name: Upload SSH private key
-        uses: actions/upload-artifact@v4
-        with:
-          name: ssh-private-key
-          path: ~/.ssh/saved_private_key
+      -  name: Create RAM disk
+         run: |
+          sudo mkdir /mnt/ramdisk
+          sudo mount -t tmpfs -o size=10M tmpfs /mnt/ramdisk
+          chmod 777 /mnt/ramdisk  # Разрешаем запись
 
-      - name: Download SSH private key
-        uses: actions/download-artifact@v4
-        with:
-          name: ssh-private-key
-          path: ~/.ssh/
+      -  name: Create SSH private key file on RAM disk
+         run: |
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" | > /mnt/ramdisk/saved_private_key
+          chmod 600 /mnt/ramdisk/saved_private_key
 
       - name: Build and Test Java Project
         run: |
