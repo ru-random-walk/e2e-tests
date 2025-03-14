@@ -20,6 +20,7 @@ import random_walk.automation.config.SshTunnelManager;
 import random_walk.automation.config.database.MatcherDbConfig;
 
 import java.util.HashMap;
+import java.util.Map;
 import javax.persistence.EntityManagerFactory;
 
 @Configuration
@@ -54,9 +55,19 @@ public class MatcherDbAutoConfiguration {
         return matcherDataSourceProperties().initializeDataSourceBuilder().type(HikariDataSource.class).build();
     }
 
+    private Map<String, String> addConfigurations() {
+        var configuration = new HashMap<String, String>();
+        configuration.put("hibernate.temp,use_jdbc_metadata_defaults", "false");
+        configuration.put("hibernate.enable_lazy_load_no_trans", "true");
+        return configuration;
+    }
+
     @Bean
     public LocalContainerEntityManagerFactoryBean matcherEntityManagerFactory(@Qualifier("matcherBuilder") EntityManagerFactoryBuilder builder) {
-        return builder.dataSource(matcherDataSource()).packages("random_walk.automation.databases.matcher.entities").build();
+        return builder.dataSource(matcherDataSource())
+                .packages("random_walk.automation.databases.matcher.entities")
+                .properties(addConfigurations())
+                .build();
     }
 
     @Bean

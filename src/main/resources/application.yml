@@ -28,15 +28,15 @@ datasource:
 api:
   auth-service:
     http-endpoint:
-      host: http://random-walk.ru/auth
+      host: https://random-walk.ru:44424/auth
     username: ${RW_API_AUTH_USERNAME}
     password: ${RW_API_AUTH_PASSWORD}
   matcher-service:
     http-endpoint:
-      host: http://random-walk.ru/matcher
+      host: https://random-walk.ru:44424/matcher
   club-service:
     http-endpoint:
-      host: http://random-walk.ru/club
+      host: https://random-walk.ru:44424/club
   google-oauth2:
     email: ${GOOGLE_USER_EMAIL}
     password: ${GOOGLE_USER_PASSWORD}

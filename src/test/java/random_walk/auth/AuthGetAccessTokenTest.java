@@ -31,7 +31,10 @@ class AuthGetAccessTokenTest extends BaseTest {
         step("THEN: Access_token успешно получен", () -> {
             var tokenInfo = getInfoFromAccessToken(accessToken);
             assertAll(
-                    () -> assertEquals("http://random-walk/auth", tokenInfo.getIss(), "iss токена совпадает"),
+                    () -> assertEquals(
+                            "http://auth-service.auth-service.svc.cluster.local:8080",
+                            tokenInfo.getIss(),
+                            "iss токена совпадает"),
                     () -> assertEquals("DEFAULT_USER", tokenInfo.getAuthorities()[0], "authorities токена совпадает"),
                     () -> assertTrue(tokenInfo.getExp() > 0, "Время жизни токена положительно"));
         });
