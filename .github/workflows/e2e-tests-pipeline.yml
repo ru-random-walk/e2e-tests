@@ -6,7 +6,7 @@ on:
     - cron: '0 12 * * *'
   pull_request:
     branches: [ "master" ]
-  workflow_dispatch:
+  push:
 
 jobs:
   backend-job:
@@ -18,6 +18,26 @@ jobs:
 
   java-job:
     runs-on: ubuntu-latest
+    env:
+      RW_DB_URL: ${{ secrets.RW_DB_URL }}
+      SSH_HOST: ${{ secrets.SSH_HOST }}
+      SSH_PORT: ${{ secrets.SSH_PORT }}
+      SSH_USER: ${{ secrets.SSH_USER }}
+      SSH_PRIVATE_KEY: ${{ secrets.SSH_KEY_PATH }}
+      SSH_REMOTE_HOST: ${{ secrets.SSH_REMOTE_HOST }}
+      SSH_REMOTE_PORT: ${{ secrets.SSH_REMOTE_PORT }}
+      RW_AUTH_DB_USERNAME: ${{ secrets.RW_AUTH_DB_USERNAME }}
+      RW_AUTH_DB_PASSWORD: ${{ secrets.RW_AUTH_DB_PASSWORD }}
+      RW_CLUB_DB_USERNAME: ${{ secrets.RW_CLUB_DB_USERNAME }}
+      RW_CLUB_DB_PASSWORD: ${{ secrets.RW_CLUB_DB_PASSWORD }}
+      RW_CHAT_DB_USERNAME: ${{ secrets.RW_CHAT_DB_USERNAME }}
+      RW_CHAT_DB_PASSWORD: ${{ secrets.RW_CHAT_DB_PASSWORD }}
+      RW_MATCHER_DB_USERNAME: ${{ secrets.RW_MATCHER_DB_USERNAME }}
+      RW_MATCHER_DB_PASSWORD: ${{ secrets.RW_MATCHER_DB_PASSWORD }}
+      RW_API_AUTH_USERNAME: ${{ secrets.RW_API_AUTH_USERNAME }}
+      RW_API_AUTH_PASSWORD: ${{ secrets.RW_API_AUTH_PASSWORD }}
+      GOOGLE_USER_EMAIL: ${{ secrets.GOOGLE_USER_EMAIL }}
+      GOOGLE_USER_PASSWORD: ${{ secrets.GOOGLE_USER_PASSWORD }}
 
     steps:
       - name: Checkout repository
@@ -28,6 +48,12 @@ jobs:
         with:
           java-version: '17'
           distribution: 'temurin'
+
+      - name: Create SSH private key file
+        run: |
+          mkdir -p ~/.ssh/
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/saved_private_key
+          chmod 600 ~/.ssh/saved_private_key
 
       - name: Build and Test Java Project
         run: |
