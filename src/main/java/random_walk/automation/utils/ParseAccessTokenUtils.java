@@ -2,15 +2,16 @@ package random_walk.automation.utils;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.springframework.stereotype.Component;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 import random_walk.automation.api.auth.models.TokenPayload;
 
 import java.util.Base64;
 
-@Component
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class ParseAccessTokenUtils {
 
-    public TokenPayload getInfoFromAccessToken(String accessToken) throws JsonProcessingException {
+    public static TokenPayload getInfoFromAccessToken(String accessToken) throws JsonProcessingException {
         String[] chunks = accessToken.split("\\.");
         Base64.Decoder decoder = Base64.getUrlDecoder();
         String payload = new String(decoder.decode(chunks[1]));
