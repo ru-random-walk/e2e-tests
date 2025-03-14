@@ -23,7 +23,7 @@ jobs:
       SSH_HOST: ${{ secrets.SSH_HOST }}
       SSH_PORT: ${{ secrets.SSH_PORT }}
       SSH_USER: ${{ secrets.SSH_USER }}
-      SSH_PRIVATE_KEY: ${{ secrets.SSH_KEY_PATH }}
+      SSH_PRIVATE_KEY: ${{ secrets.SSH_PRV_KEY }}
       SSH_REMOTE_HOST: ${{ secrets.SSH_REMOTE_HOST }}
       SSH_REMOTE_PORT: ${{ secrets.SSH_REMOTE_PORT }}
       RW_AUTH_DB_USERNAME: ${{ secrets.RW_AUTH_DB_USERNAME }}
@@ -48,23 +48,6 @@ jobs:
         with:
           java-version: '17'
           distribution: 'temurin'
-
-      - name: Create SSH private key file
-        run: |
-          mkdir -p ~/.ssh/
-          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/saved_private_key
-          chmod 600 ~/.ssh/saved_private_key
-
-      -  name: Create RAM disk
-         run: |
-          sudo mkdir /mnt/ramdisk
-          sudo mount -t tmpfs -o size=10M tmpfs /mnt/ramdisk
-          chmod 777 /mnt/ramdisk  # Разрешаем запись
-
-      -  name: Create SSH private key file on RAM disk
-         run: |
-          echo "${{ secrets.SSH_PRIVATE_KEY }}" | > /mnt/ramdisk/saved_private_key
-          chmod 600 /mnt/ramdisk/saved_private_key
 
       - name: Build and Test Java Project
         run: |

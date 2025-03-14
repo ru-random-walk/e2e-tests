@@ -41,4 +41,11 @@ class AuthRefreshAccessTokenTest extends BaseTest {
                     () -> assertEquals(userRefreshToken, newAccessToken.getRefreshToken(), "refresh_token был обновлен в базе"));
         });
     }
+
+    @Test
+    @DisplayName("Пробный тест")
+    void f() {
+        var a = 1;
+        assertEquals(1, a);
+    }
 }
