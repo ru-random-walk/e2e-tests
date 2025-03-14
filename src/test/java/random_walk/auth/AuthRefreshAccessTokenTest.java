@@ -30,9 +30,8 @@ class AuthRefreshAccessTokenTest extends BaseTest {
                 () -> authServiceApi.refreshAuthToken(randomWalkTokens.getRefreshToken()));
 
         step("THEN: Новый access_token успешно получен", () -> {
-            var userRefreshToken = refreshTokenFunctions.getRefreshTokenById(authUserFunctions.getUserByFullName("Тест").getId())
-                    .getToken()
-                    .toString();
+            var userId = authUserFunctions.getUserByFullName("Тест").getId();
+            var userRefreshToken = refreshTokenFunctions.getRefreshTokenById(userId).getToken().toString();
             assertAll(
                     () -> assertNotEquals(
                             randomWalkTokens.getAccessToken(),

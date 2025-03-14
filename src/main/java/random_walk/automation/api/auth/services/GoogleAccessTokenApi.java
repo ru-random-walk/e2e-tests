@@ -54,10 +54,13 @@ public class GoogleAccessTokenApi {
 
     @Step("Получаем актуальный authorization_code пользователя в google")
     public String getGoogleAuthorizationCode() {
-        System.setProperty("webdriver.chrome.driver", "/Users/dmi.a.petrov/Downloads/chromedriver-mac-arm64/chromedriver");
+        System.setProperty(
+                "webdriver.chrome.driver",
+                "C:/Users/petro/Downloads/chromedriver-win64/chromedriver-win64/chromedriver.exe");
 
         var option = new ChromeOptions();
         option.addArguments("--remote-allow-origins=*");
+        option.setAcceptInsecureCerts(true);
         var driver = new ChromeDriver(option);
 
         var wait = new WebDriverWait(driver, Duration.of(10L, ChronoUnit.SECONDS));

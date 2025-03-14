@@ -20,6 +20,7 @@ import random_walk.automation.config.SshTunnelManager;
 import random_walk.automation.config.database.ChatDbConfig;
 
 import java.util.HashMap;
+import java.util.Map;
 import javax.persistence.EntityManagerFactory;
 
 @Configuration
@@ -54,9 +55,19 @@ public class ChatDbAutoConfiguration {
         return chatDataSourceProperties().initializeDataSourceBuilder().type(HikariDataSource.class).build();
     }
 
+    private Map<String, String> addConfigurations() {
+        var configuration = new HashMap<String, String>();
+        configuration.put("hibernate.temp,use_jdbc_metadata_defaults", "false");
+        configuration.put("hibernate.enable_lazy_load_no_trans", "true");
+        return configuration;
+    }
+
     @Bean
     public LocalContainerEntityManagerFactoryBean chatEntityManagerFactory(@Qualifier("chatBuilder") EntityManagerFactoryBuilder builder) {
-        return builder.dataSource(chatDataSource()).packages("random_walk.automation.databases.chat.entities").build();
+        return builder.dataSource(chatDataSource())
+                .packages("random_walk.automation.databases.chat.entities")
+                .properties(addConfigurations())
+                .build();
     }
 
     @Bean
