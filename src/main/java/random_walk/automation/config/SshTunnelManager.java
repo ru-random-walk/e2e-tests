@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import random_walk.automation.config.database.SshConfig;
 
+import java.util.Base64;
 import java.util.Properties;
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
@@ -25,7 +26,7 @@ public class SshTunnelManager {
     public void init() {
         try {
             JSch jsch = new JSch();
-            jsch.addIdentity(sshConfig.getSshPrivateKey());
+            jsch.addIdentity(null, Base64.getDecoder().decode(sshConfig.getSshPrivateKey()), null, null);
             logger.info("Создаем объект JSch");
             session = jsch.getSession(sshConfig.getSshUser(), sshConfig.getSshHost(), sshConfig.getSshPort());
 
