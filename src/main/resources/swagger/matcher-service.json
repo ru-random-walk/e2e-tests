@@ -1,0 +1,1382 @@
+{
+  "openapi": "3.0.1",
+  "servers": [
+    {
+      "url": "/matcher",
+      "description": "Matcher service url"
+    }
+  ],
+  "paths": {
+    "/available-time/{id}/change": {
+      "put": {
+        "tags": [
+          "available-time-controller"
+        ],
+        "summary": "Change available time and search for appointments",
+        "operationId": "changeSchedule",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AvailableTimeModifyDto"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorDto"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorDto"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/test/add-person": {
+      "post": {
+        "tags": [
+          "test-controller"
+        ],
+        "operationId": "addPerson",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RegisteredUserInfoEvent"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorDto"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorDto"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/available-time/add": {
+      "post": {
+        "tags": [
+          "available-time-controller"
+        ],
+        "summary": "Add available time to schedule and search for appointments",
+        "operationId": "addAvailableTime",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AvailableTimeModifyDto"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorDto"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorDto"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/person/schedule": {
+      "get": {
+        "tags": [
+          "person-controller"
+        ],
+        "summary": "Get user's schedule",
+        "operationId": "getUserSchedule",
+        "responses": {
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorDto"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorDto"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/UserScheduleDto"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/person/info": {
+      "get": {
+        "tags": [
+          "person-controller"
+        ],
+        "summary": "Get current user information",
+        "operationId": "getPersonInfo",
+        "responses": {
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorDto"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorDto"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/PersonDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/person/clubs": {
+      "get": {
+        "tags": [
+          "person-controller"
+        ],
+        "summary": "Get information about clubs",
+        "operationId": "getClubs",
+        "responses": {
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorDto"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorDto"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ClubDto"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/appointment/{appointmentId}": {
+      "get": {
+        "tags": [
+          "appointment-controller"
+        ],
+        "summary": "Get appointment details by id",
+        "operationId": "getAppointment",
+        "parameters": [
+          {
+            "name": "appointmentId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorDto"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorDto"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/AppointmentDetailsDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/available-time/{id}": {
+      "delete": {
+        "tags": [
+          "available-time-controller"
+        ],
+        "summary": "Delete available time by id",
+        "operationId": "deleteAvailableTime",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorDto"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorDto"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/appointment/{appointmentId}/cancel": {
+      "delete": {
+        "tags": [
+          "appointment-controller"
+        ],
+        "summary": "Cancel an appointed walk by appointmentId",
+        "operationId": "cancelAppointment",
+        "parameters": [
+          {
+            "name": "appointmentId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorDto"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorDto"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "ApiErrorDto": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string"
+          }
+        }
+      },
+      "AvailableTimeModifyDto": {
+        "required": [
+          "date",
+          "latitude",
+          "longitude",
+          "timeFrom",
+          "timeUntil"
+        ],
+        "type": "object",
+        "properties": {
+          "date": {
+            "type": "string",
+            "format": "date"
+          },
+          "timeFrom": {
+            "type": "object",
+            "properties": {
+              "offset": {
+                "type": "object",
+                "properties": {
+                  "totalSeconds": {
+                    "type": "integer",
+                    "format": "int32"
+                  },
+                  "id": {
+                    "type": "string"
+                  },
+                  "rules": {
+                    "type": "object",
+                    "properties": {
+                      "fixedOffset": {
+                        "type": "boolean"
+                      },
+                      "transitions": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "overlap": {
+                              "type": "boolean"
+                            },
+                            "duration": {
+                              "type": "object",
+                              "properties": {
+                                "seconds": {
+                                  "type": "integer",
+                                  "format": "int64"
+                                },
+                                "zero": {
+                                  "type": "boolean"
+                                },
+                                "nano": {
+                                  "type": "integer",
+                                  "format": "int32"
+                                },
+                                "negative": {
+                                  "type": "boolean"
+                                },
+                                "positive": {
+                                  "type": "boolean"
+                                },
+                                "units": {
+                                  "type": "array",
+                                  "items": {
+                                    "type": "object",
+                                    "properties": {
+                                      "durationEstimated": {
+                                        "type": "boolean"
+                                      },
+                                      "timeBased": {
+                                        "type": "boolean"
+                                      },
+                                      "dateBased": {
+                                        "type": "boolean"
+                                      }
+                                    }
+                                  }
+                                }
+                              }
+                            },
+                            "gap": {
+                              "type": "boolean"
+                            },
+                            "dateTimeAfter": {
+                              "type": "string",
+                              "format": "date-time"
+                            },
+                            "dateTimeBefore": {
+                              "type": "string",
+                              "format": "date-time"
+                            },
+                            "instant": {
+                              "type": "string",
+                              "format": "date-time"
+                            }
+                          }
+                        }
+                      },
+                      "transitionRules": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "month": {
+                              "type": "string",
+                              "enum": [
+                                "JANUARY",
+                                "FEBRUARY",
+                                "MARCH",
+                                "APRIL",
+                                "MAY",
+                                "JUNE",
+                                "JULY",
+                                "AUGUST",
+                                "SEPTEMBER",
+                                "OCTOBER",
+                                "NOVEMBER",
+                                "DECEMBER"
+                              ]
+                            },
+                            "timeDefinition": {
+                              "type": "string",
+                              "enum": [
+                                "UTC",
+                                "WALL",
+                                "STANDARD"
+                              ]
+                            },
+                            "dayOfWeek": {
+                              "type": "string",
+                              "enum": [
+                                "MONDAY",
+                                "TUESDAY",
+                                "WEDNESDAY",
+                                "THURSDAY",
+                                "FRIDAY",
+                                "SATURDAY",
+                                "SUNDAY"
+                              ]
+                            },
+                            "dayOfMonthIndicator": {
+                              "type": "integer",
+                              "format": "int32"
+                            },
+                            "localTime": {
+                              "$ref": "#/components/schemas/LocalTime"
+                            },
+                            "midnightEndOfDay": {
+                              "type": "boolean"
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              },
+              "nano": {
+                "type": "integer",
+                "format": "int32"
+              },
+              "hour": {
+                "type": "integer",
+                "format": "int32"
+              },
+              "minute": {
+                "type": "integer",
+                "format": "int32"
+              },
+              "second": {
+                "type": "integer",
+                "format": "int32"
+              }
+            },
+            "example": "01:30:00.000+03:00"
+          },
+          "timeUntil": {
+            "type": "object",
+            "properties": {
+              "offset": {
+                "type": "object",
+                "properties": {
+                  "totalSeconds": {
+                    "type": "integer",
+                    "format": "int32"
+                  },
+                  "id": {
+                    "type": "string"
+                  },
+                  "rules": {
+                    "type": "object",
+                    "properties": {
+                      "fixedOffset": {
+                        "type": "boolean"
+                      },
+                      "transitions": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "overlap": {
+                              "type": "boolean"
+                            },
+                            "duration": {
+                              "type": "object",
+                              "properties": {
+                                "seconds": {
+                                  "type": "integer",
+                                  "format": "int64"
+                                },
+                                "zero": {
+                                  "type": "boolean"
+                                },
+                                "nano": {
+                                  "type": "integer",
+                                  "format": "int32"
+                                },
+                                "negative": {
+                                  "type": "boolean"
+                                },
+                                "positive": {
+                                  "type": "boolean"
+                                },
+                                "units": {
+                                  "type": "array",
+                                  "items": {
+                                    "type": "object",
+                                    "properties": {
+                                      "durationEstimated": {
+                                        "type": "boolean"
+                                      },
+                                      "timeBased": {
+                                        "type": "boolean"
+                                      },
+                                      "dateBased": {
+                                        "type": "boolean"
+                                      }
+                                    }
+                                  }
+                                }
+                              }
+                            },
+                            "gap": {
+                              "type": "boolean"
+                            },
+                            "dateTimeAfter": {
+                              "type": "string",
+                              "format": "date-time"
+                            },
+                            "dateTimeBefore": {
+                              "type": "string",
+                              "format": "date-time"
+                            },
+                            "instant": {
+                              "type": "string",
+                              "format": "date-time"
+                            }
+                          }
+                        }
+                      },
+                      "transitionRules": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "month": {
+                              "type": "string",
+                              "enum": [
+                                "JANUARY",
+                                "FEBRUARY",
+                                "MARCH",
+                                "APRIL",
+                                "MAY",
+                                "JUNE",
+                                "JULY",
+                                "AUGUST",
+                                "SEPTEMBER",
+                                "OCTOBER",
+                                "NOVEMBER",
+                                "DECEMBER"
+                              ]
+                            },
+                            "timeDefinition": {
+                              "type": "string",
+                              "enum": [
+                                "UTC",
+                                "WALL",
+                                "STANDARD"
+                              ]
+                            },
+                            "dayOfWeek": {
+                              "type": "string",
+                              "enum": [
+                                "MONDAY",
+                                "TUESDAY",
+                                "WEDNESDAY",
+                                "THURSDAY",
+                                "FRIDAY",
+                                "SATURDAY",
+                                "SUNDAY"
+                              ]
+                            },
+                            "dayOfMonthIndicator": {
+                              "type": "integer",
+                              "format": "int32"
+                            },
+                            "localTime": {
+                              "$ref": "#/components/schemas/LocalTime"
+                            },
+                            "midnightEndOfDay": {
+                              "type": "boolean"
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              },
+              "nano": {
+                "type": "integer",
+                "format": "int32"
+              },
+              "hour": {
+                "type": "integer",
+                "format": "int32"
+              },
+              "minute": {
+                "type": "integer",
+                "format": "int32"
+              },
+              "second": {
+                "type": "integer",
+                "format": "int32"
+              }
+            },
+            "example": "01:30:00.000+03:00"
+          },
+          "longitude": {
+            "type": "number",
+            "format": "double"
+          },
+          "latitude": {
+            "type": "number",
+            "format": "double"
+          },
+          "clubsInFilter": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        }
+      },
+      "LocalTime": {
+        "type": "object",
+        "properties": {
+          "hour": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "minute": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "second": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "nano": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
+      "RegisteredUserInfoEvent": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "fullName": {
+            "type": "string"
+          }
+        }
+      },
+      "ScheduleTimeFrameDto": {
+        "type": "object",
+        "properties": {
+          "partnerId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "appointmentId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "timeFrom": {
+            "type": "object",
+            "properties": {
+              "offset": {
+                "type": "object",
+                "properties": {
+                  "totalSeconds": {
+                    "type": "integer",
+                    "format": "int32"
+                  },
+                  "id": {
+                    "type": "string"
+                  },
+                  "rules": {
+                    "type": "object",
+                    "properties": {
+                      "fixedOffset": {
+                        "type": "boolean"
+                      },
+                      "transitions": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "overlap": {
+                              "type": "boolean"
+                            },
+                            "duration": {
+                              "type": "object",
+                              "properties": {
+                                "seconds": {
+                                  "type": "integer",
+                                  "format": "int64"
+                                },
+                                "zero": {
+                                  "type": "boolean"
+                                },
+                                "nano": {
+                                  "type": "integer",
+                                  "format": "int32"
+                                },
+                                "negative": {
+                                  "type": "boolean"
+                                },
+                                "positive": {
+                                  "type": "boolean"
+                                },
+                                "units": {
+                                  "type": "array",
+                                  "items": {
+                                    "type": "object",
+                                    "properties": {
+                                      "durationEstimated": {
+                                        "type": "boolean"
+                                      },
+                                      "timeBased": {
+                                        "type": "boolean"
+                                      },
+                                      "dateBased": {
+                                        "type": "boolean"
+                                      }
+                                    }
+                                  }
+                                }
+                              }
+                            },
+                            "gap": {
+                              "type": "boolean"
+                            },
+                            "dateTimeAfter": {
+                              "type": "string",
+                              "format": "date-time"
+                            },
+                            "dateTimeBefore": {
+                              "type": "string",
+                              "format": "date-time"
+                            },
+                            "instant": {
+                              "type": "string",
+                              "format": "date-time"
+                            }
+                          }
+                        }
+                      },
+                      "transitionRules": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "month": {
+                              "type": "string",
+                              "enum": [
+                                "JANUARY",
+                                "FEBRUARY",
+                                "MARCH",
+                                "APRIL",
+                                "MAY",
+                                "JUNE",
+                                "JULY",
+                                "AUGUST",
+                                "SEPTEMBER",
+                                "OCTOBER",
+                                "NOVEMBER",
+                                "DECEMBER"
+                              ]
+                            },
+                            "timeDefinition": {
+                              "type": "string",
+                              "enum": [
+                                "UTC",
+                                "WALL",
+                                "STANDARD"
+                              ]
+                            },
+                            "dayOfWeek": {
+                              "type": "string",
+                              "enum": [
+                                "MONDAY",
+                                "TUESDAY",
+                                "WEDNESDAY",
+                                "THURSDAY",
+                                "FRIDAY",
+                                "SATURDAY",
+                                "SUNDAY"
+                              ]
+                            },
+                            "dayOfMonthIndicator": {
+                              "type": "integer",
+                              "format": "int32"
+                            },
+                            "localTime": {
+                              "$ref": "#/components/schemas/LocalTime"
+                            },
+                            "midnightEndOfDay": {
+                              "type": "boolean"
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              },
+              "nano": {
+                "type": "integer",
+                "format": "int32"
+              },
+              "hour": {
+                "type": "integer",
+                "format": "int32"
+              },
+              "minute": {
+                "type": "integer",
+                "format": "int32"
+              },
+              "second": {
+                "type": "integer",
+                "format": "int32"
+              }
+            },
+            "example": "01:30:00.000+03:00"
+          },
+          "timeUntil": {
+            "type": "object",
+            "properties": {
+              "offset": {
+                "type": "object",
+                "properties": {
+                  "totalSeconds": {
+                    "type": "integer",
+                    "format": "int32"
+                  },
+                  "id": {
+                    "type": "string"
+                  },
+                  "rules": {
+                    "type": "object",
+                    "properties": {
+                      "fixedOffset": {
+                        "type": "boolean"
+                      },
+                      "transitions": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "overlap": {
+                              "type": "boolean"
+                            },
+                            "duration": {
+                              "type": "object",
+                              "properties": {
+                                "seconds": {
+                                  "type": "integer",
+                                  "format": "int64"
+                                },
+                                "zero": {
+                                  "type": "boolean"
+                                },
+                                "nano": {
+                                  "type": "integer",
+                                  "format": "int32"
+                                },
+                                "negative": {
+                                  "type": "boolean"
+                                },
+                                "positive": {
+                                  "type": "boolean"
+                                },
+                                "units": {
+                                  "type": "array",
+                                  "items": {
+                                    "type": "object",
+                                    "properties": {
+                                      "durationEstimated": {
+                                        "type": "boolean"
+                                      },
+                                      "timeBased": {
+                                        "type": "boolean"
+                                      },
+                                      "dateBased": {
+                                        "type": "boolean"
+                                      }
+                                    }
+                                  }
+                                }
+                              }
+                            },
+                            "gap": {
+                              "type": "boolean"
+                            },
+                            "dateTimeAfter": {
+                              "type": "string",
+                              "format": "date-time"
+                            },
+                            "dateTimeBefore": {
+                              "type": "string",
+                              "format": "date-time"
+                            },
+                            "instant": {
+                              "type": "string",
+                              "format": "date-time"
+                            }
+                          }
+                        }
+                      },
+                      "transitionRules": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "month": {
+                              "type": "string",
+                              "enum": [
+                                "JANUARY",
+                                "FEBRUARY",
+                                "MARCH",
+                                "APRIL",
+                                "MAY",
+                                "JUNE",
+                                "JULY",
+                                "AUGUST",
+                                "SEPTEMBER",
+                                "OCTOBER",
+                                "NOVEMBER",
+                                "DECEMBER"
+                              ]
+                            },
+                            "timeDefinition": {
+                              "type": "string",
+                              "enum": [
+                                "UTC",
+                                "WALL",
+                                "STANDARD"
+                              ]
+                            },
+                            "dayOfWeek": {
+                              "type": "string",
+                              "enum": [
+                                "MONDAY",
+                                "TUESDAY",
+                                "WEDNESDAY",
+                                "THURSDAY",
+                                "FRIDAY",
+                                "SATURDAY",
+                                "SUNDAY"
+                              ]
+                            },
+                            "dayOfMonthIndicator": {
+                              "type": "integer",
+                              "format": "int32"
+                            },
+                            "localTime": {
+                              "$ref": "#/components/schemas/LocalTime"
+                            },
+                            "midnightEndOfDay": {
+                              "type": "boolean"
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              },
+              "nano": {
+                "type": "integer",
+                "format": "int32"
+              },
+              "hour": {
+                "type": "integer",
+                "format": "int32"
+              },
+              "minute": {
+                "type": "integer",
+                "format": "int32"
+              },
+              "second": {
+                "type": "integer",
+                "format": "int32"
+              }
+            },
+            "example": "01:30:00.000+03:00"
+          },
+          "latitude": {
+            "type": "number",
+            "format": "double"
+          },
+          "longitude": {
+            "type": "number",
+            "format": "double"
+          },
+          "availableTimeClubsInFilter": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          "appointmentStatus": {
+            "type": "string",
+            "enum": [
+              "REQUESTED",
+              "APPOINTED",
+              "IN_PROGRESS",
+              "DONE",
+              "CANCELED"
+            ]
+          }
+        }
+      },
+      "UserScheduleDto": {
+        "type": "object",
+        "properties": {
+          "date": {
+            "type": "string",
+            "format": "date"
+          },
+          "timezone": {
+            "type": "string",
+            "example": "+03:00"
+          },
+          "walkCount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "timeFrames": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ScheduleTimeFrameDto"
+            }
+          }
+        }
+      },
+      "ClubDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          }
+        }
+      },
+      "PersonDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "fullName": {
+            "type": "string"
+          },
+          "age": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "gender": {
+            "type": "string"
+          },
+          "clubs": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ClubDto"
+            }
+          }
+        }
+      },
+      "AppointmentDetailsDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "participants": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          "startsAt": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2024-10-31T01:30:00+03:00"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2024-10-31T01:30:00+03:00"
+          },
+          "endedAt": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2024-10-31T01:30:00+03:00"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "REQUESTED",
+              "APPOINTED",
+              "IN_PROGRESS",
+              "DONE",
+              "CANCELED"
+            ]
+          },
+          "longitude": {
+            "type": "number",
+            "format": "double"
+          },
+          "latitude": {
+            "type": "number",
+            "format": "double"
+          }
+        }
+      }
+    }
+  }
+}

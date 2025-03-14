@@ -43,7 +43,9 @@ abstract class OpenApiGenerateTask @Inject constructor(
 }
 
 val openapiSpecs = mapOf(
-        "auth_service" to "$swaggerBasePath/auth/auth-service.json"
+        "auth_service" to "$swaggerBasePath/auth-service.json",
+        "matcher_service" to "$swaggerBasePath/matcher-service.json",
+        "chat_service" to "$swaggerBasePath/chat-service.json"
 )
 
 openapiSpecs.forEach {

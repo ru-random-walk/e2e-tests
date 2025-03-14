@@ -1,19 +1,42 @@
 datasource:
-  postgres:
+  database-settings:
     url: ${RW_DB_URL}
     driver-class-name: org.postgresql.Driver
-    username: ${RW_DB_USERNAME}
-    password: ${RW_DB_PASSWORD} 
     configuration:
       idle-timeout: 10000
       minimum-idle: 1
       maximum-pool-size: 6
+    ssh:
+      ssh-host: ${SSH_HOST}
+      ssh-port: ${SSH_PORT}
+      ssh-user: ${SSH_USER}
+      ssh-private-key: ${SSH_PRIVATE_KEY}
+      remote-host: ${SSH_REMOTE_HOST}
+      remote-port: ${SSH_REMOTE_PORT}
+  auth:
+    username: ${RW_AUTH_DB_USERNAME}
+    password: ${RW_AUTH_DB_PASSWORD}
+  matcher:
+    username: ${RW_MATCHER_DB_USERNAME}
+    password: ${RW_MATCHER_DB_PASSWORD}
+  chat:
+    username: ${RW_CHAT_DB_USERNAME}
+    password: ${RW_CHAT_DB_PASSWORD}
+  club:
+    username: ${RW_CLUB_DB_USERNAME}
+    password: ${RW_CLUB_DB_PASSWORD}
 api:
   auth-service:
     http-endpoint:
       host: http://random-walk.ru/auth
     username: ${RW_API_AUTH_USERNAME}
     password: ${RW_API_AUTH_PASSWORD}
+  matcher-service:
+    http-endpoint:
+      host: http://random-walk.ru/matcher
+  club-service:
+    http-endpoint:
+      host: http://random-walk.ru/club
   google-oauth2:
     email: ${GOOGLE_USER_EMAIL}
     password: ${GOOGLE_USER_PASSWORD}

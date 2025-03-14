@@ -6,10 +6,13 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import random_walk.automation.Application;
 import random_walk.automation.api.auth.services.AuthServiceApi;
-import random_walk.automation.databases.functions.AuthUserFunctions;
-import random_walk.automation.databases.functions.RefreshTokenFunctions;
-import random_walk.automation.databases.functions.RoleFunctions;
-import random_walk.automation.databases.functions.UserRoleFunctions;
+import random_walk.automation.databases.auth.functions.AuthUserFunctions;
+import random_walk.automation.databases.auth.functions.RefreshTokenFunctions;
+import random_walk.automation.databases.auth.functions.RoleFunctions;
+import random_walk.automation.databases.auth.functions.UserRoleFunctions;
+import random_walk.automation.databases.chat.functions.ChatFunctions;
+import random_walk.automation.databases.club.functions.ClubFunctions;
+import random_walk.automation.databases.matcher.functions.PersonFunctions;
 import random_walk.extensions.RestAssuredExtension;
 
 @ExtendWith(RestAssuredExtension.class)
@@ -31,5 +34,14 @@ public abstract class BaseTest {
 
     @Autowired
     protected RefreshTokenFunctions refreshTokenFunctions;
+
+    @Autowired
+    protected ChatFunctions chatFunctions;
+
+    @Autowired
+    protected ClubFunctions clubFunctions;
+
+    @Autowired
+    protected PersonFunctions personFunctions;
 
 }

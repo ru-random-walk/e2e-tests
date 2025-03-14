@@ -36,6 +36,7 @@ dependencies {
     implementation("io.qameta.allure:allure-rest-assured:$allureVersion")
     implementation("io.qameta.allure:allure-junit5:$allureVersion")
     implementation("org.aspectj:aspectjweaver:1.8.3")
+    implementation("com.github.mwiede:jsch:0.2.17")
 
     implementation("org.springframework.boot:spring-boot-starter-data-jpa:$springVersion")
     implementation("org.springframework.boot:spring-boot-starter-validation:$springVersion")
@@ -85,7 +86,9 @@ dependencies {
 tasks.compileJava {
     if (!file("$buildDir").exists()) {
         dependsOn(
-                "generate_auth_service"
+                "generate_auth_service",
+                "generate_matcher_service",
+                "generate_chat_service"
         )
     }
 }
