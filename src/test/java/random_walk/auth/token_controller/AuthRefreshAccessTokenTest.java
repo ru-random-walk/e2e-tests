@@ -1,18 +1,13 @@
-package random_walk.auth;
+package random_walk.auth.token_controller;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import random_walk.BaseTest;
-import random_walk.automation.api.auth.services.GoogleAccessTokenApi;
+import random_walk.auth.AuthTest;
 
 import static io.qameta.allure.Allure.step;
 import static org.junit.jupiter.api.Assertions.*;
 
-class AuthRefreshAccessTokenTest extends BaseTest {
-
-    @Autowired
-    private GoogleAccessTokenApi googleAccessTokenApi;
+class AuthRefreshAccessTokenTest extends AuthTest {
 
     @Test
     @DisplayName("Получение актуального access_token по refresh_token")

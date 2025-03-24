@@ -26,6 +26,7 @@ datasource:
     username: ${RW_CLUB_DB_USERNAME}
     password: ${RW_CLUB_DB_PASSWORD}
 api:
+  test-token: ${TEST_TOKEN}
   auth-service:
     http-endpoint:
       host: https://random-walk.ru:44424/auth

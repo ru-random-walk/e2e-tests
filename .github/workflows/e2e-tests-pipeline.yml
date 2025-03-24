@@ -38,6 +38,7 @@ jobs:
       RW_API_AUTH_PASSWORD: ${{ secrets.RW_API_AUTH_PASSWORD }}
       GOOGLE_USER_EMAIL: ${{ secrets.GOOGLE_USER_EMAIL }}
       GOOGLE_USER_PASSWORD: ${{ secrets.GOOGLE_USER_PASSWORD }}
+      TEST_TOKEN: ${{ secrets.TEST_TOKEN }}
 
     steps:
       - name: Checkout repository

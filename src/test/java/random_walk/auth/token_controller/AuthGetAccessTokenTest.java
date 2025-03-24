@@ -1,21 +1,17 @@
-package random_walk.auth;
+package random_walk.auth.token_controller;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import random_walk.BaseTest;
-import random_walk.automation.api.auth.services.GoogleAccessTokenApi;
+import random_walk.auth.AuthTest;
 
 import java.util.UUID;
 
 import static io.qameta.allure.Allure.step;
 import static org.junit.jupiter.api.Assertions.*;
+import static random_walk.automation.utils.ExceptionUtils.toDefaultErrorResponse;
 import static random_walk.automation.utils.ParseAccessTokenUtils.getInfoFromAccessToken;
 
-class AuthGetAccessTokenTest extends BaseTest {
-
-    @Autowired
-    private GoogleAccessTokenApi googleAccessTokenApi;
+class AuthGetAccessTokenTest extends AuthTest {
 
     @Test
     @DisplayName("Получаем access_token для пользователя")
@@ -47,9 +43,13 @@ class AuthGetAccessTokenTest extends BaseTest {
 
         var accessToken = step(
                 "WHEN: Получаем access_token для пользователя нашего приложения с невалидным токеном",
-                () -> authServiceApi.getAuthTokens(googleToken.toString()).getAccessToken());
+                () -> toDefaultErrorResponse(() -> authServiceApi.getAuthTokens(googleToken.toString())));
 
-        // добавить обработку исключений
-        step("THEN: Попытка получения access_token пользователя по невалидному токену завершилась ошибкой");
+        step(
+                "THEN: Попытка получения access_token пользователя по невалидному токену завершилась ошибкой",
+                () -> assertEquals(
+                        "Google respond with UNAUTHORIZED error code",
+                        accessToken.getMessage(),
+                        "Сообщение об ошибке совпадает"));
     }
 }
