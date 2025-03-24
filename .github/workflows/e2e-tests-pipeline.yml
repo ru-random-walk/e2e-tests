@@ -53,7 +53,7 @@ jobs:
         run: |
           chmod +x gradlew
           ./gradlew clean --no-daemon
-          ./gradlew test --no-daemon
+          ./gradlew test "-Dcom.sun.net.ssl.checkRevocation=false" --no-daemon
         continue-on-error: true
 
       - name: Generate test report
