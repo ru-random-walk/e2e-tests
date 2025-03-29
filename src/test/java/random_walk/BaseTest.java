@@ -3,7 +3,6 @@ package random_walk;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.ActiveProfiles;
 import random_walk.automation.Application;
 import random_walk.automation.api.auth.services.AuthServiceApi;
 import random_walk.automation.databases.auth.functions.AuthUserFunctions;
@@ -16,7 +15,7 @@ import random_walk.automation.databases.matcher.functions.PersonFunctions;
 import random_walk.extensions.RestAssuredExtension;
 
 @ExtendWith(RestAssuredExtension.class)
-@ActiveProfiles(profiles = "test")
+//@ActiveProfiles(profiles = "test")
 @SpringBootTest(classes = Application.class)
 public abstract class BaseTest {
 
