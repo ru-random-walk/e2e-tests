@@ -15,6 +15,12 @@ repositories {
     mavenCentral()
 }
 
+java {
+    toolchain {
+        languageVersion.set(JavaLanguageVersion.of(18))
+    }
+}
+
 sourceSets {
     main {
         java {
@@ -110,7 +116,7 @@ tasks.test {
      * https://junit.org/junit5/docs/current/user-guide/#running-tests-tag-expressions
      *
      */
-    jvmArgs = listOf("-Xmx2g", "-Xms1g", "-Xss512k", "-Dfile.encoding=UTF-8", "-Dorg.aspectj.weaver.Dump.exception=false", "-Dcom.sun.net.ssl.checkRevocation=false")
+    jvmArgs = listOf("-Xmx2g", "-Xms1g", "-Xss512k", "-Dfile.encoding=UTF-8", "-Dorg.aspectj.weaver.Dump.exception=false", "-Djavax.net.ssl.trustStoreType=jks", "-Djavax.net.ssl.trustStore=", "-Djavax.net.ssl.trustStorePassword=")
     outputs.cacheIf { false }
     useJUnitPlatform {
 

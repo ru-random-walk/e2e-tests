@@ -29,4 +29,6 @@ public class AuthUser {
 
     private Boolean enabled;
 
+    private String avatar;
+
 }
