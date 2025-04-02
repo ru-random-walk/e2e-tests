@@ -3,14 +3,13 @@ package random_walk.automation.websocket.model;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 import org.springframework.format.annotation.DateTimeFormat;
-import ru.random_walk.swagger.chat_service.model.TextPayload;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Builder
 public record MessageRequestDto(
-        TextPayload payload,
+        Payload payload,
         UUID chatId,
         UUID sender,
         UUID recipient,
