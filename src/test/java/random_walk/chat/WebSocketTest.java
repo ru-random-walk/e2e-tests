@@ -3,6 +3,7 @@ package random_walk.chat;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.tomcat.websocket.Constants;
 import org.springframework.messaging.converter.MappingJackson2MessageConverter;
 import org.springframework.messaging.simp.stomp.StompHeaders;
 import org.springframework.messaging.simp.stomp.StompSession;
@@ -16,11 +17,12 @@ import org.springframework.web.socket.sockjs.client.WebSocketTransport;
 import random_walk.BaseTest;
 import random_walk.automation.websocket.SslUtil;
 import random_walk.automation.websocket.model.MessageRequestDto;
-import ru.random_walk.swagger.chat_service.model.TextPayload;
+import random_walk.automation.websocket.model.Payload;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Collections;
+import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 import javax.net.ssl.SSLContext;
@@ -30,36 +32,42 @@ public class WebSocketTest extends BaseTest {
     private static final String WS_URL = "wss://random-walk.ru:44424/chat/ws";
     private static final String CHAT_TOPIC = "/topic/chat/";
     private static final String SEND_ENDPOINT = "/app/sendMessage";
-    private static final String BEARER_TOKEN = "eyJ0eXAiOiJKV1QiLCJraWQiOiJyd19rZXkiLCJhbGciOiJSUzI1NiJ9.eyJpc3MiOiJodHRwOi8vYXV0aC1zZXJ2aWNlLmF1dGgtc2VydmljZS5zdmMuY2x1c3Rlci5sb2NhbDo4MDgwIiwiY2xpZW50X2lkIjoiVEVTVF9DTElFTlQiLCJhdXRob3JpdGllcyI6WyJERUZBVUxUX1VTRVIiXSwiZXhwIjoxNzQwNzc1MTc3LCJzdWIiOiIyZjRkMTYzYS1lMDI0LTQ1NzQtOWI4NC01MDIxYWUzNGNjY2UifQ.XeIp7zBlt7JyWx-hX4Sg4lUBBv9LzlxUgl1C7tj2b10TgpPNf4O4rsh_enSXpHrp1aX8NtzvjAU_fjym8_UjcN0a33vqEQusdFTCIN3eECwno_DuqTapbJYEbo_iBUw1aRNL3beeMuFoC6RTd5TD5fE_XByYCFvUclVr7U03C7gUQlM2bmms6M0TeCVsTBxNmFn_39If8t6IiQCD1-lkUqMdaR-hkM1p7u6xqLAmR-V49Fpa7xLw_lb6as5LvluNZgZzq4ubm0et4l08-B5uk1Tzn6ejLW8aITOv7KqDLjx8B-paSLmCtXFHaeCv1nNbiBHD_Bjf-xyTdxcrVS9-PQ";
+    private static final String BEARER_TOKEN = "eyJ0eXAiOiJKV1QiLCJraWQiOiJyd19rZXkiLCJhbGciOiJSUzI1NiJ9.eyJpc3MiOiJodHRwOi8vYXV0aC1zZXJ2aWNlLmF1dGgtc2VydmljZS5zdmMuY2x1c3Rlci5sb2NhbDo4MDgwIiwiY2xpZW50X2lkIjoiVEVTVF9DTElFTlQiLCJhdXRob3JpdGllcyI6WyJERUZBVUxUX1VTRVIiLCJURVNURVIiLCJJTkZJTklURV9BQ0NPVU5UIl0sImV4cCI6MTg5OTQ3Mjg4Niwic3ViIjoiNThlOTUzZWYtMDE1My00OTE4LTlhMjYtMTdiY2IyMjEzYzEyIn0.OkEZ3SF2lophwxNnNdEymTHLjH0fy64bSK2plrd2B8DP0877GfUvtxEd-XlN7_akIxdvTYByMvoYga6Q0lQV-eFruQxPaNjGcMgGm6SVBz8f3Y4mvgBVtZhEeJFv60_fMzs62Cebz2U8YzS4QnDooGklesYupQgCovzgK5czqtv4G8sDgmXkZ_WxKDgg3UmHe_FCMEIokNGPLrumG1VLzho87ultub_lo1ODCM4LHZTSZetoWGIQjULSgvJPVt-0WhXVh3-Uv--1g8mEDJmCw5Ujgi0PSs_EIqHEbcqfLRTp-N4iUEHG69L1N4BdH7uoiErKXEL_pHGUQIWZpQI4lQ";
+    public static final String SU_BEARER = "eyJ0eXAiOiJKV1QiLCJraWQiOiJyd19rZXkiLCJhbGciOiJSUzI1NiJ9.eyJpc3MiOiJodHRwOi8vYXV0aC1zZXJ2aWNlLmF1dGgtc2VydmljZS5zdmMuY2x1c3Rlci5sb2NhbDo4MDgwIiwiY2xpZW50X2lkIjoiVEVTVF9DTElFTlQiLCJhdXRob3JpdGllcyI6WyJERUZBVUxUX1VTRVIiXSwiZXhwIjoxNzQzNjI3MDczLCJzdWIiOiIzZDE1NGVhNi03ZDY3LTQxZjEtODIwZi01ZjZiNDAzY2FlYzYifQ.DeFGe5vMhaQ94Lk45ExuyK6vs0N4FvlT7g3hBIXGGpd49gdN5sLDH7hjOrEpn5JGY9XhmABZqxDkXZPPoWqpvkzmCdgHno96H6dhe2IxADqWjTO4BzLAXwDMQJYh4Y-S3310C9foDsNSovmargt5k_j-cl3tE99IFlv0pZDUKbOLx-BTuaKrLVF3zXiEy_wXPWPsbAV4cfMxe6ZkRR75W4PlVN6lNgXo9pBSY3OkIsD5FbVzhkw9pfl0UU2zxQBmY8sbGLkxsCXmQNBhRKCOJCygjwMJI71JoOgNogEx0rZRfRxAZjg0NsJV4-MIKdb9ofPporkTACfJjQeb_xF-nA";
 
     public static void main(String[] args) throws Exception {
         SslUtil.disableHttpCertificateVerification();
-        String chatId = "9942e49e-13f7-4ca2-bc8e-e527c5ddac9d";
+        String chatId = "40b53ea6-864e-4e72-a808-605132b5e2c7";
         StompSession session = connect(chatId, BEARER_TOKEN);
+        StompSession secondSession = connect(chatId, SU_BEARER);
         sendMessage(
+                "Hi, Dmitry!",
                 session,
                 UUID.fromString(chatId),
-                UUID.fromString("2f4d163a-e024-4574-9b84-5021ae34ccce"),
-                UUID.fromString("550e8400-e29b-41d4-a716-446655440002"));
-        Thread.sleep(10_000);
-        session.disconnect();
+                UUID.fromString("58e953ef-0153-4918-9a26-17bcb2213c12"),
+                UUID.fromString("3d154ea6-7d67-41f1-820f-5f6b403caec6"));
+        Thread.sleep(20000);
+        // session.disconnect();
     }
 
-    private static void sendMessage(StompSession session, UUID chatId, UUID sender, UUID recipient) {
+    private static void sendMessage(String text, StompSession session, UUID chatId, UUID sender, UUID recipient) {
         StompHeaders sendHeaders = getStompHeaders();
-        TextPayload payload = new TextPayload().text("Hello, world!");
+        Payload payload = new Payload().setType("text").setText(text);
         MessageRequestDto message = new MessageRequestDto(
                 payload,
                 chatId,
                 sender,
                 recipient,
-                LocalDateTime.parse("18:00 22-09-2024", DateTimeFormatter.ofPattern("HH:mm dd-MM-yyyy")));
+                LocalDateTime.parse("06:00 02-04-2025", DateTimeFormatter.ofPattern("HH:mm dd-MM-yyyy")));
+        log.info("Отправляем {}", message);
         session.send(sendHeaders, message);
+        log.info("Сообщение успешно отправлено");
     }
 
     private static StompSession connect(String chatId, final String token) throws Exception {
         WebSocketStompClient stompClient = getWebSocketStompClient();
         StompSession session = connect(stompClient, token);
+        log.info("session = {}, sclient = {}", session, stompClient);
         session.subscribe(CHAT_TOPIC + chatId, new StompSessionHandlerAdapter() {
             @Override
             public void handleFrame(StompHeaders headers, Object payload) {
@@ -116,7 +124,7 @@ public class WebSocketTest extends BaseTest {
     private static StandardWebSocketClient getWebSocketClientWithDisabledCertificateVerification() throws Exception {
         SSLContext sslContext = SslUtil.disableCertificateVerification();
         StandardWebSocketClient webSocketClient = new StandardWebSocketClient();
-        webSocketClient.setSslContext(sslContext);
+        webSocketClient.setUserProperties(Map.of(Constants.SSL_CONTEXT_PROPERTY, sslContext));
         return webSocketClient;
     }
 }
