@@ -6,6 +6,13 @@ on:
     - cron: '0 12 * * *'
   pull_request:
     branches: [ "master" ]
+  workflow_dispatch:
+    inputs:
+      testTag:
+        description: Тэг для запуска тестов по определенному сервису
+        required: false
+        default: ""
+
 
 jobs:
   checkout-repo:
@@ -53,6 +60,11 @@ jobs:
         run: |
           chmod +x gradlew
           ./gradlew clean --no-daemon
+          if [[ -z "${{ github.event.inputs.testTag }}" ]]; then
+            ./gradlew test --no-daemon
+          else
+            ./gradlew test -PincludeTags="*@${{ github.event.inputs.testTag }}" --no-daemon
+          fi
           ./gradlew test --no-daemon
         continue-on-error: true
 
