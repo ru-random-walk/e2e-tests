@@ -6,17 +6,16 @@ on:
     - cron: '0 12 * * *'
   pull_request:
     branches: [ "master" ]
-  push:
 
 jobs:
-  backend-job:
+  checkout-repo:
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-  java-job:
+  build-proj-and-run-tests:
     runs-on: ubuntu-latest
     env:
       RW_DB_URL: ${{ secrets.RW_DB_URL }}

@@ -1,9 +1,10 @@
 package random_walk.automation.api.auth.services;
 
 import io.qameta.allure.Step;
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import random_walk.automation.api.auth.AuthServiceConfigurationProperties;
+import random_walk.automation.config.TestTokenConfig;
 import random_walk.automation.config.filters.BasicAuthFilter;
 import random_walk.automation.config.filters.BearerAuthToken;
 import ru.random_walk.swagger.auth_service.api.OAuth2ControllerApi;
@@ -12,12 +13,13 @@ import ru.random_walk.swagger.auth_service.api.UserControllerApi;
 import ru.random_walk.swagger.auth_service.invoker.ApiClient;
 import ru.random_walk.swagger.auth_service.model.DetailedUserDto;
 import ru.random_walk.swagger.auth_service.model.OAuthConfigurationResponse;
-import ru.random_walk.swagger.auth_service.model.PageUserDto;
+import ru.random_walk.swagger.auth_service.model.PagedModelUserDto;
 import ru.random_walk.swagger.auth_service.model.TokenResponse;
 
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import javax.annotation.Nullable;
 
 import static random_walk.automation.config.SwaggerConfig.getSupplierWithUri;
 
@@ -34,10 +36,12 @@ public class AuthServiceApi {
 
     private final String password;
 
-    @Value("${api.test-token}")
-    private String token;
+    private final String token;
 
-    public AuthServiceApi(AuthServiceConfigurationProperties authServiceConfigurationProperties) {
+    @Autowired
+    public AuthServiceApi(
+            AuthServiceConfigurationProperties authServiceConfigurationProperties,
+            TestTokenConfig testTokenConfig) {
         this.tokenControllerApi = ApiClient
                 .api(
                         ApiClient.Config.apiConfig()
@@ -55,6 +59,7 @@ public class AuthServiceApi {
                 .userController();
         this.username = authServiceConfigurationProperties.username();
         this.password = authServiceConfigurationProperties.password();
+        this.token = testTokenConfig.getToken();
     }
 
     @Step("/.well-knowm/openid-configuration")
@@ -93,17 +98,28 @@ public class AuthServiceApi {
     }
 
     @Step("Получаем список пользователей по их id")
-    public PageUserDto getUsersById(List<UUID> ids) {
+    public PagedModelUserDto getUsersById(List<UUID> ids, @Nullable Integer size, @Nullable Integer page, @Nullable String sort) {
+
+        var getUsersRequest = userControllerApi.getUsers();
+
+        if (size != null)
+            getUsersRequest.sizeQuery(size);
+
+        if (page != null)
+            getUsersRequest.pageQuery(page);
+
+        if (sort != null)
+            getUsersRequest.sortQuery(sort);
+
         Object[] currentIds = new Object[ids.size()];
         var index = 0;
         for (UUID id : ids) {
             currentIds[index++] = id;
         }
-        return userControllerApi.getUsers()
-                .reqSpec(r -> r.addFilter(new BearerAuthToken(token)))
+
+        return getUsersRequest.reqSpec(r -> r.addFilter(new BearerAuthToken(token)))
                 .idsQuery(currentIds)
-                .sizeQuery(0)
-                .execute(r -> r.as(PageUserDto.class));
+                .execute(r -> r.as(PagedModelUserDto.class));
     }
 
     @Step("Получение собственной информации пользователем")

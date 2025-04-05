@@ -47,6 +47,7 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-data-jpa:$springVersion")
     implementation("org.springframework.boot:spring-boot-starter-validation:$springVersion")
     implementation("org.springframework.boot:spring-boot-starter-aop:$springVersion")
+    implementation("org.springframework.boot:spring-boot-starter-test:$springVersion")
 
     implementation("org.springframework.retry:spring-retry:1.3.3")
     implementation("ch.qos.logback:logback-core:1.2.9")
@@ -71,7 +72,6 @@ dependencies {
     implementation("io.swagger:swagger-annotations:1.6.1")
     implementation("io.swagger.codegen.v3:swagger-codegen:3.0.30")
 
-    implementation("org.springframework.boot:spring-boot-starter-test:$springVersion")
     implementation("org.hamcrest:hamcrest:2.2")
     implementation("org.apache.pdfbox:pdfbox:2.0.25")
     implementation("com.vladmihalcea:hibernate-types-52:2.11.1")
@@ -81,9 +81,6 @@ dependencies {
     implementation("com.google.protobuf:protobuf-java:3.22.2")
     implementation("javax.annotation:javax.annotation-api:1.3.2")
     implementation("com.github.viclovsky:swagger-coverage-rest-assured:1.5.0")
-
-    implementation("org.springframework.boot:spring-boot-starter-data-jpa:$springVersion")
-    implementation("org.springframework.boot:spring-boot-starter-test:$springVersion")
 
     testImplementation("org.junit.jupiter:junit-jupiter-api")
     testImplementation("org.junit.jupiter:junit-jupiter-engine")

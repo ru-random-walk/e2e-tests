@@ -67,6 +67,7 @@
         "tags": [
           "user-controller"
         ],
+        "summary": "Get users info by their ids",
         "operationId": "getUsers",
         "parameters": [
           {
@@ -142,7 +143,7 @@
             "content": {
               "*/*": {
                 "schema": {
-                  "$ref": "#/components/schemas/PageUserDto"
+                  "$ref": "#/components/schemas/PagedModelUserDto"
                 }
               }
             }
@@ -155,6 +156,7 @@
         "tags": [
           "user-controller"
         ],
+        "summary": "Get info about current user",
         "operationId": "getSelfInfo",
         "responses": {
           "400": {
@@ -309,89 +311,38 @@
           }
         }
       },
-      "PageUserDto": {
+      "PageMetadata": {
         "type": "object",
         "properties": {
-          "totalPages": {
+          "size": {
             "type": "integer",
-            "format": "int32"
+            "format": "int64"
+          },
+          "number": {
+            "type": "integer",
+            "format": "int64"
           },
           "totalElements": {
             "type": "integer",
             "format": "int64"
           },
-          "size": {
+          "totalPages": {
             "type": "integer",
-            "format": "int32"
-          },
+            "format": "int64"
+          }
+        }
+      },
+      "PagedModelUserDto": {
+        "type": "object",
+        "properties": {
           "content": {
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/UserDto"
             }
           },
-          "number": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "sort": {
-            "$ref": "#/components/schemas/SortObject"
-          },
-          "numberOfElements": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "pageable": {
-            "$ref": "#/components/schemas/PageableObject"
-          },
-          "first": {
-            "type": "boolean"
-          },
-          "last": {
-            "type": "boolean"
-          },
-          "empty": {
-            "type": "boolean"
-          }
-        }
-      },
-      "PageableObject": {
-        "type": "object",
-        "properties": {
-          "offset": {
-            "type": "integer",
-            "format": "int64"
-          },
-          "sort": {
-            "$ref": "#/components/schemas/SortObject"
-          },
-          "paged": {
-            "type": "boolean"
-          },
-          "pageNumber": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "pageSize": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "unpaged": {
-            "type": "boolean"
-          }
-        }
-      },
-      "SortObject": {
-        "type": "object",
-        "properties": {
-          "empty": {
-            "type": "boolean"
-          },
-          "sorted": {
-            "type": "boolean"
-          },
-          "unsorted": {
-            "type": "boolean"
+          "page": {
+            "$ref": "#/components/schemas/PageMetadata"
           }
         }
       },
