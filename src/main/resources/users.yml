@@ -1,0 +1,10 @@
+users:
+
+  -
+    name: Тест
+    role: TEST_USER
+    uuid: 58e953ef-0153-4918-9a26-17bcb2213c12
+  -
+    name: Автотест
+    role: AUTOTEST_USER
+    uuid: 490689d5-4e63-4724-8ab5-4fb32750b263
