@@ -6,7 +6,6 @@ on:
     - cron: '0 12 * * *'
   pull_request:
     branches: [ "master" ]
-  push:
 
 jobs:
   checkout-repo:
