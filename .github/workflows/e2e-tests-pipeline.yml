@@ -81,9 +81,16 @@ jobs:
           name: test-report
           path: ./build/reports/tests/test
 
+      - name: Generate allure report
+        uses: simple-elf/allure-report-action@master
+        if: always()
+        id: allure-report
+        with:
+          allure_results: ./build/allure-results
+          allure_report: ./allure-report
 
-
-
-
-
-
+      - name: Upload Allure Report
+        uses: actions/upload-artifact@v4
+        with:
+          name: allure-report
+          path: ./allure-report
