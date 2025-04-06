@@ -75,12 +75,14 @@ jobs:
           fi
         continue-on-error: true
 
-      - name: Generate test report
-        run: | 
-          ./gradlew allureReport
+      - name: Generate Allure Report
+        uses: allure-official/allure-docker-service-action@2.18.0
+        with:
+          results: ./build/allure-results
 
-      - name: Upload test report
+      - name: Upload Allure Report Artifact
         uses: actions/upload-artifact@v4
         with:
           name: allure-report
           path: ./build/reports/allure-report
+          if-no-files-found: error
