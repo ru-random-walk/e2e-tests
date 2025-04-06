@@ -11,9 +11,10 @@ on:
       testTag:
         description: Тег для запуска тестов по определенному сервису
         required: false
-        default: ""
+        default: "all"
         type: choice
         options:
+          - all
           - auth-e2e
           - chat-e2e
           - club-e2e
@@ -67,7 +68,7 @@ jobs:
           chmod +x gradlew
           ./gradlew clean --no-daemon
           echo "Running tests with tag: ${{ github.event.inputs.testTag }}"
-          if [[ -z "${{ github.event.inputs.testTag }}" ]]; then
+          if [[ {{ github.event.inputs.testTag }} == "all" ]]; then
             ./gradlew test --no-daemon
           else
             ./gradlew test -PincludeTags=${{ github.event.inputs.testTag }} --no-daemon
