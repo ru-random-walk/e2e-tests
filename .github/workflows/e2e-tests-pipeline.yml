@@ -65,7 +65,6 @@ jobs:
           else
             ./gradlew test -PincludeTags="*@${{ github.event.inputs.testTag }}" --no-daemon
           fi
-          ./gradlew test --no-daemon
         continue-on-error: true
 
       - name: Generate test report
