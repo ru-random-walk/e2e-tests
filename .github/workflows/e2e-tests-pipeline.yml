@@ -9,9 +9,15 @@ on:
   workflow_dispatch:
     inputs:
       testTag:
-        description: Тэг для запуска тестов по определенному сервису
+        description: Тег для запуска тестов по определенному сервису
         required: false
         default: ""
+        type: choice
+        options:
+          - auth-e2e
+          - chat-e2e
+          - club-e2e
+          - matcher-e2e
 
 
 jobs:
