@@ -75,14 +75,16 @@ jobs:
           fi
         continue-on-error: true
 
-      - name: Generate Allure Report
-        uses: allure-official/allure-docker-service-action@2.18.0
+      - name: Generate allure report
+        uses: simple-elf/allure-report-action@master
+        if: always()
+        id: allure-report
         with:
-          results: ./build/allure-results
+          allure_results: ./build/allure-results
+          allure_report: ./allure-report
 
-      - name: Upload Allure Report Artifact
+      - name: Upload Allure Report
         uses: actions/upload-artifact@v4
         with:
           name: allure-report
-          path: ./build/reports/allure-report
-          if-no-files-found: error
+          path: ./allure-report

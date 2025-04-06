@@ -35,7 +35,7 @@ apply {
 
 dependencies {
     val springVersion = "2.7.5"
-    val allureVersion = "2.22.0"
+    val allureVersion = "2.27.0"
 
     implementation("org.postgresql:postgresql:42.6.0")
 
