@@ -75,16 +75,12 @@ jobs:
           fi
         continue-on-error: true
 
-      - name: Generate allure report
-        uses: simple-elf/allure-report-action@master
-        if: always()
-        id: allure-report
-        with:
-          allure_results: ./tests/build/allure-results
-          allure_report: ./tests/allure-report
+      - name: Generate test report
+        run: | 
+          ./gradlew allureReport
 
-      - name: Upload Allure Report
+      - name: Upload test report
         uses: actions/upload-artifact@v4
         with:
-            name: allure-report
-            path: ./tests/allure-report
+          name: allure-report
+          path: ./build/reports/allure-report/allureReport
