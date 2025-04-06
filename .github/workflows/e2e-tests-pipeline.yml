@@ -69,7 +69,7 @@ jobs:
           ./gradlew clean --no-daemon
           echo "Running tests with tag: ${{ github.event.inputs.testTag }}"
           if [[ {{ github.event.inputs.testTag }} == "all" ]]; then
-            ./gradlew test --no-daemon
+            ./gradlew test -PincludeTags=all --no-daemon
           else
             ./gradlew test -PincludeTags=${{ github.event.inputs.testTag }} --no-daemon
           fi
