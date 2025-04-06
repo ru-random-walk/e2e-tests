@@ -6,6 +6,7 @@ plugins {
     id("com.diffplug.spotless") version "6.19.0"
     id("org.openapi.generator") version "4.3.0"
     id("io.spring.dependency-management") version "1.1.6"
+    id("io.qameta.allure") version "2.12.0"
 }
 
 group = "random-walk.automation"
@@ -112,7 +113,7 @@ tasks.test {
      * https://junit.org/junit5/docs/current/user-guide/#running-tests-tag-expressions
      *
      */
-    jvmArgs = listOf("-Xmx2g", "-Xms1g", "-Xss512k", "-Dfile.encoding=UTF-8", "-Dorg.aspectj.weaver.Dump.exception=false", "-Djavax.net.ssl.trustStoreType=jks", "-Djavax.net.ssl.trustStore=", "-Djavax.net.ssl.trustStorePassword=")
+    jvmArgs = listOf("-Xmx2g", "-Xms1g", "-Xss512k", "-Dfile.encoding=UTF-8", "-Dorg.aspectj.weaver.Dump.exception=false", "-Djavax.net.ssl.trustStoreType=jks", "-Djavax.net.ssl.trustStore=", "-Djavax.net.ssl.trustStorePassword=", "-Dorg.aspectj.weaver.loadtime.configuration=ignored")
     outputs.cacheIf { false }
     useJUnitPlatform {
 
