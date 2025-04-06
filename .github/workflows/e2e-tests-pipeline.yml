@@ -9,9 +9,16 @@ on:
   workflow_dispatch:
     inputs:
       testTag:
-        description: Тэг для запуска тестов по определенному сервису
+        description: Тег для запуска тестов по определенному сервису
         required: false
-        default: ""
+        default: "all"
+        type: choice
+        options:
+          - all
+          - auth-e2e
+          - chat-e2e
+          - club-e2e
+          - matcher-e2e
 
 
 jobs:
@@ -60,12 +67,12 @@ jobs:
         run: |
           chmod +x gradlew
           ./gradlew clean --no-daemon
-          if [[ -z "${{ github.event.inputs.testTag }}" ]]; then
+          echo "Running tests with tag: ${{ github.event.inputs.testTag }}"
+          if [[ "${{ github.event.inputs.testTag }}" == "all" ]]; then
             ./gradlew test --no-daemon
           else
-            ./gradlew test -PincludeTags="*@${{ github.event.inputs.testTag }}" --no-daemon
+            ./gradlew test -PincludeTags=${{ github.event.inputs.testTag }} --no-daemon
           fi
-          ./gradlew test --no-daemon
         continue-on-error: true
 
       - name: Generate test report
