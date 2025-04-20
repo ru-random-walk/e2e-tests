@@ -12,4 +12,6 @@ import org.springframework.context.annotation.Configuration;
 public class TestTokenConfig {
 
     private String token;
+
+    private String autotestToken;
 }

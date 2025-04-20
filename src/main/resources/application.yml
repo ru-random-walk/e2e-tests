@@ -27,6 +27,11 @@ datasource:
     password: ${RW_CLUB_DB_PASSWORD}
 api:
   token: ${TEST_TOKEN}
+  autotest-token: ${AUTOTEST_TOKEN}
+  websocket:
+    url: wss://random-walk.ru:44424/chat/ws
+    message-endpoint: /app/sendMessage
+    chat-endpoint: /topic/chat/
   auth-service:
     http-endpoint:
       host: https://random-walk.ru:44424/auth
@@ -35,13 +40,15 @@ api:
   matcher-service:
     http-endpoint:
       host: https://random-walk.ru:44424/matcher
-  club-service:
+  chat-service:
     http-endpoint:
-      host: https://random-walk.ru:44424/club
+      host: https://random-walk.ru:44424/chat
   google-oauth2:
     email: ${GOOGLE_USER_EMAIL}
     password: ${GOOGLE_USER_PASSWORD}
 spring:
   config:
     import: classpath:users.yml
+test-management-system:
+  token: ZlJPWVRzZExIME5nbzQ3VzR0
 

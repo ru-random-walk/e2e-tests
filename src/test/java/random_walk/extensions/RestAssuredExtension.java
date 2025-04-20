@@ -8,7 +8,7 @@ import io.restassured.filter.log.RequestLoggingFilter;
 import io.restassured.filter.log.ResponseLoggingFilter;
 import org.junit.jupiter.api.extension.BeforeAllCallback;
 import org.junit.jupiter.api.extension.ExtensionContext;
-import random_walk.automation.config.filters.DefaultExceptionFilter;
+import random_walk.automation.config.filter.DefaultExceptionFilter;
 
 import java.util.Arrays;
 

@@ -8,21 +8,26 @@ import java.util.UUID;
 
 import static io.qameta.allure.Allure.step;
 import static org.junit.jupiter.api.Assertions.*;
-import static random_walk.automation.utils.ExceptionUtils.toDefaultErrorResponse;
-import static random_walk.automation.utils.ParseAccessTokenUtils.getInfoFromAccessToken;
+import static random_walk.automation.util.ExceptionUtils.toDefaultErrorResponse;
+import static random_walk.automation.util.ParseAccessTokenUtils.getInfoFromAccessToken;
 
 class AuthGetAccessTokenTest extends AuthTest {
 
     @Test
     @DisplayName("Получаем access_token для пользователя")
     void getAccessTokenForUser() {
-        var googleTokens = step(
-                "GIVEN: Получены access и refresh токены пользователя через Google OAuth2 API",
-                () -> googleAccessTokenApi.exchangeAuthCode(googleAccessTokenApi.getGoogleAuthorizationCode()));
+        /*
+         * var googleTokens = step(
+         * "GIVEN: Получены access и refresh токены пользователя через Google OAuth2 API"
+         * , () -> googleAccessTokenApi.exchangeAuthCode(googleAccessTokenApi.
+         * getGoogleAuthorizationCode()));
+         */
 
         var accessToken = step(
                 "WHEN: Получаем access_token для пользователя нашего приложения",
-                () -> authServiceApi.getAuthTokens(googleTokens.getAccessToken()).getAccessToken());
+                () -> authServiceApi.getAuthTokens(
+                        "ya29.a0AeXRPp7tzeGws7yPCzgx3hSDdnTAoA3HfrPOyqq_bmZbcXSilkn8TDxmSjToVgnUlUaNanZYkZ_Pg3OTgQLKY4XToOBODgREfi1GsHFo-jZ0rENpqYU9OR0apqAwUXOXqtduwl6ooOc-aT5pSq6rDveH_TfkWIpPPi4Hfzu-aCgYKAQISARASFQHGX2MiEnFZSui6gwQd01-YFTH6Yg0175")
+                        .getAccessToken());
 
         step("THEN: Access_token успешно получен", () -> {
             var tokenInfo = getInfoFromAccessToken(accessToken);

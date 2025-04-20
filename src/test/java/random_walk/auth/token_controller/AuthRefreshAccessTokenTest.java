@@ -2,12 +2,17 @@ package random_walk.auth.token_controller;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import random_walk.auth.AuthTest;
+import random_walk.automation.database.auth.functions.RefreshTokenFunctions;
 
 import static io.qameta.allure.Allure.step;
 import static org.junit.jupiter.api.Assertions.*;
 
 class AuthRefreshAccessTokenTest extends AuthTest {
+
+    @Autowired
+    private RefreshTokenFunctions refreshTokenFunctions;
 
     @Test
     @DisplayName("Получение актуального access_token по refresh_token")
@@ -34,12 +39,5 @@ class AuthRefreshAccessTokenTest extends AuthTest {
                             "Новый access_token не совпадает со старым"),
                     () -> assertEquals(userRefreshToken, newAccessToken.getRefreshToken(), "refresh_token был обновлен в базе"));
         });
-    }
-
-    @Test
-    @DisplayName("Пробный тест")
-    void f() {
-        var a = 1;
-        assertEquals(1, a);
     }
 }
