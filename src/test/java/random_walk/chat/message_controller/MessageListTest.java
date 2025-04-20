@@ -45,7 +45,7 @@ class MessageListTest extends ChatTest {
 
         var messageList = step(
                 "WHEN: Получаем список сообщений для чата %s по сообщению %s".formatted(chatId, message),
-                () -> chatApi.getChatMessageList(chatId, null, null, null, null, null, message));
+                () -> chatApi.getChatMessageList(chatId, null, null, 100, null, null, message));
 
         var messageListFilterByMessage = messageFunctions.getMessagesByChatId(chatId)
                 .stream()
@@ -53,7 +53,7 @@ class MessageListTest extends ChatTest {
                 .toList();
         assertAll(
                 "THEN: Проверяем содержимое ответа",
-                () -> checkPagination(messageList.getContent().size(), null, null, messageList.getPage()),
+                () -> checkPagination(messageListFilterByMessage.size(), null, 100, messageList.getPage()),
                 () -> checkMessageList(messageList.getContent(), messageListFilterByMessage));
     }
 
