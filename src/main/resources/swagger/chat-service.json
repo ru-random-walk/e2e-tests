@@ -222,7 +222,10 @@
             "content": {
               "*/*": {
                 "schema": {
-                  "$ref": "#/components/schemas/PagedModelChatDto"
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ChatDto"
+                  }
                 }
               }
             }
@@ -425,20 +428,13 @@
           "id": {
             "type": "string",
             "format": "uuid"
-          }
-        }
-      },
-      "PagedModelChatDto": {
-        "type": "object",
-        "properties": {
-          "content": {
+          },
+          "memberIds": {
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/ChatDto"
+              "type": "string",
+              "format": "uuid"
             }
-          },
-          "page": {
-            "$ref": "#/components/schemas/PageMetadata"
           }
         }
       }

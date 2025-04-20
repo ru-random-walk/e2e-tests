@@ -9,13 +9,16 @@ import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
 
 public class SslUtil {
-    public static void disableHttpCertificateVerification() throws Exception {
+    public static void disableHttpCertificateVerification() {
         TrustManager[] trustAllCerts = getTrustManager();
 
-        SSLContext sslContext = SSLContext.getInstance("SSL");
-        sslContext.init(null, trustAllCerts, new SecureRandom());
-        HttpsURLConnection.setDefaultSSLSocketFactory(sslContext.getSocketFactory());
-
+        try {
+            SSLContext sslContext = SSLContext.getInstance("SSL");
+            sslContext.init(null, trustAllCerts, new SecureRandom());
+            HttpsURLConnection.setDefaultSSLSocketFactory(sslContext.getSocketFactory());
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
         HostnameVerifier allHostsValid = (hostname, session) -> true;
         HttpsURLConnection.setDefaultHostnameVerifier(allHostsValid);
     }

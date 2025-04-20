@@ -18,7 +18,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static random_walk.asserts.PaginationAsserts.checkPagination;
 import static random_walk.automation.domain.enums.UserRoleEnum.AUTOTEST_USER;
 import static random_walk.automation.domain.enums.UserRoleEnum.TEST_USER;
-import static random_walk.automation.utils.DtoGeneratorUtils.generateUserDto;
+import static random_walk.automation.util.DtoGeneratorUtils.generateUserDto;
 
 class GetUsersTest extends AuthTest {
 

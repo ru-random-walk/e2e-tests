@@ -29,4 +29,21 @@ public class PaginationAsserts {
                                 metadata.getTotalPages(),
                                 (metadata.getTotalElements() + metadata.getSize() - 1) / metadata.getSize())));
     }
+
+    public static void checkPagination(Integer totalElements,
+                                       @Nullable Integer page,
+                                       @Nullable Integer size,
+                                       ru.random_walk.swagger.chat_service.model.PageMetadata metadata) {
+        Long expectedPage = page == null ? 0L : page.longValue();
+        Long expectedSize = size == null ? 20L : size.longValue();
+        step(
+                "Возвращенная информация о пагинации соответствует ожидаемой",
+                () -> assertAll(
+                        () -> assertEquals(expectedPage, metadata.getNumber()),
+                        () -> assertEquals(expectedSize, metadata.getSize()),
+                        () -> assertEquals(totalElements.longValue(), metadata.getTotalElements()),
+                        () -> assertEquals(
+                                metadata.getTotalPages(),
+                                (metadata.getTotalElements() + metadata.getSize() - 1) / metadata.getSize())));
+    }
 }

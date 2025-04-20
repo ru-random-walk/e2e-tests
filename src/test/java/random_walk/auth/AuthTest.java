@@ -3,11 +3,11 @@ package random_walk.auth;
 import org.junit.jupiter.api.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import random_walk.BaseTest;
-import random_walk.automation.api.auth.services.AuthServiceApi;
-import random_walk.automation.api.auth.services.GoogleAccessTokenApi;
-import random_walk.automation.databases.auth.functions.AuthUserFunctions;
+import random_walk.automation.api.auth.service.AuthServiceApi;
+import random_walk.automation.api.auth.service.GoogleAccessTokenApi;
+import random_walk.automation.database.auth.functions.AuthUserFunctions;
 
-@Tag("auth-e2e") // ./gradlew test -PincludeTags=<название_тега>
+@Tag("auth-e2e")
 public abstract class AuthTest extends BaseTest {
 
     @Autowired

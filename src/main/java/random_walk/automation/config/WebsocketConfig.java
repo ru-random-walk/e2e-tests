@@ -6,12 +6,14 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 
 @Data
-@NoArgsConstructor
 @Configuration
-@ConfigurationProperties("api")
-public class TestTokenConfig {
+@ConfigurationProperties("api.websocket")
+@NoArgsConstructor
+public class WebsocketConfig {
 
-    private String token;
+    private String url;
 
-    private String autotestToken;
+    private String messageEndpoint;
+
+    private String chatEndpoint;
 }
