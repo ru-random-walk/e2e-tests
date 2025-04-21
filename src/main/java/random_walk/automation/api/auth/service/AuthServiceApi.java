@@ -59,7 +59,7 @@ public class AuthServiceApi {
                 .userController();
         this.username = authServiceConfigurationProperties.username();
         this.password = authServiceConfigurationProperties.password();
-        this.token = testTokenConfig.getAutotestToken();
+        this.token = testTokenConfig.getToken();
     }
 
     @Step("/.well-knowm/openid-configuration")
