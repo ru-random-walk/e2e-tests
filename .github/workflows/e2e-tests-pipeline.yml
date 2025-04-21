@@ -52,6 +52,7 @@ jobs:
       GOOGLE_USER_EMAIL: ${{ secrets.GOOGLE_USER_EMAIL }}
       GOOGLE_USER_PASSWORD: ${{ secrets.GOOGLE_USER_PASSWORD }}
       TEST_TOKEN: ${{ secrets.TEST_TOKEN }}
+      AUTOTEST_TOKEN: ${{ secrets.AUTOTEST_TOKEN }}
 
     steps:
       - name: Checkout repository
