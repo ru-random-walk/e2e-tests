@@ -26,8 +26,8 @@ class PersonClubTest extends MatcherTest {
     @DisplayName("Получение информации о клубах пользователя")
     void getInfoAboutUserClubs() {
         var userUuid = step(
-                "GIVEN: Получена информация о пользователе с ролью AUTOTEST_USER",
-                () -> userConfigService.getUserByRole(UserRoleEnum.AUTOTEST_USER).getUuid());
+                "GIVEN: Получена информация о пользователе с ролью TEST_USER",
+                () -> userConfigService.getUserByRole(UserRoleEnum.TEST_USER).getUuid());
 
         var userClubs = step(
                 "WHEN: Получены клубы, в которых состоит пользователь",
