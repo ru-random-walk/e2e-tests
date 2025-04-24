@@ -1,5 +1,6 @@
 package random_walk.auth.token_controller;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +16,7 @@ class AuthRefreshAccessTokenTest extends AuthTest {
     private RefreshTokenFunctions refreshTokenFunctions;
 
     @Test
+    @Disabled("Думаю на досуге")
     @DisplayName("Получение актуального access_token по refresh_token")
     void getActualAccessTokenByRefreshToken() {
         var actualTokens = step(

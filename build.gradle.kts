@@ -6,7 +6,6 @@ plugins {
     id("com.diffplug.spotless") version "6.19.0"
     id("org.openapi.generator") version "4.3.0"
     id("io.spring.dependency-management") version "1.1.6"
-    id("io.qameta.allure") version "2.12.0"
 }
 
 group = "random-walk.automation"
@@ -42,7 +41,6 @@ dependencies {
     implementation("io.rest-assured:rest-assured")
     implementation("io.qameta.allure:allure-rest-assured:$allureVersion")
     implementation("io.qameta.allure:allure-junit5:$allureVersion")
-    implementation("org.aspectj:aspectjweaver:1.8.3")
     implementation("com.github.mwiede:jsch:0.2.17")
 
     implementation("org.springframework.boot:spring-boot-starter-data-jpa:$springVersion")
@@ -54,11 +52,12 @@ dependencies {
     implementation("org.springframework.retry:spring-retry:1.3.3")
     implementation("ch.qos.logback:logback-core:1.2.9")
     implementation("org.slf4j:slf4j-api")
+    implementation("ru.testit:testit-adapter-junit5:2.3.4")
 
     implementation("com.google.code.gson:gson:2.8.5")
     implementation("io.gsonfire:gson-fire:1.8.4")
 
-    implementation("io.qameta.allure:allure-java-commons:$allureVersion")
+    implementation("io.qameta.allure:allure-java-commons:2.27.0")
     implementation("org.awaitility:awaitility:4.2.0")
     implementation("org.apache.commons:commons-text:1.10.0")
     implementation("commons-codec:commons-codec:1.13")
@@ -70,7 +69,8 @@ dependencies {
     implementation("com.google.api-client:google-api-client:2.7.0")
     implementation("org.seleniumhq.selenium:selenium-java:4.26.0")
 
-    implementation("com.squareup.okio:okio:1.0.0")
+    implementation("com.squareup.okio:okio:3.0.0")
+    implementation("com.squareup.okhttp3:okhttp:4.11.0")
     implementation("io.swagger:swagger-annotations:1.6.1")
     implementation("io.swagger.codegen.v3:swagger-codegen:3.0.30")
 
@@ -84,8 +84,13 @@ dependencies {
     implementation("javax.annotation:javax.annotation-api:1.3.2")
     implementation("com.github.viclovsky:swagger-coverage-rest-assured:1.5.0")
 
+    testImplementation("org.aspectj:aspectjrt:1.9.22")
     testImplementation("org.junit.jupiter:junit-jupiter-api")
     testImplementation("org.junit.jupiter:junit-jupiter-engine")
+    testImplementation("org.junit.jupiter:junit-jupiter-params")
+    testImplementation("org.junit.platform:junit-platform-launcher:1.9.0")
+    testImplementation("org.aspectj:aspectjweaver:1.9.22")
+    implementation("ru.testit:testit-java-commons:2.3.4")
 }
 
 tasks.compileJava {
@@ -96,6 +101,7 @@ tasks.compileJava {
                 "generate_chat_service"
         )
     }
+    options.compilerArgs.add("-parameters")
 }
 tasks.bootJar {
     enabled = false
@@ -109,12 +115,19 @@ tasks.test {
     systemProperty("junit.jupiter.extensions.autodetection.enabled", "true")
     systemProperty("org.aspectj.weaver.Dump.exception", "false")
     systemProperty("user.timezone", "Europe/Moscow")
+    systemProperty("tmsUrl", "https://team-y7pi.testit.software")
+    systemProperty("tmsPrivateToken", "ZlJPWVRzZExIME5nbzQ3VzR0")
+    systemProperty("tmsProjectId", "01963448-e8d0-7699-8104-de8417ca27a7")
+    systemProperty("tmsConfigurationId", "01963448-e908-74f6-a9a3-1e6214c00622")
+    systemProperty("tmsAdapterMode", 1)
+    systemProperty("tmsTestRunName", "secondRegress")
+    systemProperty("tmsTestRunId", "252a3b2d-018a-49bb-b76a-e6f2289bf604")
     /**
      * Обязательно использование следующих правил
      * https://junit.org/junit5/docs/current/user-guide/#running-tests-tag-expressions
      *
      */
-    jvmArgs = listOf("-Xmx2g", "-Xms1g", "-Xss512k", "-Dfile.encoding=UTF-8", "-Dorg.aspectj.weaver.Dump.exception=false", "-Djavax.net.ssl.trustStoreType=jks", "-Djavax.net.ssl.trustStore=", "-Djavax.net.ssl.trustStorePassword=", "-Dorg.aspectj.weaver.loadtime.configuration=ignored")
+    jvmArgs = listOf("-Xmx2g", "-Xms1g", "-Xss512k", "-Dfile.encoding=UTF-8", "-Dorg.aspectj.weaver.Dump.exception=false", "-Djavax.net.ssl.trustStoreType=jks", "-Djavax.net.ssl.trustStore=", "-Djavax.net.ssl.trustStorePassword=")
     outputs.cacheIf { false }
     useJUnitPlatform {
 
@@ -127,6 +140,8 @@ tasks.test {
             excludeTags(excludedTags)
         }
     }
+
+    environment(System.getenv())
 }
 
 spotless {

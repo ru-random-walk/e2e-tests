@@ -51,4 +51,5 @@ spring:
     import: classpath:users.yml
 test-management-system:
   token: ZlJPWVRzZExIME5nbzQ3VzR0
+  conf_id: 01963448-e908-74f6-a9a3-1e6214c00622
 
