@@ -12,6 +12,7 @@ import random_walk.automation.database.chat.entities.Message;
 import random_walk.automation.database.chat.functions.ChatMembersFunctions;
 import random_walk.automation.domain.User;
 import random_walk.automation.domain.enums.UserRoleEnum;
+import random_walk.automation.service.ChatService;
 import random_walk.automation.websocket.WebsocketApi;
 import ru.random_walk.swagger.chat_service.model.MessageDtoPayload;
 
@@ -36,11 +37,16 @@ public abstract class ChatTest extends BaseTest {
     @Autowired
     private WebsocketApi websocketApi;
 
+    @Autowired
+    protected ChatService chatService;
+
     protected UUID chatId;
 
     protected User firstUser;
 
     protected User secondUser;
+
+    protected User thirdUser;
 
     private Boolean isCalled = false;
 
@@ -49,6 +55,7 @@ public abstract class ChatTest extends BaseTest {
         if (!isCalled) {
             firstUser = userConfigService.getUserByRole(UserRoleEnum.TEST_USER);
             secondUser = userConfigService.getUserByRole(UserRoleEnum.AUTOTEST_USER);
+            thirdUser = userConfigService.getUserByRole(UserRoleEnum.PERSONAL_ACCOUNT);
             chatId = chatMembersFunctions.getUsersChat(firstUser.getUuid(), secondUser.getUuid());
 
             if (chatId == null) {

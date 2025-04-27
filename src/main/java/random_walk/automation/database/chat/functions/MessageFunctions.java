@@ -21,4 +21,8 @@ public class MessageFunctions {
     public List<Message> getMessagesByChatId(UUID chatId) {
         return messageRepository.findAllByChatId(chatId);
     }
+
+    public void deleteMessagesByChatId(UUID chatId) {
+        messageRepository.deleteByChatId(chatId);
+    }
 }
