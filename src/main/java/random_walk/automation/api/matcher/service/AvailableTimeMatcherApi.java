@@ -29,7 +29,7 @@ public class AvailableTimeMatcherApi {
         this.api = ApiClient
                 .api(ApiClient.Config.apiConfig().reqSpecSupplier(getSupplierWithUri(properties.httpEndpoint().host())))
                 .availableTimeController();
-        this.token = testTokenConfig.getToken();
+        this.token = testTokenConfig.getAutotestToken();
     }
 
     @Step("[MATCHER_SERVICE: /available-time/{id}/change] Изменяем время для прогулок пользователя и запускаем поиск партнеров")
