@@ -5,8 +5,6 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 import ru.random_walk.swagger.matcher_service.model.LocationDto;
 
-import java.time.LocalDate;
-import java.time.OffsetTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -15,11 +13,11 @@ import java.util.UUID;
 @Accessors(chain = true)
 public class AddAvailableTimeRequest {
 
-    private LocalDate date;
+    private String date;
 
-    private OffsetTime timeFrom;
+    private String timeFrom;
 
-    private OffsetTime timeUntil;
+    private String timeUntil;
 
     private LocationDto location;
 
