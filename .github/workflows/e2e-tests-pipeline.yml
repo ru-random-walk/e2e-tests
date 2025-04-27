@@ -74,7 +74,6 @@ jobs:
           else
             ./gradlew test -PincludeTags=${{ github.event.inputs.testTag }} --no-daemon
           fi
-        continue-on-error: true
 
       - name: Generate test report
         uses: actions/upload-artifact@v4
