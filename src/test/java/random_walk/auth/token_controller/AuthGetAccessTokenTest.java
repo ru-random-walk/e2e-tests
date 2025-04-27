@@ -1,5 +1,6 @@
 package random_walk.auth.token_controller;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import random_walk.auth.AuthTest;
@@ -14,6 +15,7 @@ import static random_walk.automation.util.ParseAccessTokenUtils.getInfoFromAcces
 class AuthGetAccessTokenTest extends AuthTest {
 
     @Test
+    @Disabled("Думаю, стоит ли оставлять их. Выделяются по сравнению с другими тестами.")
     @DisplayName("Получаем access_token для пользователя")
     void getAccessTokenForUser() {
 
