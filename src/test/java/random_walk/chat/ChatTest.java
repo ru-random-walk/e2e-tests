@@ -10,6 +10,7 @@ import random_walk.automation.api.chat.model.PagedModelMessage;
 import random_walk.automation.api.chat.service.ChatApi;
 import random_walk.automation.database.chat.entities.Message;
 import random_walk.automation.database.chat.functions.ChatMembersFunctions;
+import random_walk.automation.database.chat.functions.MessageFunctions;
 import random_walk.automation.domain.User;
 import random_walk.automation.domain.enums.UserRoleEnum;
 import random_walk.automation.service.ChatService;
@@ -33,6 +34,9 @@ public abstract class ChatTest extends BaseTest {
 
     @Autowired
     private ChatMembersFunctions chatMembersFunctions;
+
+    @Autowired
+    private MessageFunctions messageFunctions;
 
     @Autowired
     private WebsocketApi websocketApi;
@@ -60,8 +64,11 @@ public abstract class ChatTest extends BaseTest {
 
             if (chatId == null) {
                 chatApi.createPrivateChatEvent(firstUser.getUuid(), secondUser.getUuid());
-                chatId = chatMembersFunctions.getUsersChat(firstUser.getUuid(), secondUser.getUuid());
+            } else if (messageFunctions.getMessagesByChatId(chatId).size() > 100) {
+                chatService.deleteChatBetweenUsers(firstUser.getUuid(), secondUser.getUuid());
+                chatApi.createPrivateChatEvent(firstUser.getUuid(), secondUser.getUuid());
             }
+            chatId = chatMembersFunctions.getUsersChat(firstUser.getUuid(), secondUser.getUuid());
 
             StompSession firstUserSession = websocketApi.connect(chatId, testTokenConfig.getToken());
             StompSession secondUserSession = websocketApi.connect(chatId, testTokenConfig.getAutotestToken());

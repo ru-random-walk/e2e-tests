@@ -2,6 +2,7 @@ package random_walk.automation.database.chat.functions;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import random_walk.automation.database.chat.entities.Chat;
 import random_walk.automation.database.chat.repos.ChatRepository;
 
@@ -18,6 +19,7 @@ public class ChatFunctions {
         return chatRepository.findAll();
     }
 
+    @Transactional(transactionManager = "chatTransactionManager")
     public void deleteByChatId(UUID chatId) {
         chatRepository.deleteById(chatId);
     }
