@@ -1,6 +1,7 @@
 package random_walk.automation.api.matcher.service;
 
 import io.qameta.allure.Step;
+import io.restassured.response.Response;
 import org.springframework.stereotype.Service;
 import random_walk.automation.api.matcher.MatcherConfigurationProperties;
 import random_walk.automation.api.matcher.model.AddAvailableTimeRequest;
@@ -13,6 +14,7 @@ import ru.random_walk.swagger.matcher_service.model.*;
 import java.time.LocalDate;
 import java.time.OffsetTime;
 import java.util.List;
+import java.util.Random;
 import java.util.UUID;
 
 import static io.restassured.RestAssured.given;
@@ -39,14 +41,14 @@ public class AvailableTimeMatcherApi {
     }
 
     @Step("[MATCHER_SERVICE: /available-time/add] Добавляем время для прогулок пользователя и запускаем поиск партнера")
-    public void addAvailableTime(UUID clubId) {
-        var timeFrom = OffsetTime.now().minusHours(3);
-        var timeUntil = OffsetTime.now();
+    public void addAvailableTime(UUID clubId, OffsetTime timeFrom, OffsetTime timeUntil, LocalDate date) {
+        var latitude = new Random().nextDouble(40, 60);
+        var longitude = new Random().nextDouble(40, 60);
         given().baseUri("https://random-walk.ru:44424/matcher")
                 .header("Content-Type", "application/json")
                 .header("Authorization", "Bearer " + token)
                 .body(
-                        new AddAvailableTimeRequest().setDate(LocalDate.now().toString())
+                        new AddAvailableTimeRequest().setDate(date.toString())
                                 .setTimeFrom(timeFrom.toString())
                                 .setTimeUntil(timeUntil.toString())
                                 .setClubsInFilter(List.of(clubId))
@@ -54,9 +56,13 @@ public class AvailableTimeMatcherApi {
                                         new LocationDto().city("Нижний Новгород")
                                                 .street("Б. Покровская")
                                                 .building("100/1")
-                                                .latitude(34.234234)
-                                                .longitude(47.341253)))
+                                                .latitude(latitude)
+                                                .longitude(longitude)))
                 .post("/available-time/add")
                 .andReturn();
+    }
+
+    public void deleteAvailableTime(UUID id) {
+        api.deleteAvailableTime().idPath(id).reqSpec(r -> r.addFilter(new BearerAuthToken(token))).execute(Response::andReturn);
     }
 }
