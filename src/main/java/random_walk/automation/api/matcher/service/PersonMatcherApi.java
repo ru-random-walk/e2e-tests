@@ -3,13 +3,13 @@ package random_walk.automation.api.matcher.service;
 import io.qameta.allure.Step;
 import org.springframework.stereotype.Service;
 import random_walk.automation.api.matcher.MatcherConfigurationProperties;
+import random_walk.automation.api.matcher.model.UserSchedule;
 import random_walk.automation.config.TestTokenConfig;
 import random_walk.automation.config.filter.BearerAuthToken;
 import ru.random_walk.swagger.matcher_service.api.PersonControllerApi;
 import ru.random_walk.swagger.matcher_service.invoker.ApiClient;
 import ru.random_walk.swagger.matcher_service.model.ClubDto;
 import ru.random_walk.swagger.matcher_service.model.PersonDto;
-import ru.random_walk.swagger.matcher_service.model.UserScheduleDto;
 
 import static random_walk.automation.config.SwaggerConfig.getSupplierWithUri;
 
@@ -28,10 +28,10 @@ public class PersonMatcherApi {
     }
 
     @Step("[MATCHER_SERVICE: /person/schedule] Получение информации о расписании пользователя")
-    public UserScheduleDto getInfoAboutSchedule() {
+    public UserSchedule[] getInfoAboutSchedule() {
         return api.getUserSchedule()
                 .reqSpec(r -> r.addFilter(new BearerAuthToken(token)))
-                .execute(r -> r.as(UserScheduleDto.class));
+                .execute(r -> r.as(UserSchedule[].class));
     }
 
     @Step("[MATCHER_SERVICE: /person/info] Получение информации о пользователе")
