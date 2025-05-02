@@ -72,6 +72,116 @@
         }
       }
     },
+    "/appointment/{appointmentId}/reject": {
+      "put": {
+        "tags": [
+          "appointment-controller"
+        ],
+        "summary": "Reject requested appointment",
+        "operationId": "rejectAppointment",
+        "parameters": [
+          {
+            "name": "appointmentId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorDto"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorDto"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/appointment/{appointmentId}/approve": {
+      "put": {
+        "tags": [
+          "appointment-controller"
+        ],
+        "summary": "Approve requested appointment",
+        "operationId": "approveAppointment",
+        "parameters": [
+          {
+            "name": "appointmentId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorDto"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorDto"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
     "/test/add-person": {
       "post": {
         "tags": [
@@ -132,16 +242,16 @@
         ],
         "description": "Create request for appointment",
         "operationId": "requestForAppointment",
-        "parameters": [
-          {
-            "name": "dto",
-            "in": "query",
-            "required": true,
-            "schema": {
-              "$ref": "#/components/schemas/RequestForAppointmentDto"
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RequestForAppointmentDto"
+              }
             }
-          }
-        ],
+          },
+          "required": true
+        },
         "responses": {
           "400": {
             "description": "Bad Request",

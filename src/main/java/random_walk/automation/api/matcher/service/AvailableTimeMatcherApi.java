@@ -14,7 +14,6 @@ import ru.random_walk.swagger.matcher_service.model.*;
 import java.time.LocalDate;
 import java.time.OffsetTime;
 import java.util.List;
-import java.util.Random;
 import java.util.UUID;
 
 import static io.restassured.RestAssured.given;
@@ -42,8 +41,8 @@ public class AvailableTimeMatcherApi {
 
     @Step("[MATCHER_SERVICE: /available-time/add] Добавляем время для прогулок пользователя и запускаем поиск партнера")
     public void addAvailableTime(UUID clubId, OffsetTime timeFrom, OffsetTime timeUntil, LocalDate date) {
-        var latitude = new Random().nextDouble(40, 60);
-        var longitude = new Random().nextDouble(40, 60);
+        var latitude = 56.304017;
+        var longitude = 43.982207;
         given().baseUri("https://random-walk.ru:44424/matcher")
                 .header("Content-Type", "application/json")
                 .header("Authorization", "Bearer " + token)

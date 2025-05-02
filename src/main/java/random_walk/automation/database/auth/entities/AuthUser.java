@@ -25,8 +25,6 @@ public class AuthUser {
 
     private String email;
 
-    private String password;
-
     private Boolean enabled;
 
     private String avatar;
