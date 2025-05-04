@@ -28,7 +28,7 @@ public class ChatApi {
 
     private final RestIntegrationTestControllerApi restIntegrationTestControllerApi;
 
-    private final String token;
+    private final TestTokenConfig testTokenConfig;
 
     public ChatApi(ChatConfigurationProperties properties, TestTokenConfig testTokenConfig) {
         this.restChatControllerApi = ApiClient
@@ -40,13 +40,13 @@ public class ChatApi {
         this.restIntegrationTestControllerApi = ApiClient
                 .api(ApiClient.Config.apiConfig().reqSpecSupplier(getSupplierWithUri(properties.httpEndpoint().host())))
                 .restIntegrationTestController();
-        this.token = testTokenConfig.getToken();
+        this.testTokenConfig = testTokenConfig;
     }
 
     @Step("[CHAT_SERVICE: /test/create-private-chat-event] Создаем чат между {firstMember} и {secondMember}")
     public void createPrivateChatEvent(UUID firstMember, UUID secondMember) {
         restIntegrationTestControllerApi.createChat()
-                .reqSpec(r -> r.addFilter(new BearerAuthToken(token)))
+                .reqSpec(r -> r.addFilter(new BearerAuthToken(testTokenConfig.getToken())))
                 .body(new CreatePrivateChatEvent().chatMember1(firstMember).chatMember2(secondMember))
                 .execute(ResponseOptions::andReturn);
     }
@@ -60,7 +60,32 @@ public class ChatApi {
                                                 @Nullable String sort,
                                                 @Nullable String message) {
         var getHistoryRequest = restMessageControllerApi.getHistory().reqSpec(r -> {
-            r.addFilter(new BearerAuthToken(token));
+            r.addFilter(new BearerAuthToken(testTokenConfig.getToken()));
+            if (size != null)
+                r.addQueryParam("size", size);
+            if (page != null)
+                r.addQueryParam("page", page);
+            if (sort != null)
+                r.addQueryParam("sort", sort);
+        }).chatIdQuery(chatId);
+        if (from != null)
+            getHistoryRequest.fromQuery(from.toString());
+        if (to != null)
+            getHistoryRequest.toQuery(to.toString());
+        if (message != null)
+            getHistoryRequest.messageQuery(message);
+        return getHistoryRequest.execute(r -> r.as(PagedModelMessage.class));
+    }
+
+    public PagedModelMessage getAutotestChatMessageList(UUID chatId,
+                                                        @Nullable LocalDateTime from,
+                                                        @Nullable LocalDateTime to,
+                                                        @Nullable Integer size,
+                                                        @Nullable Integer page,
+                                                        @Nullable String sort,
+                                                        @Nullable String message) {
+        var getHistoryRequest = restMessageControllerApi.getHistory().reqSpec(r -> {
+            r.addFilter(new BearerAuthToken(testTokenConfig.getAutotestToken()));
             if (size != null)
                 r.addQueryParam("size", size);
             if (page != null)
