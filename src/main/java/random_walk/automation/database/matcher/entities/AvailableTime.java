@@ -3,6 +3,7 @@ package random_walk.automation.database.matcher.entities;
 import com.vladmihalcea.hibernate.type.json.JsonBinaryType;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.experimental.Accessors;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
 
@@ -10,13 +11,11 @@ import java.time.LocalDate;
 import java.time.OffsetTime;
 import java.util.List;
 import java.util.UUID;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 @Data
 @Entity
+@Accessors(chain = true)
 @NoArgsConstructor
 @Table(name = "available_time")
 @TypeDef(name = "jsonb", typeClass = JsonBinaryType.class)
@@ -41,6 +40,7 @@ public class AvailableTime {
     @Column(name = "date", nullable = false)
     private LocalDate date;
 
+    @Column(name = "location")
     private String location;
 
     @Column(name = "search_area_meters")

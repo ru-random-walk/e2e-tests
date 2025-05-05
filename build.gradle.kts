@@ -57,6 +57,9 @@ dependencies {
 
     implementation("com.google.code.gson:gson:2.8.5")
     implementation("io.gsonfire:gson-fire:1.8.4")
+    implementation("mil.nga.sf:sf-wkt:1.2.3")
+    // https://mvnrepository.com/artifact/org.locationtech.jts/jts-core
+    implementation("org.locationtech.jts:jts-core:1.19.0")
 
     implementation("io.qameta.allure:allure-java-commons:$allureVersion")
     implementation("org.awaitility:awaitility:4.2.0")
