@@ -25,7 +25,7 @@ public class DefaultExceptionFilter implements Filter {
                            FilterableResponseSpecification responseSpec,
                            FilterContext ctx) {
         final Response response = ctx.next(requestSpec, responseSpec);
-        log.info("Response = {}", response.asString());
+        log.info("Response = {}, status code = {}", response.asString(), response.getStatusCode());
         DefaultErrorResponse errorResponse;
         if (response.getStatusCode() != 200) {
             try {
