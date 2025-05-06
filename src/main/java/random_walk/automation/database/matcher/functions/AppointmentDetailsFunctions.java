@@ -29,4 +29,8 @@ public class AppointmentDetailsFunctions {
                 .map(r -> r.setApproximateLocation(PointConverterUtils.convertToPoint(r.getApproximateLocation()).toString()))
                 .toList();
     }
+
+    public void deleteById(UUID id) {
+        appointmentDetailsRepository.deleteById(id);
+    }
 }
