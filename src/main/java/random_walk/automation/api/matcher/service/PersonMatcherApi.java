@@ -28,7 +28,7 @@ public class PersonMatcherApi {
     }
 
     @Step("[MATCHER_SERVICE: /person/schedule] Получение информации о расписании пользователя")
-    public UserSchedule[] getInfoAboutSchedule() {
+    public UserSchedule[] getInfoAboutSchedule(String token) {
         return api.getUserSchedule()
                 .reqSpec(r -> r.addFilter(new BearerAuthToken(token)))
                 .execute(r -> r.as(UserSchedule[].class));

@@ -8,6 +8,7 @@ import random_walk.BaseTest;
 import random_walk.automation.api.matcher.service.AvailableTimeMatcherApi;
 import random_walk.automation.database.matcher.functions.PersonClubFunctions;
 import random_walk.automation.domain.enums.UserRoleEnum;
+import random_walk.automation.service.MatcherService;
 import ru.random_walk.swagger.matcher_service.model.ClubDto;
 
 import java.time.LocalDate;
@@ -25,7 +26,13 @@ public class MatcherTest extends BaseTest {
     @Autowired
     protected AvailableTimeMatcherApi availableTimeMatcherApi;
 
+    @Autowired
+    protected MatcherService matcherService;
+
     private static Boolean isAvailableTimeCalled = false;
+
+    protected static final Double LATITUDE = 56.304017;
+    protected static final Double LONGITUDE = 43.982207;
 
     @BeforeAll
     public void addUserAvailableTime() {
@@ -38,7 +45,9 @@ public class MatcherTest extends BaseTest {
                         clubId,
                         offsetTime,
                         OffsetTime.of(23, 59, 0, offsetTime.getNano(), offsetTime.getOffset()),
-                        LocalDate.now());
+                        LocalDate.now(),
+                        LATITUDE,
+                        LONGITUDE);
             } catch (Exception ignored) {
             }
             try {
@@ -46,7 +55,9 @@ public class MatcherTest extends BaseTest {
                         clubId,
                         OffsetTime.of(12, 0, 0, offsetTime.getNano(), offsetTime.getOffset()),
                         OffsetTime.of(13, 0, 0, offsetTime.getNano(), offsetTime.getOffset()),
-                        LocalDate.now().plusDays(1));
+                        LocalDate.now().plusDays(1),
+                        LATITUDE,
+                        LONGITUDE);
             } catch (Exception ignored) {
             }
             isAvailableTimeCalled = true;

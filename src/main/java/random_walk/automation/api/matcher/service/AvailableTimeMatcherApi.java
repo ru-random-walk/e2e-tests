@@ -40,9 +40,12 @@ public class AvailableTimeMatcherApi {
     }
 
     @Step("[MATCHER_SERVICE: /available-time/add] Добавляем время для прогулок пользователя и запускаем поиск партнера")
-    public void addAvailableTime(UUID clubId, OffsetTime timeFrom, OffsetTime timeUntil, LocalDate date) {
-        var latitude = 56.304017;
-        var longitude = 43.982207;
+    public void addAvailableTime(UUID clubId,
+                                 OffsetTime timeFrom,
+                                 OffsetTime timeUntil,
+                                 LocalDate date,
+                                 Double latitude,
+                                 Double longitude) {
         given().baseUri("https://random-walk.ru:44424/matcher")
                 .header("Content-Type", "application/json")
                 .header("Authorization", "Bearer " + token)

@@ -39,7 +39,7 @@ class PersonScheduleTest extends MatcherTest {
     void getPersonScheduleTest() {
         var testUserInfo = userConfigService.getUserByRole(UserRoleEnum.TEST_USER);
 
-        var personSchedule = Arrays.stream(personMatcherApi.getInfoAboutSchedule()).toList();
+        var personSchedule = Arrays.stream(personMatcherApi.getInfoAboutSchedule(testTokenConfig.getToken())).toList();
 
         personSchedule.forEach(availableTime -> {
             var timeFrames = availableTimeFunctions
