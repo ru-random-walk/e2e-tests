@@ -30,4 +30,8 @@ public class AvailableTimeFunctions {
                 .map(r -> r.setLocation(PointConverterUtils.convertToPoint(r.getLocation()).toString()))
                 .toList();
     }
+
+    public List<AvailableTime> getAllAvailableTime() {
+        return availableTimeRepository.findAll();
+    }
 }
