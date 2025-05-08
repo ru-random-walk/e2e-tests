@@ -1,6 +1,7 @@
 package random_walk.automation.database.chat.functions;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.NotFoundException;
 import org.springframework.stereotype.Service;
 import random_walk.automation.database.chat.entities.ChatMembers;
@@ -12,6 +13,7 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class ChatMembersFunctions {
 
     private final ChatMembersRepository chatMembersRepository;
@@ -43,6 +45,7 @@ public class ChatMembersFunctions {
                 .orElseThrow(
                         () -> new NotFoundException(
                                 "Не найден общий чат для пользователей %s и %s".formatted(firstUser, secondUser)));
+        log.info("Удаляем чат {} для переданных пользователей", chatId);
         chatMembersRepository.deleteByChatId(chatId);
         return chatId;
     }

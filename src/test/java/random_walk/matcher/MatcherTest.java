@@ -42,6 +42,7 @@ public class MatcherTest extends BaseTest {
                     .get(0);
             try {
                 availableTimeMatcherApi.addAvailableTime(
+                        testTokenConfig.getToken(),
                         clubId,
                         offsetTime,
                         OffsetTime.of(23, 59, 0, offsetTime.getNano(), offsetTime.getOffset()),
@@ -52,6 +53,7 @@ public class MatcherTest extends BaseTest {
             }
             try {
                 availableTimeMatcherApi.addAvailableTime(
+                        testTokenConfig.getToken(),
                         clubId,
                         OffsetTime.of(12, 0, 0, offsetTime.getNano(), offsetTime.getOffset()),
                         OffsetTime.of(13, 0, 0, offsetTime.getNano(), offsetTime.getOffset()),
