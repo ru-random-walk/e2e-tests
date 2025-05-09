@@ -5,8 +5,10 @@ import org.hamcrest.Matchers;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import random_walk.automation.database.chat.functions.ChatMembersFunctions;
+import random_walk.automation.database.matcher.entities.prkeys.DayLimitPK;
 import random_walk.automation.database.matcher.functions.AppointmentFunctions;
 import random_walk.automation.database.matcher.functions.AvailableTimeFunctions;
+import random_walk.automation.database.matcher.functions.DayLimitFunctions;
 import random_walk.automation.domain.enums.UserRoleEnum;
 import random_walk.automation.service.ChatService;
 import random_walk.matcher.MatcherTest;
@@ -19,7 +21,6 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.notNullValue;
 
-@Disabled("Алгоритм исправил, но перестала назначаться встреча, отпишу Никите")
 class CreateChatAfterAppointmentRequestTest extends MatcherTest {
 
     @Autowired
@@ -34,6 +35,9 @@ class CreateChatAfterAppointmentRequestTest extends MatcherTest {
     @Autowired
     private AppointmentFunctions appointmentFunctions;
 
+    @Autowired
+    private DayLimitFunctions dayLimitFunctions;
+
     @BeforeAll
     void deleteAvailableTimeAndUserAppointments() {
         var autotestUserId = userConfigService.getUserByRole(UserRoleEnum.AUTOTEST_USER).getUuid();
@@ -47,7 +51,8 @@ class CreateChatAfterAppointmentRequestTest extends MatcherTest {
         if (!appointmentIds.isEmpty()) {
             appointmentIds.forEach(appointmentId -> matcherService.deleteAppointmentRequest(appointmentId));
         }
-
+        dayLimitFunctions.setDayLimitByDateAndPersonId(new DayLimitPK().setDate(LocalDate.now()).setPersonId(testUserId));
+        dayLimitFunctions.setDayLimitByDateAndPersonId(new DayLimitPK().setDate(LocalDate.now()).setPersonId(autotestUserId));
     }
 
     @Test
@@ -78,6 +83,13 @@ class CreateChatAfterAppointmentRequestTest extends MatcherTest {
                 "Проверяем, что чат был создан",
                 chatMembersFunctions.getUsersChat(autotestUserId, testUserId),
                 notNullValue());
+    }
+
+    @Test
+    void f() {
+        dayLimitFunctions.setDayLimitByDateAndPersonId(
+                new DayLimitPK().setDate(LocalDate.now())
+                        .setPersonId(userConfigService.getUserByRole(UserRoleEnum.TEST_USER).getUuid()));
     }
 
     @AfterEach
