@@ -1,6 +1,5 @@
 package random_walk.matcher.job;
 
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +13,6 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.everyItem;
 import static org.hamcrest.Matchers.greaterThanOrEqualTo;
 
-@Disabled("Джоба не отработала, видимо, проблемы с матчером, спрошу у Никиты")
 class DeletePastAvailableTimeJobTest extends MatcherTest {
 
     @Autowired
