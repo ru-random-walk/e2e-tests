@@ -34,4 +34,8 @@ public class AvailableTimeFunctions {
     public void deleteUserAvailableTime(UUID personId) {
         availableTimeRepository.deleteByPersonId(personId);
     }
+
+    public List<AvailableTime> getAllAvailableTime() {
+        return availableTimeRepository.findAll();
+    }
 }
