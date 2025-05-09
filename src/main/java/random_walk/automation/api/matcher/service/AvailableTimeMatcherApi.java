@@ -40,7 +40,8 @@ public class AvailableTimeMatcherApi {
     }
 
     @Step("[MATCHER_SERVICE: /available-time/add] Добавляем время для прогулок пользователя и запускаем поиск партнера")
-    public void addAvailableTime(UUID clubId,
+    public void addAvailableTime(String token,
+                                 UUID clubId,
                                  OffsetTime timeFrom,
                                  OffsetTime timeUntil,
                                  LocalDate date,

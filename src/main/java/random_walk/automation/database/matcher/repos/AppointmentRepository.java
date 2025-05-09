@@ -16,4 +16,6 @@ public interface AppointmentRepository extends JpaRepository<Appointment, Appoin
     void deleteByAppointmentId(UUID appointmentId);
 
     List<Appointment> findByAppointmentId(UUID appointmentId);
+
+    List<Appointment> findAllByPersonId(UUID personId);
 }

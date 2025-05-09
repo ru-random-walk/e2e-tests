@@ -72,6 +72,7 @@ dependencies {
 
     implementation("com.google.api-client:google-api-client:2.7.0")
     implementation("org.seleniumhq.selenium:selenium-java:4.26.0")
+    testImplementation("org.awaitility:awaitility:4.3.0")
 
     implementation("com.squareup.okio:okio:1.0.0")
     implementation("io.swagger:swagger-annotations:1.6.1")

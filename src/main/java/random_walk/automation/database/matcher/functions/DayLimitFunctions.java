@@ -15,4 +15,8 @@ public class DayLimitFunctions {
     public DayLimit getById(DayLimitPK dayLimitPK) {
         return dayLimitRepository.findById(dayLimitPK).orElse(null);
     }
+
+    public void setDayLimitByDateAndPersonId(DayLimitPK dayLimitPK) {
+        dayLimitRepository.setDayLimitById(dayLimitPK);
+    }
 }
