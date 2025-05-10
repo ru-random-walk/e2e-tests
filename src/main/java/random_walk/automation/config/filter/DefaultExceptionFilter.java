@@ -30,6 +30,7 @@ public class DefaultExceptionFilter implements Filter {
         if (response.getStatusCode() != 200) {
             try {
                 errorResponse = new ObjectMapper().readValue(response.asString(), DefaultErrorResponse.class);
+                errorResponse.setStatus(response.getStatusCode());
             } catch (JsonProcessingException ex) {
                 throw new RuntimeException(ex.getMessage());
             }

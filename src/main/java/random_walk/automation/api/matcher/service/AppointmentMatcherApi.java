@@ -33,8 +33,11 @@ public class AppointmentMatcherApi {
     }
 
     @Step("[MATCHER_SERVICE: /appointment/{appointmentId}/cancel] Отмена назначенной встречи")
-    public void cancelAppointmentById(String appointmentId, String token) {
-        api.cancelAppointment().reqSpec(r -> r.addFilter(new BearerAuthToken(token))).appointmentIdPath(appointmentId);
+    public void cancelAppointment(UUID appointmentId, String token) {
+        api.cancelAppointment()
+                .reqSpec(r -> r.addFilter(new BearerAuthToken(token)))
+                .appointmentIdPath(appointmentId)
+                .execute(Response::andReturn);
     }
 
     public void approveAppointment(UUID appointmentId, String token) {

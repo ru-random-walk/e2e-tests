@@ -85,13 +85,6 @@ class CreateChatAfterAppointmentRequestTest extends MatcherTest {
                 notNullValue());
     }
 
-    @Test
-    void f() {
-        dayLimitFunctions.setDayLimitByDateAndPersonId(
-                new DayLimitPK().setDate(LocalDate.now())
-                        .setPersonId(userConfigService.getUserByRole(UserRoleEnum.TEST_USER).getUuid()));
-    }
-
     @AfterEach
     public void deleteAppointment() {
         var testUserId = userConfigService.getUserByRole(UserRoleEnum.TEST_USER).getUuid();
