@@ -2,6 +2,7 @@ package random_walk.matcher.appointment_controller;
 
 import org.awaitility.Awaitility;
 import org.hamcrest.Matchers;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -106,5 +107,13 @@ public class CancelAppointmentTest extends MatcherTest {
         var errorMessage = "Access is forbidden";
 
         checkError(notFoundError, errorCode, errorMessage);
+    }
+
+    @AfterEach
+    public void deleteAvailableTime() {
+        try {
+            availableTimeFunctions.deleteUserAvailableTime(userConfigService.getUserByRole(UserRoleEnum.AUTOTEST_USER).getUuid());
+        } catch (Exception ignored) {
+        }
     }
 }
