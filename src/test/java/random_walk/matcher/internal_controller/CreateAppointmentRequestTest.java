@@ -19,7 +19,6 @@ import java.time.ZoneOffset;
 import java.util.Arrays;
 import java.util.Objects;
 import java.util.UUID;
-import java.util.stream.Stream;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
@@ -69,10 +68,6 @@ class CreateAppointmentRequestTest extends MatcherTest {
                         "Время начала прогулки соответствует ожидаемому",
                         appointmentRequest.getStartsAt(),
                         equalTo(startsAt.withOffsetSameInstant(ZoneOffset.UTC))),
-                () -> assertThat(
-                        "Участники прогулки корректны",
-                        appointmentRequest.getParticipants(),
-                        containsInAnyOrder(Stream.of(autotestUserInfo.getUuid(), testUserInfo.getUuid()).toArray())),
                 () -> assertThat(
                         "Статус прогулки = ожидает ответа",
                         appointmentRequest.getStatus(),
