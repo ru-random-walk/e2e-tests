@@ -91,13 +91,13 @@ class ApproveAppointmentTest extends MatcherTest {
 
         appointmentId = appointmentRequest.getId();
 
-        appointmentMatcherApi.cancelAppointment(appointmentRequest.getId(), testTokenConfig.getToken());
+        appointmentMatcherApi.rejectAppointment(appointmentRequest.getId(), testTokenConfig.getToken());
 
         var approveCancelledAppointmentError = toDefaultErrorResponse(
                 () -> appointmentMatcherApi.approveAppointment(appointmentRequest.getId(), testTokenConfig.getToken()));
 
-        var errorCode = 404;
-        var errorMessage = "Appointment with id %s does not exist".formatted(appointmentId);
+        var errorCode = 400;
+        var errorMessage = "Appointment is not requested";
 
         checkError(approveCancelledAppointmentError, errorCode, errorMessage);
     }
