@@ -7,7 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import random_walk.automation.api.matcher.service.AppointmentMatcherApi;
 import random_walk.automation.api.matcher.service.InternalMatcherApi;
 import random_walk.automation.api.matcher.service.PersonMatcherApi;
-import random_walk.automation.database.matcher.functions.AppointmentFunctions;
 import random_walk.automation.domain.enums.UserRoleEnum;
 import random_walk.matcher.MatcherTest;
 
@@ -30,9 +29,6 @@ class ApproveAppointmentTest extends MatcherTest {
 
     @Autowired
     private AppointmentMatcherApi appointmentMatcherApi;
-
-    @Autowired
-    private AppointmentFunctions appointmentFunctions;
 
     @Autowired
     private PersonMatcherApi personMatcherApi;
@@ -95,13 +91,13 @@ class ApproveAppointmentTest extends MatcherTest {
 
         appointmentId = appointmentRequest.getId();
 
-        appointmentMatcherApi.cancelAppointment(appointmentRequest.getId(), testTokenConfig.getToken());
+        appointmentMatcherApi.rejectAppointment(appointmentRequest.getId(), testTokenConfig.getToken());
 
         var approveCancelledAppointmentError = toDefaultErrorResponse(
                 () -> appointmentMatcherApi.approveAppointment(appointmentRequest.getId(), testTokenConfig.getToken()));
 
-        var errorCode = 404;
-        var errorMessage = "Appointment with id %s does not exist".formatted(appointmentId);
+        var errorCode = 400;
+        var errorMessage = "Appointment is not requested";
 
         checkError(approveCancelledAppointmentError, errorCode, errorMessage);
     }
@@ -152,7 +148,7 @@ class ApproveAppointmentTest extends MatcherTest {
     @AfterEach
     void deleteAppointment() {
         if (appointmentId != null) {
-            appointmentFunctions.deleteByAppointmentId(appointmentId);
+            matcherService.deleteAppointmentRequest(appointmentId);
             appointmentId = null;
         }
     }

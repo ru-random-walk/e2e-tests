@@ -6,7 +6,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import random_walk.automation.api.matcher.service.AppointmentMatcherApi;
 import random_walk.automation.api.matcher.service.InternalMatcherApi;
-import random_walk.automation.database.matcher.functions.AppointmentFunctions;
 import random_walk.automation.domain.enums.UserRoleEnum;
 import random_walk.matcher.MatcherTest;
 
@@ -23,9 +22,6 @@ class RejectAppointmentTest extends MatcherTest {
 
     @Autowired
     private AppointmentMatcherApi appointmentMatcherApi;
-
-    @Autowired
-    private AppointmentFunctions appointmentFunctions;
 
     private UUID appointmentId;
 
@@ -99,7 +95,7 @@ class RejectAppointmentTest extends MatcherTest {
     @AfterEach
     void deleteAppointment() {
         if (appointmentId != null) {
-            appointmentFunctions.deleteByAppointmentId(appointmentId);
+            matcherService.deleteAppointmentRequest(appointmentId);
             appointmentId = null;
         }
     }
