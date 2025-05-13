@@ -35,6 +35,10 @@ public class AvailableTimeFunctions {
         availableTimeRepository.deleteByPersonId(personId);
     }
 
+    public void deleteById(UUID id) {
+        availableTimeRepository.deleteById(id);
+    }
+
     public List<AvailableTime> getAllAvailableTime() {
         return availableTimeRepository.findAll();
     }

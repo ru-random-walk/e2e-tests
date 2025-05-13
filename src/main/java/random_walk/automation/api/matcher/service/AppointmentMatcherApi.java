@@ -25,7 +25,7 @@ public class AppointmentMatcherApi {
     }
 
     @Step("[MATCHER_SERVICE: /appointment/{appointmentId}] Получение деталей встречи по id")
-    public AppointmentDetailsDto getInfoByAppointment(String appointmentId, String token) {
+    public AppointmentDetailsDto getInfoByAppointment(UUID appointmentId, String token) {
         return api.getAppointment()
                 .reqSpec(r -> r.addFilter(new BearerAuthToken(token)))
                 .appointmentIdPath(appointmentId)

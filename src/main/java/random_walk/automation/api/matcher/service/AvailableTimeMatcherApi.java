@@ -34,9 +34,31 @@ public class AvailableTimeMatcherApi {
     }
 
     @Step("[MATCHER_SERVICE: /available-time/{id}/change] Изменяем время для прогулок пользователя и запускаем поиск партнеров")
-    public void changeAvailableTime(String id, LocalDate date) {
-        api.changeSchedule().reqSpec(r -> r.addFilter(new BearerAuthToken(token))).idPath(id);
-        // .body(new AvailableTimeModifyDto().date(date).)
+    public void changeAvailableTime(String token,
+                                    UUID appointmentId,
+                                    UUID clubId,
+                                    OffsetTime timeFrom,
+                                    OffsetTime timeUntil,
+                                    LocalDate date,
+                                    Double latitude,
+                                    Double longitude) {
+        given().baseUri("https://random-walk.ru:44424/matcher")
+                .header("Content-Type", "application/json")
+                .header("Authorization", "Bearer " + token)
+                .body(
+                        new AddAvailableTimeRequest().setDate(date.toString())
+                                .setTimeFrom(timeFrom.toString())
+                                .setTimeUntil(timeUntil.toString())
+                                .setClubsInFilter(List.of(clubId))
+                                .setLocation(
+                                        new LocationDto().city("Нижний Новгород")
+                                                .street("Б. Покровская")
+                                                .building("100/1")
+                                                .latitude(latitude)
+                                                .longitude(longitude)))
+                .pathParam("id", appointmentId)
+                .put("/available-time/{id}/change")
+                .andReturn();
     }
 
     @Step("[MATCHER_SERVICE: /available-time/add] Добавляем время для прогулок пользователя и запускаем поиск партнера")
