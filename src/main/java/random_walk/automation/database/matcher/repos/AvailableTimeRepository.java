@@ -18,4 +18,8 @@ public interface AvailableTimeRepository extends JpaRepository<AvailableTime, UU
     @Transactional(transactionManager = "matcherTransactionManager")
     @Modifying
     void deleteByPersonId(UUID personId);
+
+    @Transactional(transactionManager = "matcherTransactionManager")
+    @Modifying
+    void deleteById(UUID id);
 }

@@ -6,6 +6,9 @@ import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.io.ParseException;
 import org.locationtech.jts.io.WKBReader;
 
+import java.util.Arrays;
+import java.util.List;
+
 import static ch.qos.logback.core.encoder.ByteArrayUtil.hexStringToByteArray;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
@@ -30,5 +33,9 @@ public class PointConverterUtils {
         catch (ParseException e) {
             throw new IllegalArgumentException("Invalid Point format: " + dbData, e);
         }
+    }
+
+    public static List<Double> getPointCoordinatesFromString(String point) {
+        return Arrays.stream(point.replace("POINT (", "").replace(")", "").split(" ")).map(Double::parseDouble).toList();
     }
 }
