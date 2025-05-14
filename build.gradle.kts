@@ -7,6 +7,7 @@ plugins {
     id("org.openapi.generator") version "4.3.0"
     id("io.spring.dependency-management") version "1.1.6"
     id("io.qameta.allure") version "2.12.0"
+    id("io.github.kobylynskyi.graphql.codegen") version "5.0.0"
 }
 
 group = "random-walk.automation"
@@ -26,9 +27,12 @@ sourceSets {
     main {
         java {
             srcDir("$buildDir/generated/sources/openapi/src/main/java")
+            srcDir("$buildDir/generated/sources/graphql")
+            //srcDir("$buildDir/generated/sources/graphql/club_service_graphql")
         }
     }
 }
+
 apply {
     from("openapi.gradle.kts")
 }
@@ -90,6 +94,7 @@ dependencies {
 
     testImplementation("org.junit.jupiter:junit-jupiter-api")
     testImplementation("org.junit.jupiter:junit-jupiter-engine")
+    implementation("io.github.kobylynskyi:graphql-java-codegen:5.0.0")
 }
 
 tasks.compileJava {
@@ -100,6 +105,7 @@ tasks.compileJava {
                 "generate_chat_service"
         )
     }
+    dependsOn("graphqlCodegen")
 }
 tasks.bootJar {
     enabled = false
@@ -107,6 +113,16 @@ tasks.bootJar {
 tasks.clean {
     delete("$rootDir/allure-results")
     delete("$rootDir/out")
+}
+tasks.graphqlCodegen {
+    graphqlSchemas.includePattern = "schema\\.graphqls"
+    outputDir = file("$buildDir/generated/sources/graphql")
+    apiPackageName = "club_service.graphql.api"
+    modelPackageName = "club_service.graphql.model"
+
+    generateApis = true
+    generateClient = true
+    generateBuilder = true
 }
 tasks.test {
 
