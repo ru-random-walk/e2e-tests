@@ -1,0 +1,255 @@
+enum MemberRole {
+    ADMIN
+    USER
+    INSPECTOR
+}
+
+enum UserGroupRole {
+    ADMIN
+    INSPECTOR
+    MEMBER
+    PENDING_APPROVAL
+}
+
+enum ApprovementType {
+    MEMBERS_CONFIRM
+    FORM
+}
+
+enum AnswerType {
+    MULTIPLE
+    SINGLE
+}
+
+enum AnswerStatus {
+    # The answer was created, but not sent
+    CREATED
+    # The answer has been sent for review
+    SENT
+    # The answer in progress for checking answer options
+    IN_PROGRESS
+    # The answer in review and waiting for manual approve or reject
+    IN_REVIEW
+    # The answer was reviewed with failed result
+    FAILED
+    # The answer was reviewed with passed result
+    PASSED
+}
+
+enum ConfirmationStatus {
+    WAITING
+    APPLIED
+    REJECTED
+}
+
+input MembersConfirmInput {
+    requiredConfirmationNumber: Int! @Min(value: 1, message: "requiredConfirmationNumber must be bigger or equals than 1")
+    approversToNotifyCount: Int @Min(value: 1, message: "approversToNotifyCount must be bigger or equals than 1")
+}
+
+input FormInput {
+    questions: [QuestionInput!]!
+}
+
+input QuestionInput @ValidQuestion {
+    text: String! @Size(max: 200, message: "text size must be less or equals 200")
+    answerOptions: [String!]! @ContainerSize(min: 1, max: 10, message: "answerOptions size must be between 1 and 10")
+    answerType: AnswerType!
+    correctOptionNumbers: [Int!]! @ContainerSize(min: 1, max: 10, message: "answerOptions size must be between 1 and 10")
+}
+
+input FormAnswerInput {
+    questionAnswers: [QuestionAnswerInput!]!
+}
+
+input QuestionAnswerInput {
+    optionNumbers: [Int!]!
+}
+
+input PhotoInput {
+    base64: String!
+}
+
+input RegisteredUserInfoEvent {
+    id: ID!
+    fullName: String!
+}
+
+type Mutation {
+    # Club mutations
+    createClub(name: String!, description: String): Club!
+    createClubWithMembersConfirmApprovement(name: String!, description: String, membersConfirm: MembersConfirmInput! @ValidMembersConfirm): Club!
+    createClubWithFormApprovement(name: String!, description: String, form: FormInput!): Club!
+    removeClubWithAllItsData(clubId: ID!): ID!
+    uploadPhotoForClub(clubId: ID!, photo: PhotoInput!): PhotoUrl!
+    removeClubPhoto(clubId: ID!): Club!
+
+    # Approvement mutations
+    addClubApprovementMembersConfirm(clubId: ID!, membersConfirm: MembersConfirmInput! @ValidMembersConfirm): Approvement!
+    addClubApprovementForm(clubId: ID!, form: FormInput!): Approvement!
+
+    updateClubApprovementMembersConfirm(approvementId: ID!, membersConfirm: MembersConfirmInput! @ValidMembersConfirm): Approvement!
+    updateClubApprovementForm(approvementId: ID!, form: FormInput!): Approvement!
+
+    removeClubApprovement(approvementId: ID!): ID!
+
+    # Member mutations
+    changeMemberRole(clubId: ID!, memberId: ID!, role: MemberRole!): Member!
+    removeMemberFromClub(clubId: ID!, memberId: ID!): ID!
+    addMemberInClub(clubId: ID!, memberId: ID!): Member!
+
+    # Answer mutations
+    createApprovementAnswerMembersConfirm(approvementId: ID!): Answer!
+    createApprovementAnswerForm(approvementId: ID!, formAnswer: FormAnswerInput!): Answer!
+
+    updateAnswerForm(answerId: ID!, formAnswer: FormAnswerInput!): Answer!
+
+    setAnswerStatusToSent(answerId: ID!): Answer!
+
+    # Confirmation mutations
+    tryJoinInClub(userId: ID!, clubId: ID!): Member!
+    approveConfirmation(confirmationId: ID!): Confirmation!
+    rejectConfirmation(confirmationId: ID!): Confirmation!
+
+    # Test event contract handlers (only with TEST role and testing purposes)
+    listenRegisteredUserInfoEvent(event: RegisteredUserInfoEvent!): ID!
+}
+
+input PaginationInput {
+    page: Int! @Min(value: 0, message: "page for PaginationInput must be bigger than 0")
+    size: Int! @Range(min: 1, max: 30, message: "size for PaginationInput must be in range from 1 to 30")
+}
+
+type Query {
+    # Club queries
+    getClub(clubId: ID!, membersPagination: PaginationInput): Club
+    getClubPhoto(clubId: ID!): PhotoUrl!
+
+    # User queries
+    getUserClubs(userId: ID!, pagination: PaginationInput): [Club!]!
+    getUserAnswers(userId: ID!, pagination: PaginationInput): [Answer!]!
+    getUserClubsWithRole(userId: ID!): [ClubWithUserRole!]!
+
+    # Confirmation queries
+    getMyWaitingConfirmations(userId: ID!, pagination: PaginationInput): [Confirmation!]!
+    getApproverWaitingConfirmations(approverId: ID!, pagination: PaginationInput): [Confirmation!]!
+}
+
+type Club {
+    id: ID!
+    name: String!
+    description: String
+    members: [Member!]!
+    approvements: [Approvement!]!
+    approversNumber: Int!
+    photoVersion: Int
+}
+
+type ClubWithUserRole {
+    club: Club!
+    userRole: UserGroupRole!
+}
+
+type Member {
+    id: ID!
+    role: MemberRole!
+}
+
+type Approvement {
+    id: ID!
+    club: Club!
+    type: ApprovementType!
+    data: ApprovementData!
+}
+
+union ApprovementData = MembersConfirmApprovementData | FormApprovementData
+
+type MembersConfirmApprovementData {
+    requiredConfirmationNumber: Int!
+    approversToNotifyCount: Int
+}
+
+type FormApprovementData {
+    questions: [Question!]!
+}
+
+type Question {
+    text: String!
+    answerOptions: [String!]!
+    answerType: AnswerType!
+    correctOptionNumbers: [Int!]!
+}
+
+type Answer {
+    id: ID!
+    approvement: Approvement!
+    userId: ID!
+    data: AnswerData!
+    status: AnswerStatus!
+}
+
+union AnswerData = MembersConfirmAnswerData | FormAnswerData
+
+type MembersConfirmAnswerData {
+    actualConfirmationNumber: Int
+}
+
+type FormAnswerData {
+    questionAnswers: [QuestionAnswer!]!
+}
+
+type QuestionAnswer {
+    optionNumbers: [Int!]!
+}
+
+type Confirmation {
+    id: ID!
+    approverId: ID!
+    userId: ID!
+    status: ConfirmationStatus!
+    answer: Answer
+}
+
+type PhotoUrl {
+    clubId: ID!
+    url: String!
+    expiresInMinutes: Int!
+}
+
+directive @Max(
+    value : Int! = 2147483647
+    message : String = "graphql.validation.Max.message"
+) on ARGUMENT_DEFINITION | INPUT_FIELD_DEFINITION
+
+directive @Min(
+    value : Int! = 0
+    message : String = "graphql.validation.Min.message"
+) on ARGUMENT_DEFINITION | INPUT_FIELD_DEFINITION
+
+directive @Range(
+    min : Int = 0
+    max : Int = 2147483647
+    message : String = "graphql.validation.Range.message"
+) on ARGUMENT_DEFINITION | INPUT_FIELD_DEFINITION
+
+directive @Size(
+    min : Int = 0
+    max : Int = 2147483647
+    message : String = "graphql.validation.Size.message"
+) on ARGUMENT_DEFINITION | INPUT_FIELD_DEFINITION
+
+directive @ContainerSize(
+    min : Int = 0
+    max : Int = 2147483647
+    message : String = "graphql.validation.ContainerSize.message"
+) on ARGUMENT_DEFINITION | INPUT_FIELD_DEFINITION
+
+# Valid question:
+# - Has fields answerOptions: [String!]!, answerType: AnswerType! and correctOptionNumbers: [Int!]!
+# - Answer type matches with correct option numbers size
+# - Answer options matches with correct option numbers indices
+directive @ValidQuestion on INPUT_OBJECT
+
+# Valid Members confirm:
+# - approversToNotifyCount must be bigger or equals than requiredConfirmationNumber
+directive @ValidMembersConfirm on ARGUMENT_DEFINITION
