@@ -43,6 +43,9 @@ api:
   chat-service:
     http-endpoint:
       host: https://random-walk.ru:44424/chat
+  graphql:
+    base-uri: https://random-walk.ru:44424
+    request-path: /graphql
   google-oauth2:
     email: ${GOOGLE_USER_EMAIL}
     password: ${GOOGLE_USER_PASSWORD}

@@ -3,6 +3,7 @@ package random_walk.asserts;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import random_walk.automation.exception.model.DefaultErrorResponse;
+import random_walk.automation.exception.model.DefaultGraphqlErrorResponse;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
@@ -17,6 +18,20 @@ public class ErrorAsserts {
                 () -> assertThat(
                         "Сообщение об ошибке соответствует ожидаемому",
                         errorResponse.getMessage(),
+                        equalTo(errorMessage)));
+    }
+
+    public static void checkGraphqlError(DefaultGraphqlErrorResponse defaultGraphqlErrorResponse,
+                                         String classification,
+                                         String errorMessage) {
+        assertAll(
+                () -> assertThat(
+                        "Тип ошибки соответствует ожидаемому",
+                        defaultGraphqlErrorResponse.getExtensions().getClassification(),
+                        equalTo(classification)),
+                () -> assertThat(
+                        "Сообщение об ошибке соответствует ожидаемому",
+                        defaultGraphqlErrorResponse.getMessage(),
                         equalTo(errorMessage)));
     }
 }

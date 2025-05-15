@@ -1,33 +1,50 @@
 package random_walk.automation.api.club.services;
 
-import club_service.graphql.model.Club;
-import club_service.graphql.model.ClubResponseProjection;
-import club_service.graphql.model.GetClubQueryRequest;
-import club_service.graphql.model.GetClubQueryResponse;
+import club_service.graphql.model.*;
 import com.kobylynskyi.graphql.codegen.model.graphql.GraphQLRequest;
-import io.restassured.http.ContentType;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import random_walk.automation.api.club.BaseGraphqlRequest;
 
-import static io.restassured.RestAssured.given;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
 public class ClubControllerApi {
 
-    public static final String BASE_URI = "https://random-walk.ru:44424";
+    private final BaseGraphqlRequest baseGraphqlRequest;
 
-    public Club getClub(String clubId, String token) {
-        var request = new GetClubQueryRequest();
-        request.setClubId(clubId);
-        var responseData = new ClubResponseProjection().id().description();
+    public Club getClub(UUID clubId, String token) {
+        var request = GetClubQueryRequest.builder().setClubId(clubId.toString()).build();
+        var responseData = new ClubResponseProjection().id()
+                .name()
+                .description()
+                .approvements(new ApprovementResponseProjection().id())
+                .members(new MemberResponseProjection().id().role());
         var requestBody = new GraphQLRequest(request, responseData);
-        return given().baseUri(BASE_URI)
-                .header("Authorization", "Bearer " + token)
-                .contentType(ContentType.JSON)
-                .body(requestBody.toHttpJsonBody())
-                .post("/graphql")
+
+        return baseGraphqlRequest.getDefaultGraphqlRequest(token, requestBody.toHttpJsonBody())
                 .as(GetClubQueryResponse.class)
                 .getClub();
     }
+
+    public Club createClub(String name, String description, String token) {
+        var request = CreateClubMutationRequest.builder().setName(name).setDescription(description).build();
+        var responseData = new ClubResponseProjection().id().name().description();
+        var requestBody = new GraphQLRequest(request, responseData);
+
+        return baseGraphqlRequest.getDefaultGraphqlRequest(token, requestBody.toHttpJsonBody())
+                .as(CreateClubMutationResponse.class)
+                .createClub();
+    }
+
+    public String removeClub(UUID clubId, String token) {
+        var request = RemoveClubWithAllItsDataMutationRequest.builder().setClubId(clubId.toString()).build();
+        var requestBody = new GraphQLRequest(request);
+
+        return baseGraphqlRequest.getDefaultGraphqlRequest(token, requestBody.toHttpJsonBody())
+                .as(RemoveClubWithAllItsDataMutationResponse.class)
+                .removeClubWithAllItsData();
+    }
+
 }
