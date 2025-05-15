@@ -29,6 +29,8 @@ public class ChatMembersFunctions {
     public UUID getUsersChat(UUID firstUser, UUID secondUser) {
         var firstUserChats = getChatsByUserId(firstUser).stream().map(ChatMembers::getChatId).toList();
         var secondUserChats = getChatsByUserId(secondUser).stream().map(ChatMembers::getChatId).toList();
+        log.info("Для пользователя {} список доступных чатов - {}", firstUser, firstUserChats);
+        log.info("Для пользователя {} список доступных чатов - {}", secondUser, secondUserChats);
         return firstUserChats.stream().filter(secondUserChats::contains).findFirst().orElse(null);
     }
 
