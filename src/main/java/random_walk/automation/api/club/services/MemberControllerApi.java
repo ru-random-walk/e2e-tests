@@ -2,48 +2,54 @@ package random_walk.automation.api.club.services;
 
 import club_service.graphql.model.*;
 import com.kobylynskyi.graphql.codegen.model.graphql.GraphQLRequest;
-import io.restassured.http.ContentType;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import random_walk.automation.api.club.BaseGraphqlRequest;
 
 import java.util.UUID;
-
-import static io.restassured.RestAssured.given;
 
 @Service
 @RequiredArgsConstructor
 public class MemberControllerApi {
 
-    public static final String BASE_URI = "https://random-walk.ru:44424";
+    private final BaseGraphqlRequest baseGraphqlRequest;
 
     public Member addMemberInClub(UUID clubId, UUID memberId, String token) {
-        var request = new AddMemberInClubMutationRequest();
-        request.setClubId(clubId.toString());
-        request.setMemberId(memberId.toString());
+        var request = AddMemberInClubMutationRequest.builder()
+                .setClubId(clubId.toString())
+                .setMemberId(memberId.toString())
+                .build();
         var responseData = new MemberResponseProjection().id().role();
         var requestBody = new GraphQLRequest(request, responseData);
 
-        return given().baseUri(BASE_URI)
-                .header("Authorization", "Bearer " + token)
-                .contentType(ContentType.JSON)
-                .body(requestBody.toHttpJsonBody())
-                .post("/graphql")
+        return baseGraphqlRequest.getDefaultGraphqlRequest(token, requestBody.toHttpJsonBody())
                 .as(AddMemberInClubMutationResponse.class)
                 .addMemberInClub();
     }
 
     public String removeMemberFromClub(UUID clubId, UUID memberId, String token) {
-        var request = new RemoveMemberFromClubMutationRequest();
-        request.setClubId(clubId.toString());
-        request.setMemberId(memberId.toString());
+        var request = RemoveMemberFromClubMutationRequest.builder()
+                .setClubId(clubId.toString())
+                .setMemberId(memberId.toString())
+                .build();
         var requestBody = new GraphQLRequest(request);
 
-        return given().baseUri(BASE_URI)
-                .header("Authorization", "Bearer " + token)
-                .contentType(ContentType.JSON)
-                .body(requestBody.toHttpJsonBody())
-                .post("/graphql")
+        return baseGraphqlRequest.getDefaultGraphqlRequest(token, requestBody.toHttpJsonBody())
                 .as(RemoveMemberFromClubMutationResponse.class)
                 .removeMemberFromClub();
+    }
+
+    public Member changeMemberRole(UUID clubId, UUID memberId, MemberRole memberRole, String token) {
+        var request = ChangeMemberRoleMutationRequest.builder()
+                .setClubId(clubId.toString())
+                .setMemberId(memberId.toString())
+                .setRole(memberRole)
+                .build();
+        var responseData = new MemberResponseProjection().id().role();
+        var requestBody = new GraphQLRequest(request, responseData);
+
+        return baseGraphqlRequest.getDefaultGraphqlRequest(token, requestBody.toHttpJsonBody())
+                .as(ChangeMemberRoleMutationResponse.class)
+                .changeMemberRole();
     }
 }
