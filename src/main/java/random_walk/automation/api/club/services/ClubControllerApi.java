@@ -20,7 +20,8 @@ public class ClubControllerApi {
                 .name()
                 .description()
                 .approvements(new ApprovementResponseProjection().id())
-                .members(new MemberResponseProjection().id().role());
+                .members(new MemberResponseProjection().id().role())
+                .approversNumber();
         var requestBody = new GraphQLRequest(request, responseData);
 
         return baseGraphqlRequest.getDefaultGraphqlRequest(token, requestBody.toHttpJsonBody())
