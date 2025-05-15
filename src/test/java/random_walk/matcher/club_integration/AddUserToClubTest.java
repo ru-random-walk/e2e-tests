@@ -32,7 +32,8 @@ public class AddUserToClubTest extends MatcherTest {
 
         try {
             memberControllerApi.removeMemberFromClub(clubId, userInfo.getUuid(), testTokenConfig.getAutotestToken());
-        } catch (Exception ignored) {}
+        } catch (Exception ignored) {
+        }
     }
 
     @Test
