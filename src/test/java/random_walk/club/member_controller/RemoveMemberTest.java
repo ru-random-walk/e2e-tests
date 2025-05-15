@@ -1,6 +1,7 @@
 package random_walk.club.member_controller;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -97,4 +98,17 @@ public class RemoveMemberTest extends ClubTest {
 
         checkGraphqlError(removeNonExistingUser, classification, errorMessage);
     }
+
+    @Test
+    @Disabled("Тут аналогично")
+    @DisplayName("Проверка удаления админом самого себя из клуба, когда админ единственный")
+    void removeAdminMemberByHimself() {
+        var userId = userConfigService.getUserByRole(UserRoleEnum.TEST_USER).getUuid();
+
+        var changeMemberRoleResponse = memberControllerApi
+                .removeMemberFromClub(createdClubId, userId, testTokenConfig.getToken());
+
+        System.out.println(memberFunctions.getByClubId(createdClubId));
+    }
+
 }
