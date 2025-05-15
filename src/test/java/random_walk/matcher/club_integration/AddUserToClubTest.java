@@ -30,7 +30,9 @@ public class AddUserToClubTest extends MatcherTest {
         var clubId = personClubFunctions.getUserClubs(userConfigService.getUserByRole(UserRoleEnum.AUTOTEST_USER).getUuid())
                 .get(0);
 
-        memberControllerApi.removeMemberFromClub(clubId, userInfo.getUuid(), testTokenConfig.getAutotestToken());
+        try {
+            memberControllerApi.removeMemberFromClub(clubId, userInfo.getUuid(), testTokenConfig.getAutotestToken());
+        } catch (Exception ignored) {}
     }
 
     @Test
