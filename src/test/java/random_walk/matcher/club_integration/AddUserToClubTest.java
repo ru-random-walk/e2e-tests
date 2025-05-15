@@ -15,7 +15,7 @@ import java.util.concurrent.TimeUnit;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
-public class DeleteUserFromClubTest extends MatcherTest {
+public class AddUserToClubTest extends MatcherTest {
 
     @Autowired
     private PersonClubFunctions personClubFunctions;
@@ -24,33 +24,33 @@ public class DeleteUserFromClubTest extends MatcherTest {
     private MemberControllerApi memberControllerApi;
 
     @BeforeEach
-    void addMemberInClub() {
-        var userInfo = userConfigService.getUserByRole(UserRoleEnum.PERSONAL_ACCOUNT);
-
-        var clubId = personClubFunctions.getUserClubs(userConfigService.getUserByRole(UserRoleEnum.AUTOTEST_USER).getUuid())
-                .get(0);
-
-        memberControllerApi.addMemberInClub(clubId, userInfo.getUuid(), testTokenConfig.getAutotestToken());
-    }
-
-    @Test
-    @DisplayName("Проверка удаления клуба, из которого выходит пользователь")
-    void checkDeleteClubInMatcher() {
+    void removeMemberFromClub() {
         var userInfo = userConfigService.getUserByRole(UserRoleEnum.PERSONAL_ACCOUNT);
 
         var clubId = personClubFunctions.getUserClubs(userConfigService.getUserByRole(UserRoleEnum.AUTOTEST_USER).getUuid())
                 .get(0);
 
         memberControllerApi.removeMemberFromClub(clubId, userInfo.getUuid(), testTokenConfig.getAutotestToken());
+    }
+
+    @Test
+    @DisplayName("Проверка добавления клуба для пользователя после его вступления")
+    void checkAddClubInMatcher() {
+        var userInfo = userConfigService.getUserByRole(UserRoleEnum.PERSONAL_ACCOUNT);
+
+        var clubId = personClubFunctions.getUserClubs(userConfigService.getUserByRole(UserRoleEnum.AUTOTEST_USER).getUuid())
+                .get(0);
+
+        memberControllerApi.addMemberInClub(clubId, userInfo.getUuid(), testTokenConfig.getAutotestToken());
 
         Awaitility.await()
                 .atMost(5, TimeUnit.SECONDS)
                 .pollInterval(1, TimeUnit.SECONDS)
-                .until(() -> personClubFunctions.getUserClubs(userInfo.getUuid()).contains(clubId), is(false));
+                .until(() -> personClubFunctions.getUserClubs(userInfo.getUuid()).contains(clubId), is(true));
 
         assertThat(
-                "Клуб %s не входит в список клубов пользователя".formatted(clubId),
+                "Клуб %s входит в список клубов пользователя".formatted(clubId),
                 personClubFunctions.getUserClubs(userInfo.getUuid()).contains(clubId),
-                is(false));
+                is(true));
     }
 }

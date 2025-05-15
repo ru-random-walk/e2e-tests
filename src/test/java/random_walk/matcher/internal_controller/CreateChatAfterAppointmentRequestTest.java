@@ -79,6 +79,11 @@ class CreateChatAfterAppointmentRequestTest extends MatcherTest {
                         () -> appointmentFunctions.getUsersAppointment(autotestUserId, testUserId).size(),
                         Matchers.not(equalTo(0)));
 
+        Awaitility.await()
+                .atMost(20, TimeUnit.SECONDS)
+                .pollInterval(5, TimeUnit.SECONDS)
+                .until(() -> chatMembersFunctions.getUsersChat(autotestUserId, testUserId), notNullValue());
+
         assertThat(
                 "Проверяем, что чат был создан",
                 chatMembersFunctions.getUsersChat(autotestUserId, testUserId),
