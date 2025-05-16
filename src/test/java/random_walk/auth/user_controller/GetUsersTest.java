@@ -45,12 +45,12 @@ class GetUsersTest extends AuthTest {
         step("THEN: Информация о пользователях успешно получена", () -> {
             var firstUser = usersInfo.getContent()
                     .stream()
-                    .filter(user -> user.getFullName().equals(firstUserInfo.getName()))
+                    .filter(user -> Objects.equals(user.getId(), firstUserInfo.getUuid()))
                     .findFirst()
                     .orElseThrow(() -> new NotFoundException("Не найден пользователь с именем " + firstUserInfo.getName()));
             var secondUser = usersInfo.getContent()
                     .stream()
-                    .filter(user -> user.getFullName().equals(secondUserInfo.getName()))
+                    .filter(user -> Objects.equals(user.getId(), secondUserInfo.getUuid()))
                     .findFirst()
                     .orElseThrow(() -> new NotFoundException("Не найден пользователь с именем " + secondUserInfo.getName()));
             assertAll(
