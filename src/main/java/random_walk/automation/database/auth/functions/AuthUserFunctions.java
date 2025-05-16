@@ -6,6 +6,7 @@ import random_walk.automation.database.auth.entities.AuthUser;
 import random_walk.automation.database.auth.repos.AuthUserRepository;
 
 import java.util.List;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -19,5 +20,9 @@ public class AuthUserFunctions {
 
     public AuthUser getUserByFullName(String fullName) {
         return authUserRepository.findByFullName(fullName);
+    }
+
+    public AuthUser getById(UUID id) {
+        return authUserRepository.findById(id).orElse(null);
     }
 }

@@ -11,10 +11,7 @@ import ru.random_walk.swagger.auth_service.api.OAuth2ControllerApi;
 import ru.random_walk.swagger.auth_service.api.TokenControllerApi;
 import ru.random_walk.swagger.auth_service.api.UserControllerApi;
 import ru.random_walk.swagger.auth_service.invoker.ApiClient;
-import ru.random_walk.swagger.auth_service.model.DetailedUserDto;
-import ru.random_walk.swagger.auth_service.model.OAuthConfigurationResponse;
-import ru.random_walk.swagger.auth_service.model.PagedModelUserDto;
-import ru.random_walk.swagger.auth_service.model.TokenResponse;
+import ru.random_walk.swagger.auth_service.model.*;
 
 import java.util.List;
 import java.util.Map;
@@ -126,6 +123,13 @@ public class AuthServiceApi {
     public DetailedUserDto getUserSelfInfo() {
         return userControllerApi.getSelfInfo()
                 .reqSpec(r -> r.addFilter(new BearerAuthToken(token)))
+                .execute(r -> r.as(DetailedUserDto.class));
+    }
+
+    public DetailedUserDto changeInfoAboutUser(String token, String fullName, String description) {
+        return userControllerApi.changeSelfInfo()
+                .reqSpec(r -> r.addFilter(new BearerAuthToken(token)))
+                .body(new ChangeUserInfoDto().fullName(fullName).aboutMe(description))
                 .execute(r -> r.as(DetailedUserDto.class));
     }
 }

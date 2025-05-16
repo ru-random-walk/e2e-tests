@@ -46,9 +46,6 @@ api:
   graphql:
     base-uri: https://random-walk.ru:44424
     request-path: /graphql
-  google-oauth2:
-    email: ${GOOGLE_USER_EMAIL}
-    password: ${GOOGLE_USER_PASSWORD}
 spring:
   config:
     import: classpath:users.yml

@@ -16,7 +16,7 @@ class GetOwnUserInfoTest extends AuthTest {
     void getOwnInfoByUser() {
         var userInfoDb = step(
                 "GIVEN: Получена информация о пользователе TEST_USER из базы данных",
-                () -> authUserFunctions.getUserByFullName(userConfigService.getUserByRole(TEST_USER).getName()));
+                () -> authUserFunctions.getById(userConfigService.getUserByRole(TEST_USER).getUuid()));
 
         var userInfo = step("WHEN: Пользователь получает собственную информацию", () -> authServiceApi.getUserSelfInfo());
 
