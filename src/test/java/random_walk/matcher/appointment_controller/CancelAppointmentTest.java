@@ -12,6 +12,7 @@ import random_walk.automation.database.matcher.entities.prkeys.DayLimitPK;
 import random_walk.automation.database.matcher.functions.AppointmentFunctions;
 import random_walk.automation.database.matcher.functions.AvailableTimeFunctions;
 import random_walk.automation.database.matcher.functions.DayLimitFunctions;
+import random_walk.automation.domain.enums.ClubRole;
 import random_walk.automation.domain.enums.UserRoleEnum;
 import random_walk.matcher.MatcherTest;
 
@@ -57,7 +58,7 @@ public class CancelAppointmentTest extends MatcherTest {
         var testUserId = userConfigService.getUserByRole(UserRoleEnum.TEST_USER).getUuid();
 
         var offsetTime = OffsetTime.now();
-        var clubId = personClubFunctions.getUserClubs(autotestUserId).get(0);
+        var clubId = clubConfigService.getClubByRole(ClubRole.DEFAULT_CLUB).getId();
         availableTimeMatcherApi.addAvailableTime(
                 testTokenConfig.getAutotestToken(),
                 clubId,

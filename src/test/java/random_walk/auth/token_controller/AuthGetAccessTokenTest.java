@@ -24,7 +24,7 @@ class AuthGetAccessTokenTest extends AuthTest {
         step(
                 "THEN: Попытка получения access_token пользователя по невалидному токену завершилась ошибкой",
                 () -> assertEquals(
-                        "Yandex respond with UNAUTHORIZED error code",
+                        "Google respond with UNAUTHORIZED error code",
                         accessToken.getMessage(),
                         "Сообщение об ошибке совпадает"));
     }
