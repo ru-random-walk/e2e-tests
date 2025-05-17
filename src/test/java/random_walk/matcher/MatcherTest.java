@@ -7,7 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import random_walk.BaseTest;
 import random_walk.automation.api.matcher.service.AvailableTimeMatcherApi;
 import random_walk.automation.database.matcher.functions.PersonClubFunctions;
-import random_walk.automation.domain.enums.UserRoleEnum;
+import random_walk.automation.domain.enums.ClubRole;
 import random_walk.automation.service.MatcherService;
 import ru.random_walk.swagger.matcher_service.model.ClubDto;
 
@@ -38,8 +38,7 @@ public class MatcherTest extends BaseTest {
     public void addUserAvailableTime() {
         if (!isAvailableTimeCalled) {
             var offsetTime = OffsetTime.now();
-            var clubId = personClubFunctions.getUserClubs(userConfigService.getUserByRole(UserRoleEnum.TEST_USER).getUuid())
-                    .get(0);
+            var clubId = clubConfigService.getClubByRole(ClubRole.DEFAULT_CLUB).getId();
             try {
                 availableTimeMatcherApi.addAvailableTime(
                         testTokenConfig.getToken(),

@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import random_walk.automation.api.matcher.service.PersonMatcherApi;
 import random_walk.automation.database.matcher.functions.AvailableTimeFunctions;
+import random_walk.automation.domain.enums.ClubRole;
 import random_walk.automation.domain.enums.UserRoleEnum;
 import random_walk.matcher.MatcherTest;
 
@@ -33,7 +34,7 @@ public class DeleteAvailableTimeTest extends MatcherTest {
     void checkDeleteAvailableTimeFromDatabase() {
         var testUserId = userConfigService.getUserByRole(UserRoleEnum.TEST_USER).getUuid();
 
-        var clubId = personClubFunctions.getUserClubs(testUserId).get(0);
+        var clubId = clubConfigService.getClubByRole(ClubRole.DEFAULT_CLUB).getId();
 
         var offsetTime = OffsetTime.now();
         var date = LocalDate.now().plusDays(2);

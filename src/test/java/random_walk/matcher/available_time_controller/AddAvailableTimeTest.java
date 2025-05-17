@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import random_walk.automation.api.matcher.service.AvailableTimeMatcherApi;
 import random_walk.automation.database.matcher.functions.AvailableTimeFunctions;
+import random_walk.automation.domain.enums.ClubRole;
 import random_walk.automation.domain.enums.UserRoleEnum;
 import random_walk.automation.util.PointConverterUtils;
 import random_walk.matcher.MatcherTest;
@@ -39,7 +40,7 @@ class AddAvailableTimeTest extends MatcherTest {
     void addAvailableTimeForUser() {
         var testUserId = userConfigService.getUserByRole(UserRoleEnum.TEST_USER).getUuid();
 
-        var clubId = personClubFunctions.getUserClubs(testUserId).get(0);
+        var clubId = clubConfigService.getClubByRole(ClubRole.DEFAULT_CLUB).getId();
 
         var offsetTime = OffsetTime.now(ZoneId.of("Europe/Moscow"));
         var timeUntil = OffsetTime.of(23, 59, 0, offsetTime.getNano(), offsetTime.getOffset());
@@ -72,7 +73,7 @@ class AddAvailableTimeTest extends MatcherTest {
     void addIntersectAvailableTime() {
         var testUserId = userConfigService.getUserByRole(UserRoleEnum.TEST_USER).getUuid();
 
-        var clubId = personClubFunctions.getUserClubs(testUserId).get(0);
+        var clubId = clubConfigService.getClubByRole(ClubRole.DEFAULT_CLUB).getId();
 
         var offsetTime = OffsetTime.now();
         var timeUntil = OffsetTime.of(23, 59, 0, offsetTime.getNano(), offsetTime.getOffset());
@@ -98,9 +99,7 @@ class AddAvailableTimeTest extends MatcherTest {
     @Test
     @DisplayName("Добавление свободного времени с разными таймзонами начала и конца")
     void addAvailableTimeWithDifferentTimeZone() {
-        var testUserId = userConfigService.getUserByRole(UserRoleEnum.TEST_USER).getUuid();
-
-        var clubId = personClubFunctions.getUserClubs(testUserId).get(0);
+        var clubId = clubConfigService.getClubByRole(ClubRole.DEFAULT_CLUB).getId();
 
         var offsetTime = OffsetTime.now(ZoneId.of("Europe/Moscow"));
         var timeUntil = OffsetTime
@@ -121,9 +120,7 @@ class AddAvailableTimeTest extends MatcherTest {
     @Test
     @DisplayName("Добавление времени с датой начала большей, чем дата окончания")
     void addAvailableTimeWithTimeFromGreaterThanTimeUntil() {
-        var testUserId = userConfigService.getUserByRole(UserRoleEnum.TEST_USER).getUuid();
-
-        var clubId = personClubFunctions.getUserClubs(testUserId).get(0);
+        var clubId = clubConfigService.getClubByRole(ClubRole.DEFAULT_CLUB).getId();
 
         var offsetTime = OffsetTime.now();
         var timeUntil = OffsetTime.of(23, 59, 0, offsetTime.getNano(), offsetTime.getOffset());
