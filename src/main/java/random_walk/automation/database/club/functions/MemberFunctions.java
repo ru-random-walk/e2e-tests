@@ -1,6 +1,7 @@
 package random_walk.automation.database.club.functions;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import random_walk.automation.database.club.entities.Member;
 import random_walk.automation.database.club.entities.prkeys.MemberPK;
@@ -11,6 +12,7 @@ import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class MemberFunctions {
 
     private final MemberRepository memberRepository;
@@ -20,6 +22,8 @@ public class MemberFunctions {
     }
 
     public List<Member> getByClubId(UUID clubId) {
-        return memberRepository.findByClubId(clubId);
+        var result = memberRepository.findByClubId(clubId);
+        log.info("Найдены участники клуба {} - {}", clubId, result);
+        return result;
     }
 }

@@ -75,7 +75,7 @@ public class AuthServiceApi {
                 "subject_token_type",
                 "Access Token",
                 "subject_token_provider",
-                "yandex");
+                "google");
 
         return tokenControllerApi.token().reqSpec(r -> {
             r.addFilter(new BasicAuthFilter(username, password));

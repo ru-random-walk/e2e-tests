@@ -136,6 +136,50 @@
         }
       }
     },
+    "/userinfo/logout": {
+      "post": {
+        "tags": [
+          "user-controller"
+        ],
+        "summary": "Logout and remove user's refresh token",
+        "operationId": "logOut",
+        "responses": {
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorDto"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Too Many Requests",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorDto"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
     "/token": {
       "post": {
         "tags": [
@@ -197,50 +241,6 @@
                 }
               }
             }
-          }
-        }
-      }
-    },
-    "/logout": {
-      "post": {
-        "tags": [
-          "user-controller"
-        ],
-        "summary": "Logout and remove user's refresh token",
-        "operationId": "logOut",
-        "responses": {
-          "400": {
-            "description": "Bad Request",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/ApiErrorDto"
-                }
-              }
-            }
-          },
-          "429": {
-            "description": "Too Many Requests",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/ApiErrorDto"
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "Unauthorized",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/ApiErrorDto"
-                }
-              }
-            }
-          },
-          "200": {
-            "description": "OK"
           }
         }
       }
@@ -692,6 +692,9 @@
           },
           "avatar": {
             "type": "string"
+          },
+          "description": {
+            "type": "string"
           }
         }
       },
@@ -795,6 +798,9 @@
             "type": "string"
           },
           "avatar": {
+            "type": "string"
+          },
+          "description": {
             "type": "string"
           }
         }
