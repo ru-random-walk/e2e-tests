@@ -1,6 +1,7 @@
 package random_walk.automation.api.auth.service;
 
 import io.qameta.allure.Step;
+import io.restassured.response.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import random_walk.automation.api.auth.AuthServiceConfigurationProperties;
@@ -74,7 +75,7 @@ public class AuthServiceApi {
                 "subject_token_type",
                 "Access Token",
                 "subject_token_provider",
-                "google");
+                "yandex");
 
         return tokenControllerApi.token().reqSpec(r -> {
             r.addFilter(new BasicAuthFilter(username, password));
@@ -131,5 +132,9 @@ public class AuthServiceApi {
                 .reqSpec(r -> r.addFilter(new BearerAuthToken(token)))
                 .body(new ChangeUserInfoDto().fullName(fullName).aboutMe(description))
                 .execute(r -> r.as(DetailedUserDto.class));
+    }
+
+    public void logout(String token) {
+        userControllerApi.logOut().reqSpec(r -> r.addFilter(new BearerAuthToken(token))).execute(Response::andReturn);
     }
 }
