@@ -1,6 +1,7 @@
 package random_walk.automation.api.auth.service;
 
 import io.qameta.allure.Step;
+import io.restassured.response.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import random_walk.automation.api.auth.AuthServiceConfigurationProperties;
@@ -11,10 +12,7 @@ import ru.random_walk.swagger.auth_service.api.OAuth2ControllerApi;
 import ru.random_walk.swagger.auth_service.api.TokenControllerApi;
 import ru.random_walk.swagger.auth_service.api.UserControllerApi;
 import ru.random_walk.swagger.auth_service.invoker.ApiClient;
-import ru.random_walk.swagger.auth_service.model.DetailedUserDto;
-import ru.random_walk.swagger.auth_service.model.OAuthConfigurationResponse;
-import ru.random_walk.swagger.auth_service.model.PagedModelUserDto;
-import ru.random_walk.swagger.auth_service.model.TokenResponse;
+import ru.random_walk.swagger.auth_service.model.*;
 
 import java.util.List;
 import java.util.Map;
@@ -77,7 +75,7 @@ public class AuthServiceApi {
                 "subject_token_type",
                 "Access Token",
                 "subject_token_provider",
-                "google");
+                "yandex");
 
         return tokenControllerApi.token().reqSpec(r -> {
             r.addFilter(new BasicAuthFilter(username, password));
@@ -127,5 +125,16 @@ public class AuthServiceApi {
         return userControllerApi.getSelfInfo()
                 .reqSpec(r -> r.addFilter(new BearerAuthToken(token)))
                 .execute(r -> r.as(DetailedUserDto.class));
+    }
+
+    public DetailedUserDto changeInfoAboutUser(String token, String fullName, String description) {
+        return userControllerApi.changeSelfInfo()
+                .reqSpec(r -> r.addFilter(new BearerAuthToken(token)))
+                .body(new ChangeUserInfoDto().fullName(fullName).aboutMe(description))
+                .execute(r -> r.as(DetailedUserDto.class));
+    }
+
+    public void logout(String token) {
+        userControllerApi.logOut().reqSpec(r -> r.addFilter(new BearerAuthToken(token))).execute(Response::andReturn);
     }
 }

@@ -29,4 +29,8 @@ public class AuthUser {
 
     private String avatar;
 
+    private String description;
+
+    @Column(name = "avatar_version")
+    private Integer avatarVersion;
 }
