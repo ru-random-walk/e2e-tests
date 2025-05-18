@@ -137,4 +137,11 @@ public class AuthServiceApi {
     public void logout(String token) {
         userControllerApi.logOut().reqSpec(r -> r.addFilter(new BearerAuthToken(token))).execute(Response::andReturn);
     }
+
+    public void sendOneTimePassword(String email) {
+        tokenControllerApi.issueOtp()
+                .reqSpec(r -> r.addFilter(new BasicAuthFilter(username, password)))
+                .body(new EmailAuthDto().email(email))
+                .execute(Response::andReturn);
+    }
 }
