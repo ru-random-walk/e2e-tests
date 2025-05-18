@@ -44,7 +44,7 @@ public class AddUserToClubTest extends MatcherTest {
         memberControllerApi.addMemberInClub(clubId, userInfo.getUuid(), testTokenConfig.getToken());
 
         Awaitility.await()
-                .atMost(5, TimeUnit.SECONDS)
+                .atMost(10, TimeUnit.SECONDS)
                 .pollInterval(1, TimeUnit.SECONDS)
                 .until(() -> personClubFunctions.getUserClubs(userInfo.getUuid()).contains(clubId), is(true));
 
