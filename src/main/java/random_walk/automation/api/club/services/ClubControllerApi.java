@@ -49,6 +49,28 @@ public class ClubControllerApi {
                 .createClubWithFormApprovement();
     }
 
+    public Club createClubWithMemberConfirm(String name,
+                                            String description,
+                                            Integer requiredConfirmationNumber,
+                                            Integer approversToNotifyCount,
+                                            String token) {
+        var request = CreateClubWithMembersConfirmApprovementMutationRequest.builder()
+                .setName(name)
+                .setDescription(description)
+                .setMembersConfirm(
+                        MembersConfirmInput.builder()
+                                .setRequiredConfirmationNumber(requiredConfirmationNumber)
+                                .setApproversToNotifyCount(approversToNotifyCount)
+                                .build())
+                .build();
+        var responseData = new ClubResponseProjection().id().name().description().approversNumber();
+        var requestBody = new GraphQLRequest(request, responseData).toHttpJsonBody();
+
+        return baseGraphqlRequest.getDefaultGraphqlRequest(token, requestBody)
+                .as(CreateClubWithMembersConfirmApprovementMutationResponse.class)
+                .createClubWithMembersConfirmApprovement();
+    }
+
     public String removeClub(UUID clubId, String token) {
         var request = RemoveClubWithAllItsDataMutationRequest.builder().setClubId(clubId.toString()).build();
         var requestBody = new GraphQLRequest(request).toHttpJsonBody();
