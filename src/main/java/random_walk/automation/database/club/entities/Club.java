@@ -23,4 +23,6 @@ public class Club {
 
     private String description;
 
+    @Column(name = "photo_version")
+    private Integer photoVersion;
 }

@@ -43,6 +43,8 @@ public class CreateClubTest extends ClubTest {
 
     private String secondClubId;
 
+    private String thirdClubId;
+
     @Test
     @DisplayName("Проверка создания клуба пользователем")
     void createClub() {
@@ -67,8 +69,9 @@ public class CreateClubTest extends ClubTest {
     @Test
     @DisplayName("Попытка создать количество клубов, превышающее допустимое для пользователя")
     void createClubAfterReachingMaxCountOfClubs() {
-        firstClubId = clubControllerApi.createClub("Первый клуб", "Первое описание", testTokenConfig.getToken()).getId();
+        firstClubId = clubControllerApi.createClub("Первый клуб", "Первое описание", testTokenConfig.getAutotestToken()).getId();
         secondClubId = clubControllerApi.createClub("Второй клуб", "Второе описание", testTokenConfig.getToken()).getId();
+        thirdClubId = clubControllerApi.createClub("Третий клуб", "Третье описание", testTokenConfig.getToken()).getId();
 
         var error = toGraphqlErrorResponse(
                 () -> clubControllerApi.createClub("Несозданный клуб", "Несозданное описание", testTokenConfig.getToken()));
@@ -155,6 +158,10 @@ public class CreateClubTest extends ClubTest {
         }
         try {
             clubControllerApi.removeClub(UUID.fromString(secondClubId), testTokenConfig.getToken());
+        } catch (Exception ignored) {
+        }
+        try {
+            clubControllerApi.removeClub(UUID.fromString(thirdClubId), testTokenConfig.getToken());
         } catch (Exception ignored) {
         }
     }

@@ -84,6 +84,17 @@ public class AuthServiceApi {
         }).execute(r -> r.as(TokenResponse.class));
     }
 
+    @Step("Получаем access и refresh токены для пользователя")
+    public TokenResponse getAuthTokens(String email, Integer oneTimePassword) {
+        var mapOfRequestParams = Map.of("grant_type", "email_otp", "otp", oneTimePassword, "email", email);
+
+        return tokenControllerApi.token().reqSpec(r -> {
+            r.addFilter(new BasicAuthFilter(username, password));
+            r.setContentType("application/x-www-form-urlencoded");
+            r.addFormParams(mapOfRequestParams);
+        }).execute(r -> r.as(TokenResponse.class));
+    }
+
     @Step("Обновляем access_token по полученному refresh_token")
     public TokenResponse refreshAuthToken(String refreshToken) {
         var mapOfRequestParams = Map.of("grant_type", "refresh_token", "refresh_token", refreshToken);
