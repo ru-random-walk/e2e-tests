@@ -20,9 +20,9 @@ public class MemberControllerApi {
                 .setMemberId(memberId.toString())
                 .build();
         var responseData = new MemberResponseProjection().id().role();
-        var requestBody = new GraphQLRequest(request, responseData);
+        var requestBody = new GraphQLRequest(request, responseData).toHttpJsonBody();
 
-        return baseGraphqlRequest.getDefaultGraphqlRequest(token, requestBody.toHttpJsonBody())
+        return baseGraphqlRequest.getDefaultGraphqlRequest(token, requestBody)
                 .as(AddMemberInClubMutationResponse.class)
                 .addMemberInClub();
     }
@@ -32,9 +32,9 @@ public class MemberControllerApi {
                 .setClubId(clubId.toString())
                 .setMemberId(memberId.toString())
                 .build();
-        var requestBody = new GraphQLRequest(request);
+        var requestBody = new GraphQLRequest(request).toHttpJsonBody();
 
-        return baseGraphqlRequest.getDefaultGraphqlRequest(token, requestBody.toHttpJsonBody())
+        return baseGraphqlRequest.getDefaultGraphqlRequest(token, requestBody)
                 .as(RemoveMemberFromClubMutationResponse.class)
                 .removeMemberFromClub();
     }
@@ -46,9 +46,9 @@ public class MemberControllerApi {
                 .setRole(memberRole)
                 .build();
         var responseData = new MemberResponseProjection().id().role();
-        var requestBody = new GraphQLRequest(request, responseData);
+        var requestBody = new GraphQLRequest(request, responseData).toHttpJsonBody();
 
-        return baseGraphqlRequest.getDefaultGraphqlRequest(token, requestBody.toHttpJsonBody())
+        return baseGraphqlRequest.getDefaultGraphqlRequest(token, requestBody)
                 .as(ChangeMemberRoleMutationResponse.class)
                 .changeMemberRole();
     }

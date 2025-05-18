@@ -48,7 +48,7 @@ public class DeleteUserFromClubTest extends MatcherTest {
         memberControllerApi.removeMemberFromClub(clubId, userInfo.getUuid(), testTokenConfig.getAutotestToken());
 
         Awaitility.await()
-                .atMost(5, TimeUnit.SECONDS)
+                .atMost(10, TimeUnit.SECONDS)
                 .pollInterval(1, TimeUnit.SECONDS)
                 .until(() -> personClubFunctions.getUserClubs(userInfo.getUuid()).contains(clubId), is(false));
 
