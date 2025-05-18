@@ -24,6 +24,8 @@ public class ClubTest extends BaseTest {
 
     protected UUID createdClubId;
 
+    protected static final String NOT_PHOTO_URL = "aHR0cHM6Ly9saDMuZ29vZ2xldXNlcmNvbnRlbnQuY29tL2EvQUNnOG9jSkxZRW5zVzhvcnFyUm5oSDI3bi1HUGh2LXNabHM5UkpmQVJEeENmQ2FOejRjWGlnPXM5Ni1j";
+
     @BeforeAll
     public void createTestClub() {
         createdClubId = UUID.fromString(

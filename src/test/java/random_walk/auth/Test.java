@@ -10,5 +10,6 @@ public class Test extends AuthTest {
         // var token = authServiceApi.getAuthTokens("").getAccessToken();
         // authServiceApi.logout(token);
         // authServiceApi.sendOneTimePassword("petrov_dima_1996@mail.ru");
+        authServiceApi.getAuthTokens("petrov_dima_1996@mail.ru", 744000);
     }
 }

@@ -21,7 +21,8 @@ public class ClubControllerApi {
                 .description()
                 .approvements(new ApprovementResponseProjection().id())
                 .members(new MemberResponseProjection().id().role())
-                .approversNumber();
+                .approversNumber()
+                .photoVersion();
         var requestBody = new GraphQLRequest(request, responseData).toHttpJsonBody();
 
         return baseGraphqlRequest.getDefaultGraphqlRequest(token, requestBody).as(GetClubQueryResponse.class).getClub();
@@ -69,6 +70,24 @@ public class ClubControllerApi {
         return baseGraphqlRequest.getDefaultGraphqlRequest(token, requestBody)
                 .as(CreateClubWithMembersConfirmApprovementMutationResponse.class)
                 .createClubWithMembersConfirmApprovement();
+    }
+
+    public PhotoUrl uploadPhotoForClub(UUID clubId, PhotoInput input, String token) {
+        var request = UploadPhotoForClubMutationRequest.builder().setClubId(clubId.toString()).setPhoto(input).build();
+        var responseData = new PhotoUrlResponseProjection().clubId().url().expiresInMinutes();
+        var requestBody = new GraphQLRequest(request, responseData).toHttpJsonBody();
+
+        return baseGraphqlRequest.getDefaultGraphqlRequest(token, requestBody)
+                .as(UploadPhotoForClubMutationResponse.class)
+                .uploadPhotoForClub();
+    }
+
+    public PhotoUrl getClubPhoto(UUID clubId, String token) {
+        var request = GetClubPhotoQueryRequest.builder().setClubId(clubId.toString()).build();
+        var responseData = new PhotoUrlResponseProjection().clubId().url().expiresInMinutes();
+        var requestBody = new GraphQLRequest(request, responseData).toHttpJsonBody();
+
+        return baseGraphqlRequest.getDefaultGraphqlRequest(token, requestBody).as(GetClubPhotoQueryResponse.class).getClubPhoto();
     }
 
     public String removeClub(UUID clubId, String token) {
