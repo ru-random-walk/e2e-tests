@@ -22,28 +22,38 @@ public class ClubControllerApi {
                 .approvements(new ApprovementResponseProjection().id())
                 .members(new MemberResponseProjection().id().role())
                 .approversNumber();
-        var requestBody = new GraphQLRequest(request, responseData);
+        var requestBody = new GraphQLRequest(request, responseData).toHttpJsonBody();
 
-        return baseGraphqlRequest.getDefaultGraphqlRequest(token, requestBody.toHttpJsonBody())
-                .as(GetClubQueryResponse.class)
-                .getClub();
+        return baseGraphqlRequest.getDefaultGraphqlRequest(token, requestBody).as(GetClubQueryResponse.class).getClub();
     }
 
     public Club createClub(String name, String description, String token) {
         var request = CreateClubMutationRequest.builder().setName(name).setDescription(description).build();
         var responseData = new ClubResponseProjection().id().name().description();
-        var requestBody = new GraphQLRequest(request, responseData);
+        var requestBody = new GraphQLRequest(request, responseData).toHttpJsonBody();
 
-        return baseGraphqlRequest.getDefaultGraphqlRequest(token, requestBody.toHttpJsonBody())
-                .as(CreateClubMutationResponse.class)
-                .createClub();
+        return baseGraphqlRequest.getDefaultGraphqlRequest(token, requestBody).as(CreateClubMutationResponse.class).createClub();
+    }
+
+    public Club createClubWithFormApprovement(String name, String description, FormInput form, String token) {
+        var request = CreateClubWithFormApprovementMutationRequest.builder()
+                .setName(name)
+                .setDescription(description)
+                .setForm(form)
+                .build();
+        var responseData = new ClubResponseProjection().id().name().description();
+        var requestBody = new GraphQLRequest(request, responseData).toHttpJsonBody();
+
+        return baseGraphqlRequest.getDefaultGraphqlRequest(token, requestBody)
+                .as(CreateClubWithFormApprovementMutationResponse.class)
+                .createClubWithFormApprovement();
     }
 
     public String removeClub(UUID clubId, String token) {
         var request = RemoveClubWithAllItsDataMutationRequest.builder().setClubId(clubId.toString()).build();
-        var requestBody = new GraphQLRequest(request);
+        var requestBody = new GraphQLRequest(request).toHttpJsonBody();
 
-        return baseGraphqlRequest.getDefaultGraphqlRequest(token, requestBody.toHttpJsonBody())
+        return baseGraphqlRequest.getDefaultGraphqlRequest(token, requestBody)
                 .as(RemoveClubWithAllItsDataMutationResponse.class)
                 .removeClubWithAllItsData();
     }
