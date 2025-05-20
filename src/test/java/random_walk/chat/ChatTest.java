@@ -76,6 +76,7 @@ public abstract class ChatTest extends BaseTest {
             websocketApi.sendMessage(
                     "Hi, %s!".formatted(secondUser.getName()),
                     firstUserSession,
+                    testTokenConfig.getToken(),
                     chatId,
                     firstUser.getUuid(),
                     secondUser.getUuid(),
@@ -83,6 +84,7 @@ public abstract class ChatTest extends BaseTest {
             websocketApi.sendMessage(
                     "Hi, %s!".formatted(firstUser.getName()),
                     secondUserSession,
+                    testTokenConfig.getAutotestToken(),
                     chatId,
                     secondUser.getUuid(),
                     firstUser.getUuid(),
@@ -90,6 +92,7 @@ public abstract class ChatTest extends BaseTest {
             websocketApi.sendMessage(
                     "Hi, %s!".formatted(firstUser.getName()),
                     secondUserSession,
+                    testTokenConfig.getAutotestToken(),
                     chatId,
                     secondUser.getUuid(),
                     firstUser.getUuid(),
