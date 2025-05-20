@@ -59,7 +59,8 @@ jobs:
       TMS_CONFIGURATION_ID: 01963448-e908-74f6-a9a3-1e6214c00622
       TMS_CERT_VALIDATION: false
       TMS_AUTO_CREATE_TEST_CASES: true
-      CURRENT_DATE: $(TZ=Europe/Moscow date +'%Y-%m-%d %H:%M:%S')
+      TMS_ADAPTER_MODE: 2
+      CURRENT_DATE: (TZ=Europe/Moscow date +'%Y-%m-%d %H:%M:%S')
 
     steps:
       - name: Checkout repository
@@ -77,6 +78,8 @@ jobs:
           ./gradlew clean --no-daemon
           echo "Running tests with tag: ${{ github.event.inputs.testTag }}"
           echo "Текущая дата = $CURRENT_DATE"
+          echo "$TMS_ADAPTER_MODE"
+          echo "$TMS_URL"
           if [[ "${{ github.event.inputs.testTag }}" == "all" ]]; then
           {
             ./gradlew test \
