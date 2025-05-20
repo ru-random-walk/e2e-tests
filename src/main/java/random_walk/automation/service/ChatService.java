@@ -6,6 +6,8 @@ import org.springframework.stereotype.Service;
 import random_walk.automation.database.chat.functions.ChatFunctions;
 import random_walk.automation.database.chat.functions.ChatMembersFunctions;
 import random_walk.automation.database.chat.functions.MessageFunctions;
+import ru.testit.annotations.Step;
+import ru.testit.annotations.Title;
 
 import java.util.UUID;
 
@@ -20,6 +22,8 @@ public class ChatService {
 
     private final MessageFunctions messageFunctions;
 
+    @Step
+    @Title("Удаление чата между {firstUser} и {secondUser} в базе данных")
     public void deleteChatBetweenUsers(UUID firstUser, UUID secondUser) {
         log.info("Удаляем чат между {} и {}", firstUser, secondUser);
         var chatId = chatMembersFunctions.deleteChatMembers(firstUser, secondUser);

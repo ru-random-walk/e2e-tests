@@ -1,8 +1,5 @@
 package random_walk.automation.api.auth.service;
-import ru.testit.annotations.Description;
-import ru.testit.annotations.Step;
 
-import io.qameta.allure.Step;
 import io.restassured.response.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -14,10 +11,9 @@ import ru.random_walk.swagger.auth_service.api.OAuth2ControllerApi;
 import ru.random_walk.swagger.auth_service.api.TokenControllerApi;
 import ru.random_walk.swagger.auth_service.api.UserControllerApi;
 import ru.random_walk.swagger.auth_service.invoker.ApiClient;
-import ru.random_walk.swagger.auth_service.model.DetailedUserDto;
-import ru.random_walk.swagger.auth_service.model.OAuthConfigurationResponse;
-import ru.random_walk.swagger.auth_service.model.PagedModelUserDto;
-import ru.random_walk.swagger.auth_service.model.TokenResponse;
+import ru.random_walk.swagger.auth_service.model.*;
+import ru.testit.annotations.Description;
+import ru.testit.annotations.Step;
 import ru.testit.annotations.Title;
 
 import java.util.List;
@@ -87,7 +83,7 @@ public class AuthServiceApi {
         }).execute(r -> r.as(TokenResponse.class));
     }
 
-    @Step("Получаем access и refresh токены для пользователя")
+    // @Step("Получаем access и refresh токены для пользователя")
     public TokenResponse getAuthTokens(String email, Integer oneTimePassword) {
         var mapOfRequestParams = Map.of("grant_type", "email_otp", "otp", oneTimePassword, "email", email);
 

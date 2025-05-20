@@ -6,7 +6,6 @@ plugins {
     id("com.diffplug.spotless") version "6.19.0"
     id("org.openapi.generator") version "4.3.0"
     id("io.spring.dependency-management") version "1.1.6"
-    id("io.qameta.allure") version "2.12.0"
     id("io.github.kobylynskyi.graphql.codegen") version "5.0.0"
 }
 
@@ -23,12 +22,15 @@ java {
     }
 }
 
+configurations {
+    create("aspectConfig")
+}
+
 sourceSets {
     main {
         java {
             srcDir("$buildDir/generated/sources/openapi/src/main/java")
             srcDir("$buildDir/generated/sources/graphql")
-            //srcDir("$buildDir/generated/sources/graphql/club_service_graphql")
         }
     }
 }
@@ -37,9 +39,11 @@ apply {
     from("openapi.gradle.kts")
 }
 
+
 dependencies {
     val springVersion = "2.7.5"
     val allureVersion = "2.27.0"
+    val aspectjVersion = "1.9.22"
 
     implementation("org.postgresql:postgresql:42.6.0")
 
@@ -53,16 +57,16 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-aop:$springVersion")
     implementation("org.springframework.boot:spring-boot-starter-test:$springVersion")
     implementation("org.springframework.boot:spring-boot-starter-websocket:$springVersion")
+    implementation("org.springframework.boot:spring-boot-starter-aop")
 
     implementation("org.springframework.retry:spring-retry:1.3.3")
     implementation("ch.qos.logback:logback-core:1.2.9")
     implementation("org.slf4j:slf4j-api")
-    implementation("ru.testit:testit-adapter-junit5:2.3.4")
+    implementation("ru.testit:testit-adapter-junit5:2.6.2-TMS-5.3")
 
     implementation("com.google.code.gson:gson:2.8.5")
     implementation("io.gsonfire:gson-fire:1.8.4")
     implementation("mil.nga.sf:sf-wkt:1.2.3")
-    // https://mvnrepository.com/artifact/org.locationtech.jts/jts-core
     implementation("org.locationtech.jts:jts-core:1.19.0")
 
     implementation("io.qameta.allure:allure-java-commons:2.27.0")
@@ -93,14 +97,15 @@ dependencies {
     implementation("javax.annotation:javax.annotation-api:1.3.2")
     implementation("com.github.viclovsky:swagger-coverage-rest-assured:1.5.0")
 
-    testImplementation("org.aspectj:aspectjrt:1.9.22")
     testImplementation("org.junit.jupiter:junit-jupiter-api")
     testImplementation("org.junit.jupiter:junit-jupiter-engine")
     implementation("io.github.kobylynskyi:graphql-java-codegen:5.0.0")
     testImplementation("org.junit.jupiter:junit-jupiter-params")
     testImplementation("org.junit.platform:junit-platform-launcher:1.9.0")
-    testImplementation("org.aspectj:aspectjweaver:1.9.22")
-    implementation("ru.testit:testit-java-commons:2.3.4")
+    "aspectConfig"("org.aspectj:aspectjweaver:$aspectjVersion")
+    implementation("org.aspectj:aspectjrt:$aspectjVersion")
+    implementation("org.aspectj:aspectjtools:$aspectjVersion")
+    implementation("ru.testit:testit-java-commons:2.6.2-TMS-5.3")
 }
 
 tasks.compileJava {
@@ -134,21 +139,21 @@ tasks.graphqlCodegen {
 tasks.test {
 
     systemProperty("junit.jupiter.extensions.autodetection.enabled", "true")
-    systemProperty("org.aspectj.weaver.Dump.exception", "false")
     systemProperty("user.timezone", "Europe/Moscow")
-    systemProperty("tmsUrl", "https://team-y7pi.testit.software")
-    systemProperty("tmsPrivateToken", "ZlJPWVRzZExIME5nbzQ3VzR0")
-    systemProperty("tmsProjectId", "01963448-e8d0-7699-8104-de8417ca27a7")
-    systemProperty("tmsConfigurationId", "01963448-e908-74f6-a9a3-1e6214c00622")
-    systemProperty("tmsAdapterMode", 1)
-    systemProperty("tmsTestRunName", "secondRegress")
-    systemProperty("tmsTestRunId", "252a3b2d-018a-49bb-b76a-e6f2289bf604")
-    /**
-     * Обязательно использование следующих правил
-     * https://junit.org/junit5/docs/current/user-guide/#running-tests-tag-expressions
-     *
-     */
-    jvmArgs = listOf("-Xmx2g", "-Xms1g", "-Xss512k", "-Dfile.encoding=UTF-8", "-Dorg.aspectj.weaver.Dump.exception=false", "-Djavax.net.ssl.trustStoreType=jks", "-Djavax.net.ssl.trustStore=", "-Djavax.net.ssl.trustStorePassword=")
+    //systemProperty("tmsUrl", "https://team-y7pi.testit.software")
+    //systemProperty("tmsPrivateToken", System.getenv("TMS_PRIVATE_TOKEN"))
+    //systemProperty("tmsProjectId", "01963448-e8d0-7699-8104-de8417ca27a7")
+    //systemProperty("tmsConfigurationId", "01963448-e908-74f6-a9a3-1e6214c00622")
+    //systemProperty("tmsAdapterMode", 2)
+    //systemProperty("tmsTestRunName", "Test Run")
+    //systemProperty("tmsTestRunId", "9ed700c4-efe7-4346-89e8-baf63c5ca5fe")
+    //systemProperty("tmsAutomaticCreationTestCases", true)
+    //systemProperty("tmsCertValidation", false)
+    doFirst {
+        val weaver: File? = configurations["aspectConfig"].find { it.name.contains("aspectjweaver") }
+        jvmArgs("-javaagent:${weaver?.absolutePath}")
+    }
+    jvmArgs = listOf("-Xmx2g", "-Xms1g", "-Xss512k", "-Dfile.encoding=UTF-8", "-Djavax.net.ssl.trustStoreType=jks", "-Djavax.net.ssl.trustStore=", "-Djavax.net.ssl.trustStorePassword=")
     outputs.cacheIf { false }
     useJUnitPlatform {
 

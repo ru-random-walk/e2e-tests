@@ -53,6 +53,13 @@ jobs:
       GOOGLE_USER_PASSWORD: ${{ secrets.GOOGLE_USER_PASSWORD }}
       TEST_TOKEN: ${{ secrets.TEST_TOKEN }}
       AUTOTEST_TOKEN: ${{ secrets.AUTOTEST_TOKEN }}
+      TMS_PRIVATE_TOKEN: ${{ secrets.TMS_PRIVATE_TOKEN }}
+      TMS_URL: https://team-y7pi.testit.software
+      TMS_PROJECT_ID: 01963448-e8d0-7699-8104-de8417ca27a7
+      TMS_CONFIGURATION_ID: 01963448-e908-74f6-a9a3-1e6214c00622
+      TMS_CERT_VALIDATION: false
+      TMS_AUTO_CREATE_TEST_CASES: true
+      CURRENT_DATE: $(TZ=Europe/Moscow date +'%Y-%m-%d %H:%M:%S')
 
     steps:
       - name: Checkout repository
@@ -70,7 +77,12 @@ jobs:
           ./gradlew clean --no-daemon
           echo "Running tests with tag: ${{ github.event.inputs.testTag }}"
           if [[ "${{ github.event.inputs.testTag }}" == "all" ]]; then
-            ./gradlew test --no-daemon
+          {
+          echo "Текущая дата = $CURRENT_DATE"
+            ./gradlew test --no-daemon -DtmsUrl=$TMS_URL -DtmsPrivateToken=$TMS_PRIVATE_TOKEN -DtmsProjectId=$TMS_PROJECT_ID -DtmsConfigurationId=$TMS_CONFIGURATION_ID \
+              -DtmsAdapterMode=2 -DtmsTestRunName="Random Walk Regress $CURRENT_DATE" -DtmsAutomaticCreationTestCases=$TMS_AUTO_CREATE_TEST_CASES \
+                -DtmsCertValidation=$TMS_CERT_VALIDATION 
+          }
           else
             ./gradlew test -PincludeTags=${{ github.event.inputs.testTag }} --no-daemon
           fi
@@ -81,18 +93,3 @@ jobs:
         with:
           name: test-report
           path: ./build/reports/tests/test
-
-      - name: Generate allure report
-        uses: simple-elf/allure-report-action@master
-        if: always()
-        id: allure-report
-        with:
-          allure_results: ./build/allure-results
-          allure_report: ./allure-report
-
-      - name: Upload Allure Report
-        uses: actions/upload-artifact@v4
-        if: always()
-        with:
-          name: allure-report
-          path: ./allure-report

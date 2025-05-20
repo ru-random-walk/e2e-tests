@@ -1,14 +1,13 @@
 package random_walk.auth.token_controller;
 
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import random_walk.auth.AuthTest;
-import ru.testit.annotations.Step;
+import ru.testit.annotations.DisplayName;
+import ru.testit.annotations.ExternalId;
 import ru.testit.annotations.WorkItemIds;
 
 import java.util.UUID;
 
-import static io.qameta.allure.Allure.step;
 import static org.junit.jupiter.api.Assertions.*;
 import static random_walk.automation.util.ExceptionUtils.toDefaultErrorResponse;
 
@@ -16,6 +15,7 @@ class AuthGetAccessTokenTest extends AuthTest {
 
     @Test
     @WorkItemIds("56")
+    @ExternalId("auth_service.get_access_token_by_invalid_user_token")
     @DisplayName("Получаем access_token по невалидному токену пользователя")
     void getAccessTokenByInvalidUserToken() {
 
@@ -23,10 +23,6 @@ class AuthGetAccessTokenTest extends AuthTest {
 
         var accessToken = toDefaultErrorResponse(() -> authServiceApi.getAuthTokens(googleToken.toString()));
 
-
-                assertEquals(
-                        "Google respond with UNAUTHORIZED error code",
-                        accessToken.getMessage(),
-                        "Сообщение об ошибке совпадает");
+        assertEquals("Google respond with UNAUTHORIZED error code", accessToken.getMessage(), "Сообщение об ошибке совпадает");
     }
 }
