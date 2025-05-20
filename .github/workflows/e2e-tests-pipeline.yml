@@ -76,12 +76,18 @@ jobs:
           chmod +x gradlew
           ./gradlew clean --no-daemon
           echo "Running tests with tag: ${{ github.event.inputs.testTag }}"
+          echo "Текущая дата = $CURRENT_DATE"
           if [[ "${{ github.event.inputs.testTag }}" == "all" ]]; then
           {
-          echo "Текущая дата = $CURRENT_DATE"
-            ./gradlew test -DtmsUrl=$TMS_URL -DtmsPrivateToken=$TMS_PRIVATE_TOKEN -DtmsProjectId=$TMS_PROJECT_ID -DtmsConfigurationId=$TMS_CONFIGURATION_ID \
-              -DtmsAdapterMode=2 -DtmsTestRunName="Random Walk Regress $CURRENT_DATE" -DtmsAutomaticCreationTestCases=$TMS_AUTO_CREATE_TEST_CASES \
-                -DtmsCertValidation=$TMS_CERT_VALIDATION 
+            ./gradlew test \
+            -DtmsUrl=$TMS_URL \
+            -DtmsPrivateToken=$TMS_PRIVATE_TOKEN \
+            -DtmsProjectId=$TMS_PROJECT_ID \
+            -DtmsConfigurationId=$TMS_CONFIGURATION_ID \
+            -DtmsAdapterMode=2 \
+            -DtmsTestRunName="Random Walk Regress $CURRENT_DATE" \
+            -DtmsAutomaticCreationTestCases=$TMS_AUTO_CREATE_TEST_CASES \
+            -DtmsCertValidation=$TMS_CERT_VALIDATION 
           }
           else
             ./gradlew test -PincludeTags=${{ github.event.inputs.testTag }} --no-daemon
