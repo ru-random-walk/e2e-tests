@@ -36,11 +36,12 @@ public class WebsocketApi {
 
     public void sendMessage(String text,
                             StompSession session,
+                            String token,
                             UUID chatId,
                             UUID sender,
                             UUID recipient,
                             LocalDateTime localDateTime) {
-        StompHeaders sendHeaders = getStompHeaders();
+        StompHeaders sendHeaders = getStompHeaders(token);
         Payload payload = new Payload().setType("text").setText(text);
         MessageRequestDto message = new MessageRequestDto(payload, chatId, sender, recipient, localDateTime);
         log.info("Отправляем {}", message);
@@ -67,10 +68,11 @@ public class WebsocketApi {
         return session;
     }
 
-    private StompHeaders getStompHeaders() {
+    private StompHeaders getStompHeaders(String token) {
         StompHeaders sendHeaders = new StompHeaders();
         sendHeaders.setDestination(websocketConfig.getMessageEndpoint());
         sendHeaders.setContentType(MimeType.valueOf("application/json"));
+        sendHeaders.add("Authorization", "Bearer " + token);
         return sendHeaders;
     }
 

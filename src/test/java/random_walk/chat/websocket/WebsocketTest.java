@@ -45,11 +45,19 @@ class WebsocketTest extends ChatTest {
 
         StompSession session = websocketApi.connect(chatId, testTokenConfig.getAutotestToken());
 
-        websocketApi.sendMessage(FIRST_MESSAGE, session, chatId, secondUser.getUuid(), thirdUser.getUuid(), LocalDateTime.now());
+        websocketApi.sendMessage(
+                FIRST_MESSAGE,
+                session,
+                testTokenConfig.getAutotestToken(),
+                chatId,
+                secondUser.getUuid(),
+                thirdUser.getUuid(),
+                LocalDateTime.now());
 
         websocketApi.sendMessage(
                 SECOND_MESSAGE,
                 session,
+                testTokenConfig.getAutotestToken(),
                 chatId,
                 secondUser.getUuid(),
                 thirdUser.getUuid(),
