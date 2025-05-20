@@ -1,6 +1,9 @@
 package random_walk.automation.api.auth.service;
 import ru.testit.annotations.Description;
 import ru.testit.annotations.Step;
+
+import io.qameta.allure.Step;
+import io.restassured.response.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import random_walk.automation.api.auth.AuthServiceConfigurationProperties;
@@ -84,6 +87,17 @@ public class AuthServiceApi {
         }).execute(r -> r.as(TokenResponse.class));
     }
 
+    @Step("Получаем access и refresh токены для пользователя")
+    public TokenResponse getAuthTokens(String email, Integer oneTimePassword) {
+        var mapOfRequestParams = Map.of("grant_type", "email_otp", "otp", oneTimePassword, "email", email);
+
+        return tokenControllerApi.token().reqSpec(r -> {
+            r.addFilter(new BasicAuthFilter(username, password));
+            r.setContentType("application/x-www-form-urlencoded");
+            r.addFormParams(mapOfRequestParams);
+        }).execute(r -> r.as(TokenResponse.class));
+    }
+
     @Step
     @Title("[AUTH_SERVICE: POST /token]")
     @Description("Обновляем access_token по полученному refresh_token")
@@ -131,5 +145,23 @@ public class AuthServiceApi {
         return userControllerApi.getSelfInfo()
                 .reqSpec(r -> r.addFilter(new BearerAuthToken(token)))
                 .execute(r -> r.as(DetailedUserDto.class));
+    }
+
+    public DetailedUserDto changeInfoAboutUser(String token, String fullName, String description) {
+        return userControllerApi.changeSelfInfo()
+                .reqSpec(r -> r.addFilter(new BearerAuthToken(token)))
+                .body(new ChangeUserInfoDto().fullName(fullName).aboutMe(description))
+                .execute(r -> r.as(DetailedUserDto.class));
+    }
+
+    public void logout(String token) {
+        userControllerApi.logOut().reqSpec(r -> r.addFilter(new BearerAuthToken(token))).execute(Response::andReturn);
+    }
+
+    public void sendOneTimePassword(String email) {
+        tokenControllerApi.issueOtp()
+                .reqSpec(r -> r.addFilter(new BasicAuthFilter(username, password)))
+                .body(new EmailAuthDto().email(email))
+                .execute(Response::andReturn);
     }
 }

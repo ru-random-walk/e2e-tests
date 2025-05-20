@@ -8,3 +8,7 @@ users:
     name: Автотест
     role: AUTOTEST_USER
     uuid: 490689d5-4e63-4724-8ab5-4fb32750b263
+  -
+    name: Дмитрий
+    role: PERSONAL_ACCOUNT
+    uuid: 3d154ea6-7d67-41f1-820f-5f6b403caec6

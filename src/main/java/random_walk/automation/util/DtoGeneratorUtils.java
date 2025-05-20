@@ -9,6 +9,9 @@ import ru.random_walk.swagger.auth_service.model.UserDto;
 public class DtoGeneratorUtils {
 
     public static UserDto generateUserDto(AuthUser user) {
-        return new UserDto().id(user.getId()).fullName(user.getFullName()).avatar(user.getAvatar());
+        return new UserDto().id(user.getId())
+                .fullName(user.getFullName())
+                .avatar(user.getAvatar())
+                .description(user.getDescription());
     }
 }

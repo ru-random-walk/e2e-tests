@@ -10,8 +10,10 @@ import random_walk.automation.api.chat.model.PagedModelMessage;
 import random_walk.automation.api.chat.service.ChatApi;
 import random_walk.automation.database.chat.entities.Message;
 import random_walk.automation.database.chat.functions.ChatMembersFunctions;
+import random_walk.automation.database.chat.functions.MessageFunctions;
 import random_walk.automation.domain.User;
 import random_walk.automation.domain.enums.UserRoleEnum;
+import random_walk.automation.service.ChatService;
 import random_walk.automation.websocket.WebsocketApi;
 import ru.random_walk.swagger.chat_service.model.MessageDtoPayload;
 
@@ -34,13 +36,21 @@ public abstract class ChatTest extends BaseTest {
     private ChatMembersFunctions chatMembersFunctions;
 
     @Autowired
+    private MessageFunctions messageFunctions;
+
+    @Autowired
     private WebsocketApi websocketApi;
+
+    @Autowired
+    protected ChatService chatService;
 
     protected UUID chatId;
 
     protected User firstUser;
 
     protected User secondUser;
+
+    protected User thirdUser;
 
     private Boolean isCalled = false;
 
@@ -49,12 +59,16 @@ public abstract class ChatTest extends BaseTest {
         if (!isCalled) {
             firstUser = userConfigService.getUserByRole(UserRoleEnum.TEST_USER);
             secondUser = userConfigService.getUserByRole(UserRoleEnum.AUTOTEST_USER);
+            thirdUser = userConfigService.getUserByRole(UserRoleEnum.PERSONAL_ACCOUNT);
             chatId = chatMembersFunctions.getUsersChat(firstUser.getUuid(), secondUser.getUuid());
 
             if (chatId == null) {
                 chatApi.createPrivateChatEvent(firstUser.getUuid(), secondUser.getUuid());
-                chatId = chatMembersFunctions.getUsersChat(firstUser.getUuid(), secondUser.getUuid());
+            } else if (messageFunctions.getMessagesByChatId(chatId).size() > 100) {
+                chatService.deleteChatBetweenUsers(firstUser.getUuid(), secondUser.getUuid());
+                chatApi.createPrivateChatEvent(firstUser.getUuid(), secondUser.getUuid());
             }
+            chatId = chatMembersFunctions.getUsersChat(firstUser.getUuid(), secondUser.getUuid());
 
             StompSession firstUserSession = websocketApi.connect(chatId, testTokenConfig.getToken());
             StompSession secondUserSession = websocketApi.connect(chatId, testTokenConfig.getAutotestToken());
@@ -62,6 +76,7 @@ public abstract class ChatTest extends BaseTest {
             websocketApi.sendMessage(
                     "Hi, %s!".formatted(secondUser.getName()),
                     firstUserSession,
+                    testTokenConfig.getToken(),
                     chatId,
                     firstUser.getUuid(),
                     secondUser.getUuid(),
@@ -69,6 +84,7 @@ public abstract class ChatTest extends BaseTest {
             websocketApi.sendMessage(
                     "Hi, %s!".formatted(firstUser.getName()),
                     secondUserSession,
+                    testTokenConfig.getAutotestToken(),
                     chatId,
                     secondUser.getUuid(),
                     firstUser.getUuid(),
@@ -76,6 +92,7 @@ public abstract class ChatTest extends BaseTest {
             websocketApi.sendMessage(
                     "Hi, %s!".formatted(firstUser.getName()),
                     secondUserSession,
+                    testTokenConfig.getAutotestToken(),
                     chatId,
                     secondUser.getUuid(),
                     firstUser.getUuid(),

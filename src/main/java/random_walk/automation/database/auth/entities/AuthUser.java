@@ -25,10 +25,12 @@ public class AuthUser {
 
     private String email;
 
-    private String password;
-
     private Boolean enabled;
 
     private String avatar;
 
+    private String description;
+
+    @Column(name = "avatar_version")
+    private Integer avatarVersion;
 }

@@ -74,10 +74,10 @@ jobs:
           else
             ./gradlew test -PincludeTags=${{ github.event.inputs.testTag }} --no-daemon
           fi
-        continue-on-error: true
 
       - name: Generate test report
         uses: actions/upload-artifact@v4
+        if: always()
         with:
           name: test-report
           path: ./build/reports/tests/test
@@ -92,6 +92,7 @@ jobs:
 
       - name: Upload Allure Report
         uses: actions/upload-artifact@v4
+        if: always()
         with:
           name: allure-report
           path: ./allure-report

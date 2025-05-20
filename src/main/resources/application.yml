@@ -43,12 +43,14 @@ api:
   chat-service:
     http-endpoint:
       host: https://random-walk.ru:44424/chat
-  google-oauth2:
-    email: ${GOOGLE_USER_EMAIL}
-    password: ${GOOGLE_USER_PASSWORD}
+  graphql:
+    base-uri: https://random-walk.ru:44424
+    request-path: /graphql
 spring:
   config:
-    import: classpath:users.yml
+    import:
+    - classpath:users.yml
+    - classpath:clubs.yml
 test-management-system:
   token: ZlJPWVRzZExIME5nbzQ3VzR0
   conf_id: 01963448-e908-74f6-a9a3-1e6214c00622

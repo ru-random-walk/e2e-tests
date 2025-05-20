@@ -6,6 +6,8 @@ plugins {
     id("com.diffplug.spotless") version "6.19.0"
     id("org.openapi.generator") version "4.3.0"
     id("io.spring.dependency-management") version "1.1.6"
+    id("io.qameta.allure") version "2.12.0"
+    id("io.github.kobylynskyi.graphql.codegen") version "5.0.0"
 }
 
 group = "random-walk.automation"
@@ -25,9 +27,12 @@ sourceSets {
     main {
         java {
             srcDir("$buildDir/generated/sources/openapi/src/main/java")
+            srcDir("$buildDir/generated/sources/graphql")
+            //srcDir("$buildDir/generated/sources/graphql/club_service_graphql")
         }
     }
 }
+
 apply {
     from("openapi.gradle.kts")
 }
@@ -56,6 +61,9 @@ dependencies {
 
     implementation("com.google.code.gson:gson:2.8.5")
     implementation("io.gsonfire:gson-fire:1.8.4")
+    implementation("mil.nga.sf:sf-wkt:1.2.3")
+    // https://mvnrepository.com/artifact/org.locationtech.jts/jts-core
+    implementation("org.locationtech.jts:jts-core:1.19.0")
 
     implementation("io.qameta.allure:allure-java-commons:2.27.0")
     implementation("org.awaitility:awaitility:4.2.0")
@@ -68,6 +76,7 @@ dependencies {
 
     implementation("com.google.api-client:google-api-client:2.7.0")
     implementation("org.seleniumhq.selenium:selenium-java:4.26.0")
+    testImplementation("org.awaitility:awaitility:4.3.0")
 
     implementation("com.squareup.okio:okio:3.0.0")
     implementation("com.squareup.okhttp3:okhttp:4.11.0")
@@ -87,6 +96,7 @@ dependencies {
     testImplementation("org.aspectj:aspectjrt:1.9.22")
     testImplementation("org.junit.jupiter:junit-jupiter-api")
     testImplementation("org.junit.jupiter:junit-jupiter-engine")
+    implementation("io.github.kobylynskyi:graphql-java-codegen:5.0.0")
     testImplementation("org.junit.jupiter:junit-jupiter-params")
     testImplementation("org.junit.platform:junit-platform-launcher:1.9.0")
     testImplementation("org.aspectj:aspectjweaver:1.9.22")
@@ -102,6 +112,7 @@ tasks.compileJava {
         )
     }
     options.compilerArgs.add("-parameters")
+    dependsOn("graphqlCodegen")
 }
 tasks.bootJar {
     enabled = false
@@ -109,6 +120,16 @@ tasks.bootJar {
 tasks.clean {
     delete("$rootDir/allure-results")
     delete("$rootDir/out")
+}
+tasks.graphqlCodegen {
+    graphqlSchemas.includePattern = "schema\\.graphqls"
+    outputDir = file("$buildDir/generated/sources/graphql")
+    apiPackageName = "club_service.graphql.api"
+    modelPackageName = "club_service.graphql.model"
+
+    generateApis = true
+    generateClient = true
+    generateBuilder = true
 }
 tasks.test {
 

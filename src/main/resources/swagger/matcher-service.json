@@ -72,6 +72,116 @@
         }
       }
     },
+    "/appointment/{appointmentId}/reject": {
+      "put": {
+        "tags": [
+          "appointment-controller"
+        ],
+        "summary": "Reject requested appointment",
+        "operationId": "rejectAppointment",
+        "parameters": [
+          {
+            "name": "appointmentId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorDto"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorDto"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/appointment/{appointmentId}/approve": {
+      "put": {
+        "tags": [
+          "appointment-controller"
+        ],
+        "summary": "Approve requested appointment",
+        "operationId": "approveAppointment",
+        "parameters": [
+          {
+            "name": "appointmentId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorDto"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorDto"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
     "/test/add-person": {
       "post": {
         "tags": [
@@ -121,6 +231,67 @@
           },
           "200": {
             "description": "OK"
+          }
+        }
+      }
+    },
+    "/internal/appointment/request": {
+      "post": {
+        "tags": [
+          "internal-controller"
+        ],
+        "description": "Create request for appointment",
+        "operationId": "requestForAppointment",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RequestForAppointmentDto"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorDto"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorDto"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/AppointmentDetailsDto"
+                }
+              }
+            }
           }
         }
       }
@@ -524,8 +695,7 @@
       "AvailableTimeModifyDto": {
         "required": [
           "date",
-          "latitude",
-          "longitude",
+          "location",
           "timeFrom",
           "timeUntil"
         ],
@@ -859,13 +1029,8 @@
             },
             "example": "01:30:00.000+03:00"
           },
-          "longitude": {
-            "type": "number",
-            "format": "double"
-          },
-          "latitude": {
-            "type": "number",
-            "format": "double"
+          "location": {
+            "$ref": "#/components/schemas/LocationDto"
           },
           "clubsInFilter": {
             "type": "array",
@@ -897,6 +1062,35 @@
           }
         }
       },
+      "LocationDto": {
+        "required": [
+          "building",
+          "city",
+          "latitude",
+          "longitude",
+          "street"
+        ],
+        "type": "object",
+        "properties": {
+          "longitude": {
+            "type": "number",
+            "format": "double"
+          },
+          "latitude": {
+            "type": "number",
+            "format": "double"
+          },
+          "city": {
+            "type": "string"
+          },
+          "street": {
+            "type": "string"
+          },
+          "building": {
+            "type": "string"
+          }
+        }
+      },
       "RegisteredUserInfoEvent": {
         "type": "object",
         "properties": {
@@ -909,6 +1103,80 @@
           }
         }
       },
+      "RequestForAppointmentDto": {
+        "type": "object",
+        "properties": {
+          "requesterId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "partnerId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "startTime": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "longitude": {
+            "type": "number",
+            "format": "double"
+          },
+          "latitude": {
+            "type": "number",
+            "format": "double"
+          }
+        }
+      },
+      "AppointmentDetailsDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "participants": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          "startsAt": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2024-10-31T01:30:00+03:00"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2024-10-31T01:30:00+03:00"
+          },
+          "endedAt": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2024-10-31T01:30:00+03:00"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "REQUESTED",
+              "APPOINTED",
+              "IN_PROGRESS",
+              "DONE",
+              "CANCELED"
+            ]
+          },
+          "longitude": {
+            "type": "number",
+            "format": "double"
+          },
+          "latitude": {
+            "type": "number",
+            "format": "double"
+          }
+        }
+      },
       "ScheduleTimeFrameDto": {
         "type": "object",
         "properties": {
@@ -916,7 +1184,15 @@
             "type": "string",
             "format": "uuid"
           },
+          "requesterId": {
+            "type": "string",
+            "format": "uuid"
+          },
           "appointmentId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "availableTimeId": {
             "type": "string",
             "format": "uuid"
           },
@@ -1244,13 +1520,8 @@
             },
             "example": "01:30:00.000+03:00"
           },
-          "latitude": {
-            "type": "number",
-            "format": "double"
-          },
-          "longitude": {
-            "type": "number",
-            "format": "double"
+          "location": {
+            "$ref": "#/components/schemas/LocationDto"
           },
           "availableTimeClubsInFilter": {
             "type": "array",
@@ -1325,55 +1596,6 @@
             "items": {
               "$ref": "#/components/schemas/ClubDto"
             }
-          }
-        }
-      },
-      "AppointmentDetailsDto": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "string",
-            "format": "uuid"
-          },
-          "participants": {
-            "type": "array",
-            "items": {
-              "type": "string",
-              "format": "uuid"
-            }
-          },
-          "startsAt": {
-            "type": "string",
-            "format": "date-time",
-            "example": "2024-10-31T01:30:00+03:00"
-          },
-          "updatedAt": {
-            "type": "string",
-            "format": "date-time",
-            "example": "2024-10-31T01:30:00+03:00"
-          },
-          "endedAt": {
-            "type": "string",
-            "format": "date-time",
-            "example": "2024-10-31T01:30:00+03:00"
-          },
-          "status": {
-            "type": "string",
-            "enum": [
-              "REQUESTED",
-              "APPOINTED",
-              "IN_PROGRESS",
-              "DONE",
-              "CANCELED"
-            ]
-          },
-          "longitude": {
-            "type": "number",
-            "format": "double"
-          },
-          "latitude": {
-            "type": "number",
-            "format": "double"
           }
         }
       }

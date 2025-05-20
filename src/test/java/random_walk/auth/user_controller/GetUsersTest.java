@@ -25,15 +25,15 @@ class GetUsersTest extends AuthTest {
     @Test
     @DisplayName("Получение списка пользователей по их идентификаторам")
     void getUsersByIds() {
-        var firstUserName = userConfigService.getUserByRole(TEST_USER).getName();
-        var secondUserName = userConfigService.getUserByRole(AUTOTEST_USER).getName();
+        var firstUserInfo = userConfigService.getUserByRole(TEST_USER);
+        var secondUserInfo = userConfigService.getUserByRole(AUTOTEST_USER);
         var firstTestUserDb = step(
-                "GIVEN: Получен пользователь с именем " + firstUserName,
-                () -> authUserFunctions.getUserByFullName(firstUserName));
+                "GIVEN: Получен пользователь с id " + firstUserInfo.getUuid(),
+                () -> authUserFunctions.getById(firstUserInfo.getUuid()));
 
         var secondTestUserDb = step(
-                "AND: Получен пользователь с именем " + secondUserName,
-                () -> authUserFunctions.getUserByFullName(secondUserName));
+                "AND: Получен пользователь с id " + secondUserInfo.getUuid(),
+                () -> authUserFunctions.getById(secondUserInfo.getUuid()));
 
         Integer page = null;
         Integer size = null;
@@ -45,33 +45,33 @@ class GetUsersTest extends AuthTest {
         step("THEN: Информация о пользователях успешно получена", () -> {
             var firstUser = usersInfo.getContent()
                     .stream()
-                    .filter(user -> user.getFullName().equals(firstUserName))
+                    .filter(user -> Objects.equals(user.getId(), firstUserInfo.getUuid()))
                     .findFirst()
-                    .orElseThrow(() -> new NotFoundException("Не найден пользователь с именем " + firstUserName));
+                    .orElseThrow(() -> new NotFoundException("Не найден пользователь с именем " + firstUserInfo.getName()));
             var secondUser = usersInfo.getContent()
                     .stream()
-                    .filter(user -> user.getFullName().equals(secondUserName))
+                    .filter(user -> Objects.equals(user.getId(), secondUserInfo.getUuid()))
                     .findFirst()
-                    .orElseThrow(() -> new NotFoundException("Не найден пользователь с именем " + secondUserName));
+                    .orElseThrow(() -> new NotFoundException("Не найден пользователь с именем " + secondUserInfo.getName()));
             assertAll(
                     () -> checkPagination(usersList.size(), page, size, usersInfo.getPage()),
-                    () -> checkUserInfo(firstUserName, firstUser, generateUserDto(firstTestUserDb)),
-                    () -> checkUserInfo(secondUserName, secondUser, generateUserDto(secondTestUserDb)));
+                    () -> checkUserInfo(firstUserInfo.getName(), firstUser, generateUserDto(firstTestUserDb)),
+                    () -> checkUserInfo(secondUserInfo.getName(), secondUser, generateUserDto(secondTestUserDb)));
         });
     }
 
     @Test
     @DisplayName("Получение списка пользователей с учетом ограничения size")
     void getUsersWithSizeLimit() {
-        var firstUserName = userConfigService.getUserByRole(TEST_USER).getName();
-        var secondUserName = userConfigService.getUserByRole(AUTOTEST_USER).getName();
+        var firstUserInfo = userConfigService.getUserByRole(TEST_USER);
+        var secondUserInfo = userConfigService.getUserByRole(AUTOTEST_USER);
         var firstTestUserDb = step(
-                "GIVEN: Получен пользователь с именем " + firstUserName,
-                () -> authUserFunctions.getUserByFullName(firstUserName));
+                "GIVEN: Получен пользователь с id " + firstUserInfo.getUuid(),
+                () -> authUserFunctions.getById(firstUserInfo.getUuid()));
 
         var secondTestUserDb = step(
-                "AND: Получен пользователь с именем " + secondUserName,
-                () -> authUserFunctions.getUserByFullName(secondUserName));
+                "AND: Получен пользователь с именем " + secondUserInfo.getUuid(),
+                () -> authUserFunctions.getById(secondUserInfo.getUuid()));
 
         Integer size = 1;
         Integer page = null;
@@ -82,7 +82,7 @@ class GetUsersTest extends AuthTest {
 
         step("THEN: Получена информация только об одном пользователе", () -> {
 
-            var dbUser = Objects.equals(usersInfo.getContent().get(0).getFullName(), firstUserName)
+            var dbUser = Objects.equals(usersInfo.getContent().get(0).getFullName(), firstUserInfo.getName())
                     ? firstTestUserDb
                     : secondTestUserDb;
             assertAll(
@@ -95,15 +95,15 @@ class GetUsersTest extends AuthTest {
     @ValueSource(ints = { 0, 1 })
     @DisplayName("Получение списка пользователей с учетом значения page =")
     void getUsersWithPageLimit(Integer page) {
-        var firstUserName = userConfigService.getUserByRole(TEST_USER).getName();
-        var secondUserName = userConfigService.getUserByRole(AUTOTEST_USER).getName();
+        var firstUserInfo = userConfigService.getUserByRole(TEST_USER);
+        var secondUserInfo = userConfigService.getUserByRole(AUTOTEST_USER);
         var firstTestUserDb = step(
-                "GIVEN: Получен пользователь с именем " + firstUserName,
-                () -> authUserFunctions.getUserByFullName(firstUserName));
+                "GIVEN: Получен пользователь с id " + firstUserInfo.getUuid(),
+                () -> authUserFunctions.getById(firstUserInfo.getUuid()));
 
         var secondTestUserDb = step(
-                "AND: Получен пользователь с именем " + secondUserName,
-                () -> authUserFunctions.getUserByFullName(secondUserName));
+                "AND: Получен пользователь с id " + secondUserInfo.getUuid(),
+                () -> authUserFunctions.getById(secondUserInfo.getUuid()));
 
         Integer size = 1;
         var usersList = List.of(firstTestUserDb.getId(), secondTestUserDb.getId());
@@ -113,7 +113,7 @@ class GetUsersTest extends AuthTest {
 
         step("THEN: Полученная о клиентах информация совпадает с ожидаемой", () -> {
 
-            var dbUser = Objects.equals(usersInfo.getContent().get(0).getFullName(), firstUserName)
+            var dbUser = Objects.equals(usersInfo.getContent().get(0).getFullName(), firstUserInfo.getName())
                     ? firstTestUserDb
                     : secondTestUserDb;
             assertAll(
@@ -126,15 +126,15 @@ class GetUsersTest extends AuthTest {
     @ValueSource(strings = { "asc", "desc" })
     @DisplayName("Получение списка пользователей с учетом сортировки по fullName")
     void getUsersWithFullNameSortParam(String sortOrder) {
-        var firstUserName = userConfigService.getUserByRole(TEST_USER).getName();
-        var secondUserName = userConfigService.getUserByRole(AUTOTEST_USER).getName();
+        var firstUserInfo = userConfigService.getUserByRole(TEST_USER);
+        var secondUserInfo = userConfigService.getUserByRole(AUTOTEST_USER);
         var firstTestUserDb = step(
-                "GIVEN: Получен пользователь с именем " + firstUserName,
-                () -> authUserFunctions.getUserByFullName(firstUserName));
+                "GIVEN: Получен пользователь с id " + firstUserInfo.getUuid(),
+                () -> authUserFunctions.getById(firstUserInfo.getUuid()));
 
         var secondTestUserDb = step(
-                "AND: Получен пользователь с именем " + secondUserName,
-                () -> authUserFunctions.getUserByFullName(secondUserName));
+                "AND: Получен пользователь с id " + secondUserInfo.getUuid(),
+                () -> authUserFunctions.getById(secondUserInfo.getUuid()));
 
         Integer size = null;
         Integer page = 0;
@@ -166,15 +166,15 @@ class GetUsersTest extends AuthTest {
     @ValueSource(strings = { "asc", "desc" })
     @DisplayName("Получение списка пользователей с учетом сортировки по id")
     void getUsersWithIdSortParam(String sortOrder) {
-        var firstUserName = userConfigService.getUserByRole(TEST_USER).getName();
-        var secondUserName = userConfigService.getUserByRole(AUTOTEST_USER).getName();
+        var firstUserInfo = userConfigService.getUserByRole(TEST_USER);
+        var secondUserInfo = userConfigService.getUserByRole(AUTOTEST_USER);
         var firstTestUserDb = step(
-                "GIVEN: Получен пользователь с именем " + firstUserName,
-                () -> authUserFunctions.getUserByFullName(firstUserName));
+                "GIVEN: Получен пользователь с id " + firstUserInfo.getUuid(),
+                () -> authUserFunctions.getById(firstUserInfo.getUuid()));
 
         var secondTestUserDb = step(
-                "AND: Получен пользователь с именем " + secondUserName,
-                () -> authUserFunctions.getUserByFullName(secondUserName));
+                "AND: Получен пользователь с id " + secondUserInfo.getUuid(),
+                () -> authUserFunctions.getById(secondUserInfo.getUuid()));
 
         Integer size = null;
         Integer page = 0;
@@ -202,53 +202,13 @@ class GetUsersTest extends AuthTest {
         });
     }
 
-    @ParameterizedTest(name = "порядке {0}")
-    @ValueSource(strings = { "asc", "desc" })
-    @DisplayName("Получение списка пользователей с учетом сортировки по avatar")
-    void getUsersWithAvatarSortParam(String sortOrder) {
-        var firstUserName = userConfigService.getUserByRole(TEST_USER).getName();
-        var secondUserName = userConfigService.getUserByRole(AUTOTEST_USER).getName();
-        var firstTestUserDb = step(
-                "GIVEN: Получен пользователь с именем " + firstUserName,
-                () -> authUserFunctions.getUserByFullName(firstUserName));
-
-        var secondTestUserDb = step(
-                "AND: Получен пользователь с именем " + secondUserName,
-                () -> authUserFunctions.getUserByFullName(secondUserName));
-
-        Integer size = null;
-        Integer page = 0;
-        String sort = "avatar," + sortOrder;
-        var usersList = List.of(firstTestUserDb.getId(), secondTestUserDb.getId());
-        var usersInfo = step(
-                "WHEN: Получаем информацию о пользователях по их id с учетом сортировки по avatar",
-                () -> authServiceApi.getUsersById(usersList, size, page, sort));
-
-        step("THEN: Порядок сортировки совпадает с ожидаемым", () -> {
-            var sortedUsers = List.of(generateUserDto(firstTestUserDb), generateUserDto(secondTestUserDb));
-            if (sortOrder.equals("asc")) {
-                sortedUsers = sortedUsers.stream()
-                        .sorted(Comparator.comparing(UserDto::getAvatar, Comparator.naturalOrder()))
-                        .toList();
-            } else {
-                sortedUsers = sortedUsers.stream()
-                        .sorted(Comparator.comparing(UserDto::getAvatar, Comparator.reverseOrder()))
-                        .toList();
-            }
-            List<UserDto> finalSortedUsers = sortedUsers;
-            assertAll(
-                    () -> checkPagination(usersList.size(), page, size, usersInfo.getPage()),
-                    () -> assertEquals(finalSortedUsers, usersInfo.getContent()));
-        });
-    }
-
     @Test
     @DisplayName("Получение пустой страницы с пользователями")
     void getUsersInEmptyPage() {
-        var firstUserName = userConfigService.getUserByRole(TEST_USER).getName();
+        var firstUserInfo = userConfigService.getUserByRole(TEST_USER);
         var firstTestUserDb = step(
-                "GIVEN: Получен пользователь с именем " + firstUserName,
-                () -> authUserFunctions.getUserByFullName(firstUserName));
+                "GIVEN: Получен пользователь с id " + firstUserInfo.getUuid(),
+                () -> authUserFunctions.getById(firstUserInfo.getUuid()));
 
         Integer size = null;
         Integer page = 1;
