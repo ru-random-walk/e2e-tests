@@ -99,7 +99,7 @@ class MessageListTest extends ChatTest {
     }
 
     @ParameterizedTest
-    @WorkItemIds({"154", "156", "158"})
+    @WorkItemIds({ "154", "156", "158" })
     @ExternalId("chat_service.get_message_list_by_date_interval")
     @MethodSource("getDates")
     @DisplayName("Получение списка сообщений, отфильтрованных по временному диапазону отправки {desc}")
