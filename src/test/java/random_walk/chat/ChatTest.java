@@ -16,8 +16,8 @@ import random_walk.automation.domain.enums.UserRoleEnum;
 import random_walk.automation.service.ChatService;
 import random_walk.automation.websocket.WebsocketApi;
 import ru.random_walk.swagger.chat_service.model.MessageDtoPayload;
-import ru.testit.annotations.Description;
 import ru.testit.annotations.Step;
+import ru.testit.annotations.Title;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -58,7 +58,7 @@ public abstract class ChatTest extends BaseTest {
 
     @BeforeAll
     @Step
-    @Description("Отправляем сообщения в созданный тестовый чат")
+    @Title("Отправляем сообщения в созданный тестовый чат")
     public void createChatAndMessages() {
         if (!isCalled) {
             firstUser = userConfigService.getUserByRole(UserRoleEnum.TEST_USER);

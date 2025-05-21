@@ -61,6 +61,7 @@ jobs:
       TMS_AUTO_CREATE_TEST_CASES: true
       TMS_ADAPTER_MODE: 2
       CURRENT_DATE: (TZ=Europe/Moscow date +'%Y-%m-%d %H:%M:%S')
+      TMS_TEST_RUN_NAME: "Random Walk Regress $CURRENT_DATE"
 
     steps:
       - name: Checkout repository
@@ -87,13 +88,21 @@ jobs:
             -DtmsPrivateToken=$TMS_PRIVATE_TOKEN \
             -DtmsProjectId=$TMS_PROJECT_ID \
             -DtmsConfigurationId=$TMS_CONFIGURATION_ID \
-            -DtmsAdapterMode=2 \
+            -DtmsAdapterMode=$TMS_ADAPTER_MODE \
             -DtmsTestRunName="Random Walk Regress $CURRENT_DATE" \
             -DtmsAutomaticCreationTestCases=$TMS_AUTO_CREATE_TEST_CASES \
             -DtmsCertValidation=$TMS_CERT_VALIDATION 
           }
           else
-            ./gradlew test -PincludeTags=${{ github.event.inputs.testTag }} --no-daemon
+            ./gradlew test -PincludeTags=${{ github.event.inputs.testTag }} \
+            -DtmsUrl=$TMS_URL \
+            -DtmsPrivateToken=$TMS_PRIVATE_TOKEN \
+            -DtmsProjectId=$TMS_PROJECT_ID \
+            -DtmsConfigurationId=$TMS_CONFIGURATION_ID \
+            -DtmsAdapterMode=$TMS_ADAPTER_MODE \
+            -DtmsTestRunName="Random Walk ${{ github.event.inputs.testTag }} $CURRENT_DATE" \
+            -DtmsAutomaticCreationTestCases=$TMS_AUTO_CREATE_TEST_CASES \
+            -DtmsCertValidation=$TMS_CERT_VALIDATION
           fi
 
       - name: Generate test report

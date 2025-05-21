@@ -138,17 +138,17 @@ tasks.graphqlCodegen {
 }
 tasks.test {
 
-    systemProperty("junit.jupiter.extensions.autodetection.enabled", "true")
+    /*systemProperty("junit.jupiter.extensions.autodetection.enabled", "true")
     systemProperty("user.timezone", "Europe/Moscow")
-    //systemProperty("tmsUrl", "https://team-y7pi.testit.software")
-    //systemProperty("tmsPrivateToken", System.getenv("TMS_PRIVATE_TOKEN"))
-    //systemProperty("tmsProjectId", "01963448-e8d0-7699-8104-de8417ca27a7")
-    //systemProperty("tmsConfigurationId", "01963448-e908-74f6-a9a3-1e6214c00622")
-    //systemProperty("tmsAdapterMode", 2)
-    //systemProperty("tmsTestRunName", "Test Run")
+    systemProperty("tmsUrl", "https://team-y7pi.testit.software")
+    systemProperty("tmsPrivateToken", System.getenv("TMS_PRIVATE_TOKEN"))
+    systemProperty("tmsProjectId", "01963448-e8d0-7699-8104-de8417ca27a7")
+    systemProperty("tmsConfigurationId", "01963448-e908-74f6-a9a3-1e6214c00622")
+    systemProperty("tmsAdapterMode", 2)
+    systemProperty("tmsTestRunName", "Test Run")
     //systemProperty("tmsTestRunId", "9ed700c4-efe7-4346-89e8-baf63c5ca5fe")
-    //systemProperty("tmsAutomaticCreationTestCases", true)
-    //systemProperty("tmsCertValidation", false)
+    systemProperty("tmsAutomaticCreationTestCases", true)
+    systemProperty("tmsCertValidation", false)*/
     doFirst {
         val weaver: File? = configurations["aspectConfig"].find { it.name.contains("aspectjweaver") }
         jvmArgs("-javaagent:${weaver?.absolutePath}")
