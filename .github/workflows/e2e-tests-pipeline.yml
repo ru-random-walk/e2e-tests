@@ -95,7 +95,8 @@ jobs:
           }
           else
           {
-            ./gradlew test -PincludeTags=${{ github.event.inputs.testTag }} \
+            ./gradlew test \
+            -PincludeTags=${{ github.event.inputs.testTag }} \
             -DtmsUrl=$TMS_URL \
             -DtmsPrivateToken=$TMS_PRIVATE_TOKEN \
             -DtmsProjectId=$TMS_PROJECT_ID \
