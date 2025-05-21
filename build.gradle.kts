@@ -54,10 +54,8 @@ dependencies {
 
     implementation("org.springframework.boot:spring-boot-starter-data-jpa:$springVersion")
     implementation("org.springframework.boot:spring-boot-starter-validation:$springVersion")
-    implementation("org.springframework.boot:spring-boot-starter-aop:$springVersion")
     implementation("org.springframework.boot:spring-boot-starter-test:$springVersion")
     implementation("org.springframework.boot:spring-boot-starter-websocket:$springVersion")
-    implementation("org.springframework.boot:spring-boot-starter-aop")
 
     implementation("org.springframework.retry:spring-retry:1.3.3")
     implementation("ch.qos.logback:logback-core:1.2.9")
@@ -70,7 +68,6 @@ dependencies {
     implementation("org.locationtech.jts:jts-core:1.19.0")
 
     implementation("io.qameta.allure:allure-java-commons:2.27.0")
-    implementation("org.awaitility:awaitility:4.2.0")
     implementation("org.apache.commons:commons-text:1.10.0")
     implementation("commons-codec:commons-codec:1.13")
 
@@ -80,7 +77,7 @@ dependencies {
 
     implementation("com.google.api-client:google-api-client:2.7.0")
     implementation("org.seleniumhq.selenium:selenium-java:4.26.0")
-    testImplementation("org.awaitility:awaitility:4.3.0")
+    implementation("org.awaitility:awaitility:4.3.0")
 
     implementation("com.squareup.okio:okio:3.0.0")
     implementation("com.squareup.okhttp3:okhttp:4.11.0")
@@ -103,6 +100,7 @@ dependencies {
     testImplementation("org.junit.jupiter:junit-jupiter-params")
     testImplementation("org.junit.platform:junit-platform-launcher:1.9.0")
     "aspectConfig"("org.aspectj:aspectjweaver:$aspectjVersion")
+    implementation("org.aspectj:aspectjweaver:$aspectjVersion")
     implementation("org.aspectj:aspectjrt:$aspectjVersion")
     implementation("org.aspectj:aspectjtools:$aspectjVersion")
     implementation("ru.testit:testit-java-commons:2.6.2-TMS-5.3")
@@ -138,9 +136,9 @@ tasks.graphqlCodegen {
 }
 tasks.test {
 
-    /*systemProperty("junit.jupiter.extensions.autodetection.enabled", "true")
+    systemProperty("junit.jupiter.extensions.autodetection.enabled", "true")
     systemProperty("user.timezone", "Europe/Moscow")
-    systemProperty("tmsUrl", "https://team-y7pi.testit.software")
+    /*systemProperty("tmsUrl", "https://team-y7pi.testit.software")
     systemProperty("tmsPrivateToken", System.getenv("TMS_PRIVATE_TOKEN"))
     systemProperty("tmsProjectId", "01963448-e8d0-7699-8104-de8417ca27a7")
     systemProperty("tmsConfigurationId", "01963448-e908-74f6-a9a3-1e6214c00622")

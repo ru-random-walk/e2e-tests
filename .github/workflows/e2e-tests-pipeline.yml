@@ -82,30 +82,26 @@ jobs:
           echo "$TMS_ADAPTER_MODE"
           echo "$TMS_URL"
           if [[ "${{ github.event.inputs.testTag }}" == "all" ]]; then
-          {
             ./gradlew test \
-            -DtmsUrl=$TMS_URL \
-            -DtmsPrivateToken=$TMS_PRIVATE_TOKEN \
-            -DtmsProjectId=$TMS_PROJECT_ID \
-            -DtmsConfigurationId=$TMS_CONFIGURATION_ID \
-            -DtmsAdapterMode=$TMS_ADAPTER_MODE \
-            -DtmsTestRunName="Random Walk Regress $CURRENT_DATE" \
-            -DtmsAutomaticCreationTestCases=$TMS_AUTO_CREATE_TEST_CASES \
-            -DtmsCertValidation=$TMS_CERT_VALIDATION 
-          }
+              -DtmsUrl=$TMS_URL \
+              -DtmsPrivateToken=$TMS_PRIVATE_TOKEN \
+              -DtmsProjectId=$TMS_PROJECT_ID \
+              -DtmsConfigurationId=$TMS_CONFIGURATION_ID \
+              -DtmsAdapterMode=$TMS_ADAPTER_MODE \
+              -DtmsTestRunName="Random Walk Regress $CURRENT_DATE" \
+              -DtmsAutomaticCreationTestCases=$TMS_AUTO_CREATE_TEST_CASES \
+              -DtmsCertValidation=$TMS_CERT_VALIDATION 
           else
-          {
             ./gradlew test \
-            -PincludeTags=${{ github.event.inputs.testTag }} \
-            -DtmsUrl=$TMS_URL \
-            -DtmsPrivateToken=$TMS_PRIVATE_TOKEN \
-            -DtmsProjectId=$TMS_PROJECT_ID \
-            -DtmsConfigurationId=$TMS_CONFIGURATION_ID \
-            -DtmsAdapterMode=$TMS_ADAPTER_MODE \
-            -DtmsTestRunName="Random Walk ${{ github.event.inputs.testTag }} $CURRENT_DATE" \
-            -DtmsAutomaticCreationTestCases=$TMS_AUTO_CREATE_TEST_CASES \
-            -DtmsCertValidation=$TMS_CERT_VALIDATION
-          }
+              -PincludeTags=${{ github.event.inputs.testTag }} \
+              -DtmsUrl=$TMS_URL \
+              -DtmsPrivateToken=$TMS_PRIVATE_TOKEN \
+              -DtmsProjectId=$TMS_PROJECT_ID \
+              -DtmsConfigurationId=$TMS_CONFIGURATION_ID \
+              -DtmsAdapterMode=$TMS_ADAPTER_MODE \
+              -DtmsTestRunName="Random Walk ${{ github.event.inputs.testTag }} $CURRENT_DATE" \
+              -DtmsAutomaticCreationTestCases=$TMS_AUTO_CREATE_TEST_CASES \
+              -DtmsCertValidation=$TMS_CERT_VALIDATION
           fi
 
       - name: Generate test report
