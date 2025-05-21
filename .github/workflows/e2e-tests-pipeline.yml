@@ -94,6 +94,7 @@ jobs:
             -DtmsCertValidation=$TMS_CERT_VALIDATION 
           }
           else
+          {
             ./gradlew test -PincludeTags=${{ github.event.inputs.testTag }} \
             -DtmsUrl=$TMS_URL \
             -DtmsPrivateToken=$TMS_PRIVATE_TOKEN \
@@ -103,6 +104,7 @@ jobs:
             -DtmsTestRunName="Random Walk ${{ github.event.inputs.testTag }} $CURRENT_DATE" \
             -DtmsAutomaticCreationTestCases=$TMS_AUTO_CREATE_TEST_CASES \
             -DtmsCertValidation=$TMS_CERT_VALIDATION
+          }
           fi
 
       - name: Generate test report
