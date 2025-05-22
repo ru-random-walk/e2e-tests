@@ -1,23 +1,21 @@
 package random_walk.chat.websocket;
 
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.stomp.StompSession;
+import random_walk.automation.api.chat.model.PagedModelMessage;
 import random_walk.automation.database.chat.functions.ChatMembersFunctions;
 import random_walk.automation.websocket.WebsocketApi;
 import random_walk.chat.ChatTest;
+import ru.testit.annotations.*;
+import ru.testit.services.Adapter;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.UUID;
-import java.util.stream.Stream;
 
-import static io.qameta.allure.Allure.step;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.containsInAnyOrder;
-import static org.hamcrest.Matchers.equalTo;
-import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class WebsocketTest extends ChatTest {
 
@@ -33,6 +31,8 @@ class WebsocketTest extends ChatTest {
 
     public static final String SECOND_MESSAGE = "How are you?";
 
+    @Step
+    @Description("Очистка старого и создание нового пустого чата для пользователей 490689d5-4e63-4724-8ab5-4fb32750b263 и 3d154ea6-7d67-41f1-820f-5f6b403caec6")
     @BeforeAll
     public void createChatWithoutMessages() {
         if (chatMembersFunctions.getUsersChat(secondUser.getUuid(), thirdUser.getUuid()) != null) {
@@ -65,19 +65,30 @@ class WebsocketTest extends ChatTest {
     }
 
     @Test
+    @ExternalId("chat_service.websocket")
+    @WorkItemIds("122")
     @DisplayName("Проверка корректной отправки сообщений через вебсокет")
     void checkWebsocket() {
-        step("Получены данные о пользователях и чате между ними");
+        Adapter.addMessage("Проверяем, что сообщения были отправлены");
+        givenStep();
 
         var chatMessages = chatApi.getAutotestChatMessageList(chatId, null, null, null, null, null, null);
 
-        assertAll(
-                "Проверяем, что сообщения были отправлены",
-                () -> assertThat("Количество сообщений соответствует ожидаемому", chatMessages.getContent().size(), equalTo(2)),
-                () -> assertThat(
-                        "Текст сообщений соответствует отправленному",
-                        chatMessages.getContent().stream().map(a -> a.getPayload().getText()).toList(),
-                        containsInAnyOrder(Stream.of(FIRST_MESSAGE, SECOND_MESSAGE).toArray())));
+        thenStep(chatMessages);
     }
 
+    @Step
+    @Title("GIVEN: Получены данные пользователей и чат между ними")
+    void givenStep() {
+    }
+
+    @Step
+    @Title("THEN: Сообщения успешно получены")
+    void thenStep(PagedModelMessage chatMessages) {
+        assertEquals(2, chatMessages.getContent().size(), "Количество сообщений соответствует ожидаемому");
+        assertEquals(
+                List.of(FIRST_MESSAGE, SECOND_MESSAGE),
+                chatMessages.getContent().stream().map(a -> a.getPayload().getText()).toList(),
+                "Текст сообщений соответствует отправленному");
+    }
 }

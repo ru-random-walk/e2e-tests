@@ -6,6 +6,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import random_walk.automation.database.chat.entities.Message;
 import random_walk.automation.database.chat.repos.MessageRepository;
+import ru.testit.annotations.Step;
+import ru.testit.annotations.Title;
 
 import java.util.List;
 import java.util.UUID;
@@ -21,6 +23,8 @@ public class MessageFunctions {
         return messageRepository.findById(id).orElseThrow(RuntimeException::new);
     }
 
+    @Step
+    @Title("AND: Получены сообщения чата {chatId} из базы данных")
     public List<Message> getMessagesByChatId(UUID chatId) {
         return messageRepository.findAllByChatId(chatId);
     }

@@ -6,6 +6,8 @@ import org.openqa.selenium.NotFoundException;
 import org.springframework.stereotype.Service;
 import random_walk.automation.database.chat.entities.ChatMembers;
 import random_walk.automation.database.chat.repos.ChatMembersRepository;
+import ru.testit.annotations.Step;
+import ru.testit.annotations.Title;
 
 import java.util.List;
 import java.util.UUID;
@@ -26,6 +28,8 @@ public class ChatMembersFunctions {
         return chatMembersRepository.findAllByUserId(userId);
     }
 
+    @Step
+    @Title("AND: Получен чат между пользователями из базы данных")
     public UUID getUsersChat(UUID firstUser, UUID secondUser) {
         var firstUserChats = getChatsByUserId(firstUser).stream().map(ChatMembers::getChatId).toList();
         var secondUserChats = getChatsByUserId(secondUser).stream().map(ChatMembers::getChatId).toList();

@@ -1,6 +1,5 @@
 package random_walk.automation.api.chat.service;
 
-import io.qameta.allure.Step;
 import io.restassured.response.ResponseOptions;
 import org.springframework.stereotype.Service;
 import random_walk.automation.api.chat.ChatConfigurationProperties;
@@ -12,6 +11,9 @@ import ru.random_walk.swagger.chat_service.api.RestIntegrationTestControllerApi;
 import ru.random_walk.swagger.chat_service.api.RestMessageControllerApi;
 import ru.random_walk.swagger.chat_service.invoker.ApiClient;
 import ru.random_walk.swagger.chat_service.model.CreatePrivateChatEvent;
+import ru.testit.annotations.Description;
+import ru.testit.annotations.Step;
+import ru.testit.annotations.Title;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -43,7 +45,9 @@ public class ChatApi {
         this.testTokenConfig = testTokenConfig;
     }
 
-    @Step("[CHAT_SERVICE: /test/create-private-chat-event] Создаем чат между {firstMember} и {secondMember}")
+    @Step
+    @Title("WHEN: Происходит создание чата между {firstMember} и {secondMember}")
+    @Description("CHAT_SERVICE: POST /test/create-private-chat-event")
     public void createPrivateChatEvent(UUID firstMember, UUID secondMember) {
         restIntegrationTestControllerApi.createChat()
                 .reqSpec(r -> r.addFilter(new BearerAuthToken(testTokenConfig.getToken())))
@@ -51,7 +55,9 @@ public class ChatApi {
                 .execute(ResponseOptions::andReturn);
     }
 
-    @Step("[CHAT_SERVICE: /message/list] Получаем список сообщений из чата {chatId}")
+    @Step
+    @Title("WHEN: Происходит получение списка сообщений из чата {chatId}")
+    @Description("CHAT_SERVICE: GET /message/list")
     public PagedModelMessage getChatMessageList(UUID chatId,
                                                 @Nullable LocalDateTime from,
                                                 @Nullable LocalDateTime to,
@@ -77,6 +83,9 @@ public class ChatApi {
         return getHistoryRequest.execute(r -> r.as(PagedModelMessage.class));
     }
 
+    @Step
+    @Title("WHEN: Происходит получение списка сообщений из чата {chatId}")
+    @Description("CHAT_SERVICE: GET /message/list")
     public PagedModelMessage getAutotestChatMessageList(UUID chatId,
                                                         @Nullable LocalDateTime from,
                                                         @Nullable LocalDateTime to,

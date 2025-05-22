@@ -1,31 +1,28 @@
 package random_walk.auth.token_controller;
 
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import random_walk.auth.AuthTest;
+import ru.testit.annotations.DisplayName;
+import ru.testit.annotations.ExternalId;
+import ru.testit.annotations.WorkItemIds;
 
 import java.util.UUID;
 
-import static io.qameta.allure.Allure.step;
 import static org.junit.jupiter.api.Assertions.*;
 import static random_walk.automation.util.ExceptionUtils.toDefaultErrorResponse;
 
 class AuthGetAccessTokenTest extends AuthTest {
 
     @Test
+    @WorkItemIds("56")
+    @ExternalId("auth_service.get_access_token_by_invalid_user_token")
     @DisplayName("Получаем access_token по невалидному токену пользователя")
     void getAccessTokenByInvalidUserToken() {
-        var googleToken = step("GIVEN: Получен случайный токен для пользователя", UUID::randomUUID);
 
-        var accessToken = step(
-                "WHEN: Получаем access_token для пользователя нашего приложения с невалидным токеном",
-                () -> toDefaultErrorResponse(() -> authServiceApi.getAuthTokens(googleToken.toString())));
+        var googleToken = UUID.randomUUID();
 
-        step(
-                "THEN: Попытка получения access_token пользователя по невалидному токену завершилась ошибкой",
-                () -> assertEquals(
-                        "Google respond with UNAUTHORIZED error code",
-                        accessToken.getMessage(),
-                        "Сообщение об ошибке совпадает"));
+        var accessToken = toDefaultErrorResponse(() -> authServiceApi.getAuthTokens(googleToken.toString()));
+
+        assertEquals("Google respond with UNAUTHORIZED error code", accessToken.getMessage(), "Сообщение об ошибке совпадает");
     }
 }

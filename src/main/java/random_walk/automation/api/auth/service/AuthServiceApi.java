@@ -1,6 +1,5 @@
 package random_walk.automation.api.auth.service;
 
-import io.qameta.allure.Step;
 import io.restassured.response.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -13,6 +12,9 @@ import ru.random_walk.swagger.auth_service.api.TokenControllerApi;
 import ru.random_walk.swagger.auth_service.api.UserControllerApi;
 import ru.random_walk.swagger.auth_service.invoker.ApiClient;
 import ru.random_walk.swagger.auth_service.model.*;
+import ru.testit.annotations.Description;
+import ru.testit.annotations.Step;
+import ru.testit.annotations.Title;
 
 import java.util.List;
 import java.util.Map;
@@ -60,12 +62,9 @@ public class AuthServiceApi {
         this.token = testTokenConfig.getToken();
     }
 
-    @Step("/.well-knowm/openid-configuration")
-    public OAuthConfigurationResponse getOpenidConfiguration() {
-        return oAuth2ControllerApi.getConfiguration().execute(r -> r.as(OAuthConfigurationResponse.class));
-    }
-
-    @Step("Получаем access и refresh токены для пользователя")
+    @Step
+    @Title("[AUTH_SERVICE: POST /token]")
+    @Description("Получаем access и refresh токены для пользователя")
     public TokenResponse getAuthTokens(String accessToken) {
         var mapOfRequestParams = Map.of(
                 "grant_type",
@@ -84,7 +83,7 @@ public class AuthServiceApi {
         }).execute(r -> r.as(TokenResponse.class));
     }
 
-    @Step("Получаем access и refresh токены для пользователя")
+    // @Step("Получаем access и refresh токены для пользователя")
     public TokenResponse getAuthTokens(String email, Integer oneTimePassword) {
         var mapOfRequestParams = Map.of("grant_type", "email_otp", "otp", oneTimePassword, "email", email);
 
@@ -95,7 +94,9 @@ public class AuthServiceApi {
         }).execute(r -> r.as(TokenResponse.class));
     }
 
-    @Step("Обновляем access_token по полученному refresh_token")
+    @Step
+    @Title("[AUTH_SERVICE: POST /token]")
+    @Description("Обновляем access_token по полученному refresh_token")
     public TokenResponse refreshAuthToken(String refreshToken) {
         var mapOfRequestParams = Map.of("grant_type", "refresh_token", "refresh_token", refreshToken);
 
@@ -106,7 +107,9 @@ public class AuthServiceApi {
         }).execute(r -> r.as(TokenResponse.class));
     }
 
-    @Step("Получаем список пользователей по их id")
+    @Step
+    @Title("[AUTH_SERVICE: GET /users]")
+    @Description("Получаем список пользователей по их id")
     public PagedModelUserDto getUsersById(List<UUID> ids, @Nullable Integer size, @Nullable Integer page, @Nullable String sort) {
 
         var getUsersRequest = userControllerApi.getUsers();
@@ -131,7 +134,9 @@ public class AuthServiceApi {
                 .execute(r -> r.as(PagedModelUserDto.class));
     }
 
-    @Step("Получение собственной информации пользователем")
+    @Step
+    @Title("[AUTH_SERVICE: GET /userinfo/me]")
+    @Description("Получение собственной информации пользователем")
     public DetailedUserDto getUserSelfInfo() {
         return userControllerApi.getSelfInfo()
                 .reqSpec(r -> r.addFilter(new BearerAuthToken(token)))
