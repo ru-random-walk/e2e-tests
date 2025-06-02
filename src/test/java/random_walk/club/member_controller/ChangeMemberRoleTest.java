@@ -108,8 +108,11 @@ public class ChangeMemberRoleTest extends ClubTest {
     @DisplayName("Проверка смены роли несуществующему пользователю")
     void changeMemberRoleToNonExistingMember() {
         var changeMemberRoleResponse = toGraphqlErrorResponse(
-                () -> memberControllerApi
-                        .changeMemberRole(createdClubId, UUID.randomUUID(), MemberRole.USER, testTokenConfig.getToken()));
+                () -> memberControllerApi.changeMemberRole(
+                        createdClubId,
+                        UUID.randomUUID(),
+                        MemberRole.USER,
+                        userConfigService.getUserByRole(FOURTH_TEST_USER).getAccessToken()));
 
         var classification = "NOT_FOUND";
         var errorMessage = "Member not found in club %s".formatted(createdClubId);

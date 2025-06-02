@@ -62,7 +62,10 @@ class AddMemberTest extends ClubTest {
     @DisplayName("Проверка добавления несуществующего участника")
     void addNonExistingMemberInClub() {
         var addMemberResponse = toGraphqlErrorResponse(
-                () -> memberControllerApi.addMemberInClub(createdClubId, UUID.randomUUID(), testTokenConfig.getToken()));
+                () -> memberControllerApi.addMemberInClub(
+                        createdClubId,
+                        UUID.randomUUID(),
+                        userConfigService.getUserByRole(FOURTH_TEST_USER).getAccessToken()));
 
         var classification = "INTERNAL_ERROR";
         var errorMessage = "Unknown internal error!";

@@ -54,7 +54,8 @@ public class RemoveMemberTest extends ClubTest {
                         nullValue()),
                 () -> assertThat(
                         "В ответе метода получения клуба пользователь не отображается",
-                        clubControllerApi.getClub(createdClubId, testTokenConfig.getToken())
+                        clubControllerApi
+                                .getClub(createdClubId, userConfigService.getUserByRole(FOURTH_TEST_USER).getAccessToken())
                                 .getMembers()
                                 .stream()
                                 .anyMatch(user -> user.getId().equals(userId.toString())),

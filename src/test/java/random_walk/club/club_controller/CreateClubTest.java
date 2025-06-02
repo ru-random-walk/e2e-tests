@@ -106,6 +106,8 @@ public class CreateClubTest extends ClubTest {
     @Test
     @DisplayName("Создание клуба с тестами")
     void createClubWithTest() {
+        givenStep();
+
         List<QuestionInput> questions = List.of(
                 QuestionInput.builder()
                         .setText("Тест вопрос")
