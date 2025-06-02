@@ -16,5 +16,5 @@ public class User {
 
     private UUID uuid;
 
-    private UUID refresh;
+    private String accessToken;
 }

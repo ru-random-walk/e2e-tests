@@ -53,7 +53,7 @@ public class UploadClubPhotoTest extends ClubTest {
         var uploadedClubPhoto = clubControllerApi.uploadPhotoForClub(
                 createdClubId,
                 PhotoInput.builder().setBase64(base64Photo).build(),
-                userConfigService.getAccessToken(FOURTH_TEST_USER));
+                userConfigService.getUserByRole(FOURTH_TEST_USER).getAccessToken());
 
         var clubDb = clubFunctions.getById(createdClubId);
 

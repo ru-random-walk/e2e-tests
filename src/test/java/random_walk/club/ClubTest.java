@@ -35,16 +35,16 @@ public class ClubTest extends BaseTest {
                         .createClub(
                                 "AutotestClub",
                                 "Автотестовый создаваемый клуб",
-                                userConfigService.getAccessToken(FOURTH_TEST_USER))
+                                userConfigService.getUserByRole(FOURTH_TEST_USER).getAccessToken())
                         .getId());
         memberControllerApi.addMemberInClub(
                 createdClubId,
                 userConfigService.getUserByRole(UserRoleEnum.AUTOTEST_USER).getUuid(),
-                userConfigService.getAccessToken(FOURTH_TEST_USER));
+                userConfigService.getUserByRole(FOURTH_TEST_USER).getAccessToken());
     }
 
     @AfterAll
     public void deleteTestClub() {
-        clubControllerApi.removeClub(createdClubId, userConfigService.getAccessToken(FOURTH_TEST_USER));
+        clubControllerApi.removeClub(createdClubId, userConfigService.getUserByRole(FOURTH_TEST_USER).getAccessToken());
     }
 }

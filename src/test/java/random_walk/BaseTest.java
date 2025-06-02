@@ -79,14 +79,11 @@ public abstract class BaseTest {
                 authUserFunctions.save(authUser);
                 userRoleFunctions.save(userRole);
                 refreshTokenFunctions.save(refreshToken);
-                user.setUuid(userId);
-                user.setRefresh(userRefreshToken);
-                var map = userConfigService.getUsersTokens();
-                map.put(user.getRole(), api.refreshAuthToken(userRefreshToken.toString()).getAccessToken());
-
                 var fullName = "Autotest" + new Random().nextInt(1, 1000);
                 testControllerApi.addUserInMatcher(userId, fullName);
                 clubTestControllerApi.addMemberInClubService(userId, fullName);
+                user.setUuid(userId);
+                user.setAccessToken(api.refreshAuthToken(userRefreshToken.toString()).getAccessToken());
             }
         }
     }

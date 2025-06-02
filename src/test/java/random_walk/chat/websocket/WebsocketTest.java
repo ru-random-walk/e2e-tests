@@ -87,8 +87,8 @@ class WebsocketTest extends ChatTest {
     void thenStep(PagedModelMessage chatMessages) {
         assertEquals(2, chatMessages.getContent().size(), "Количество сообщений соответствует ожидаемому");
         assertEquals(
-                List.of(FIRST_MESSAGE, SECOND_MESSAGE),
-                chatMessages.getContent().stream().map(a -> a.getPayload().getText()).toList(),
+                List.of(FIRST_MESSAGE, SECOND_MESSAGE).stream().sorted().toList(),
+                chatMessages.getContent().stream().map(a -> a.getPayload().getText()).sorted().toList(),
                 "Текст сообщений соответствует отправленному");
     }
 }

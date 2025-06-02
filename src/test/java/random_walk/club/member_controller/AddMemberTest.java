@@ -29,8 +29,10 @@ class AddMemberTest extends ClubTest {
     void checkAddNewMemberInClub() {
         var userInfo = userConfigService.getUserByRole(UserRoleEnum.PERSONAL_ACCOUNT);
 
-        var addMemberResponse = memberControllerApi
-                .addMemberInClub(createdClubId, userInfo.getUuid(), userConfigService.getAccessToken(FOURTH_TEST_USER));
+        var addMemberResponse = memberControllerApi.addMemberInClub(
+                createdClubId,
+                userInfo.getUuid(),
+                userConfigService.getUserByRole(FOURTH_TEST_USER).getAccessToken());
 
         var clubMemberDb = memberFunctions.getClubMember(new MemberPK().setId(userInfo.getUuid()).setClubId(createdClubId));
 
@@ -47,7 +49,8 @@ class AddMemberTest extends ClubTest {
                         equalTo(MemberRole.USER)),
                 () -> assertThat(
                         "Пользователь отображается в методе получения информации о клубе",
-                        clubControllerApi.getClub(createdClubId, userConfigService.getAccessToken(FOURTH_TEST_USER))
+                        clubControllerApi
+                                .getClub(createdClubId, userConfigService.getUserByRole(FOURTH_TEST_USER).getAccessToken())
                                 .getMembers()
                                 .stream()
                                 .anyMatch(user -> user.getId().equals(userInfo.getUuid().toString())),

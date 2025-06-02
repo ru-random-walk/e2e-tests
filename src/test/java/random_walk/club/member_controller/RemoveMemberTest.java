@@ -16,6 +16,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static random_walk.asserts.ErrorAsserts.checkGraphqlError;
+import static random_walk.automation.domain.enums.UserRoleEnum.FOURTH_TEST_USER;
 import static random_walk.automation.util.ExceptionUtils.toGraphqlErrorResponse;
 
 public class RemoveMemberTest extends ClubTest {
@@ -29,9 +30,11 @@ public class RemoveMemberTest extends ClubTest {
         var autotestUserId = userConfigService.getUserByRole(UserRoleEnum.AUTOTEST_USER).getUuid();
 
         memberControllerApi
-                .addMemberInClub(createdClubId, userId, userConfigService.getAccessToken(UserRoleEnum.FOURTH_TEST_USER));
-        memberControllerApi
-                .addMemberInClub(createdClubId, autotestUserId, userConfigService.getAccessToken(UserRoleEnum.FOURTH_TEST_USER));
+                .addMemberInClub(createdClubId, userId, userConfigService.getUserByRole(FOURTH_TEST_USER).getAccessToken());
+        memberControllerApi.addMemberInClub(
+                createdClubId,
+                autotestUserId,
+                userConfigService.getUserByRole(FOURTH_TEST_USER).getAccessToken());
     }
 
     @Test
@@ -40,7 +43,7 @@ public class RemoveMemberTest extends ClubTest {
         var userId = userConfigService.getUserByRole(UserRoleEnum.PERSONAL_ACCOUNT).getUuid();
 
         var removedUser = memberControllerApi
-                .removeMemberFromClub(createdClubId, userId, userConfigService.getAccessToken(UserRoleEnum.FOURTH_TEST_USER));
+                .removeMemberFromClub(createdClubId, userId, userConfigService.getUserByRole(FOURTH_TEST_USER).getAccessToken());
 
         assertAll(
                 "Проверяем успешное удаление пользователя из клуба",
@@ -64,13 +67,13 @@ public class RemoveMemberTest extends ClubTest {
         var userId = userConfigService.getUserByRole(UserRoleEnum.PERSONAL_ACCOUNT).getUuid();
 
         memberControllerApi
-                .removeMemberFromClub(createdClubId, userId, userConfigService.getAccessToken(UserRoleEnum.FOURTH_TEST_USER));
+                .removeMemberFromClub(createdClubId, userId, userConfigService.getUserByRole(FOURTH_TEST_USER).getAccessToken());
 
         var removedUser = toGraphqlErrorResponse(
                 () -> memberControllerApi.removeMemberFromClub(
                         createdClubId,
                         userId,
-                        userConfigService.getAccessToken(UserRoleEnum.FOURTH_TEST_USER)));
+                        userConfigService.getUserByRole(FOURTH_TEST_USER).getAccessToken()));
 
         var classification = "NOT_FOUND";
         var errorMessage = "Member not found in club %s".formatted(createdClubId);
@@ -113,7 +116,7 @@ public class RemoveMemberTest extends ClubTest {
         var userId = userConfigService.getUserByRole(UserRoleEnum.TEST_USER).getUuid();
 
         var changeMemberRoleResponse = memberControllerApi
-                .removeMemberFromClub(createdClubId, userId, userConfigService.getAccessToken(UserRoleEnum.FOURTH_TEST_USER));
+                .removeMemberFromClub(createdClubId, userId, userConfigService.getUserByRole(FOURTH_TEST_USER).getAccessToken());
 
         System.out.println(memberFunctions.getByClubId(createdClubId));
     }

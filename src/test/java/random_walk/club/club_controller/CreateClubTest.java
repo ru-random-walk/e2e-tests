@@ -67,7 +67,7 @@ public class CreateClubTest extends ClubTest {
     @Title("GIVEN: Получены данные пользователя, который будет создавать чат")
     void givenStep() {
         user = userConfigService.getUserByRole(FIFTH_TEST_USER);
-        userToken = userConfigService.getAccessToken(FIFTH_TEST_USER);
+        userToken = user.getAccessToken();
     }
 
     @Step
@@ -88,7 +88,7 @@ public class CreateClubTest extends ClubTest {
     @Test
     @DisplayName("Попытка создать количество клубов, превышающее допустимое для пользователя")
     void createClubAfterReachingMaxCountOfClubs() {
-        var userAccessToken = userConfigService.getAccessToken(FIFTH_TEST_USER);
+        var userAccessToken = userConfigService.getUserByRole(FIFTH_TEST_USER).getAccessToken();
 
         firstClubId = clubControllerApi.createClub("Первый клуб", "Первое описание", userAccessToken).getId();
         secondClubId = clubControllerApi.createClub("Второй клуб", "Второе описание", userAccessToken).getId();
@@ -173,7 +173,7 @@ public class CreateClubTest extends ClubTest {
 
     @AfterEach
     void deleteUnnecessaryClubs() {
-        var userToken = userConfigService.getAccessToken(FIFTH_TEST_USER);
+        var userToken = userConfigService.getUserByRole(FIFTH_TEST_USER).getAccessToken();
         try {
             clubControllerApi.removeClub(UUID.fromString(firstClubId), userToken);
         } catch (Exception ignored) {

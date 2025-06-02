@@ -20,6 +20,7 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static random_walk.asserts.ErrorAsserts.checkGraphqlError;
+import static random_walk.automation.domain.enums.UserRoleEnum.FOURTH_TEST_USER;
 import static random_walk.automation.util.ExceptionUtils.toGraphqlErrorResponse;
 
 public class ChangeMemberRoleTest extends ClubTest {
@@ -32,7 +33,7 @@ public class ChangeMemberRoleTest extends ClubTest {
         var userId = userConfigService.getUserByRole(UserRoleEnum.PERSONAL_ACCOUNT).getUuid();
 
         memberControllerApi
-                .addMemberInClub(createdClubId, userId, userConfigService.getAccessToken(UserRoleEnum.FOURTH_TEST_USER));
+                .addMemberInClub(createdClubId, userId, userConfigService.getUserByRole(FOURTH_TEST_USER).getAccessToken());
     }
 
     @ParameterizedTest(name = "{0}")
@@ -45,7 +46,7 @@ public class ChangeMemberRoleTest extends ClubTest {
                 createdClubId,
                 userId,
                 memberRole,
-                userConfigService.getAccessToken(UserRoleEnum.FOURTH_TEST_USER));
+                userConfigService.getUserByRole(FOURTH_TEST_USER).getAccessToken());
 
         var memberDb = memberFunctions.getClubMember(new MemberPK().setId(userId).setClubId(createdClubId));
 
@@ -65,7 +66,8 @@ public class ChangeMemberRoleTest extends ClubTest {
                         equalTo(memberRole)),
                 () -> assertThat(
                         "Статус пользователя изменен в ответе метода получения информации о клубе",
-                        clubControllerApi.getClub(createdClubId, testTokenConfig.getToken())
+                        clubControllerApi
+                                .getClub(createdClubId, userConfigService.getUserByRole(FOURTH_TEST_USER).getAccessToken())
                                 .getMembers()
                                 .stream()
                                 .anyMatch(user -> user.getId().equals(userId.toString()) && user.getRole().equals(memberRole)),
@@ -82,7 +84,7 @@ public class ChangeMemberRoleTest extends ClubTest {
                 createdClubId,
                 userId,
                 MemberRole.USER,
-                userConfigService.getAccessToken(UserRoleEnum.FOURTH_TEST_USER));
+                userConfigService.getUserByRole(FOURTH_TEST_USER).getAccessToken());
 
         System.out.println(memberFunctions.getByClubId(createdClubId));
     }

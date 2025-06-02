@@ -39,7 +39,7 @@ public class GetClubTest extends ClubTest {
 
     @BeforeAll
     void createChat() {
-        var userToken = userConfigService.getAccessToken(FOURTH_TEST_USER);
+        var userToken = userConfigService.getUserByRole(FOURTH_TEST_USER).getAccessToken();
         var inspectorId = userConfigService.getUserByRole(UserRoleEnum.PERSONAL_ACCOUNT).getUuid();
 
         clubId = UUID.fromString(clubControllerApi.createClub("GivenClub", "Клуб для тестов на получение", userToken).getId());
@@ -52,7 +52,7 @@ public class GetClubTest extends ClubTest {
     @Test
     @DisplayName("Получение информации о клубе")
     void getInfoAboutClub() {
-        var clubInfo = clubControllerApi.getClub(clubId, userConfigService.getAccessToken(FOURTH_TEST_USER));
+        var clubInfo = clubControllerApi.getClub(clubId, userConfigService.getUserByRole(FOURTH_TEST_USER).getAccessToken());
 
         var clubDb = clubFunctions.getById(clubId);
 
@@ -108,6 +108,6 @@ public class GetClubTest extends ClubTest {
 
     @AfterAll
     void deleteChat() {
-        clubControllerApi.removeClub(clubId, userConfigService.getAccessToken(FOURTH_TEST_USER));
+        clubControllerApi.removeClub(clubId, userConfigService.getUserByRole(FOURTH_TEST_USER).getAccessToken());
     }
 }
