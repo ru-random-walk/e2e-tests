@@ -28,8 +28,10 @@ public class RemoveMemberTest extends ClubTest {
         var userId = userConfigService.getUserByRole(UserRoleEnum.PERSONAL_ACCOUNT).getUuid();
         var autotestUserId = userConfigService.getUserByRole(UserRoleEnum.AUTOTEST_USER).getUuid();
 
-        memberControllerApi.addMemberInClub(createdClubId, userId, testTokenConfig.getToken());
-        memberControllerApi.addMemberInClub(createdClubId, autotestUserId, testTokenConfig.getToken());
+        memberControllerApi
+                .addMemberInClub(createdClubId, userId, userConfigService.getAccessToken(UserRoleEnum.FOURTH_TEST_USER));
+        memberControllerApi
+                .addMemberInClub(createdClubId, autotestUserId, userConfigService.getAccessToken(UserRoleEnum.FOURTH_TEST_USER));
     }
 
     @Test
@@ -37,7 +39,8 @@ public class RemoveMemberTest extends ClubTest {
     void removeMemberFromClub() {
         var userId = userConfigService.getUserByRole(UserRoleEnum.PERSONAL_ACCOUNT).getUuid();
 
-        var removedUser = memberControllerApi.removeMemberFromClub(createdClubId, userId, testTokenConfig.getToken());
+        var removedUser = memberControllerApi
+                .removeMemberFromClub(createdClubId, userId, userConfigService.getAccessToken(UserRoleEnum.FOURTH_TEST_USER));
 
         assertAll(
                 "Проверяем успешное удаление пользователя из клуба",
@@ -60,10 +63,14 @@ public class RemoveMemberTest extends ClubTest {
     void removeAlreadyRemovedMemberFromClub() {
         var userId = userConfigService.getUserByRole(UserRoleEnum.PERSONAL_ACCOUNT).getUuid();
 
-        memberControllerApi.removeMemberFromClub(createdClubId, userId, testTokenConfig.getToken());
+        memberControllerApi
+                .removeMemberFromClub(createdClubId, userId, userConfigService.getAccessToken(UserRoleEnum.FOURTH_TEST_USER));
 
         var removedUser = toGraphqlErrorResponse(
-                () -> memberControllerApi.removeMemberFromClub(createdClubId, userId, testTokenConfig.getToken()));
+                () -> memberControllerApi.removeMemberFromClub(
+                        createdClubId,
+                        userId,
+                        userConfigService.getAccessToken(UserRoleEnum.FOURTH_TEST_USER)));
 
         var classification = "NOT_FOUND";
         var errorMessage = "Member not found in club %s".formatted(createdClubId);
@@ -106,7 +113,7 @@ public class RemoveMemberTest extends ClubTest {
         var userId = userConfigService.getUserByRole(UserRoleEnum.TEST_USER).getUuid();
 
         var changeMemberRoleResponse = memberControllerApi
-                .removeMemberFromClub(createdClubId, userId, testTokenConfig.getToken());
+                .removeMemberFromClub(createdClubId, userId, userConfigService.getAccessToken(UserRoleEnum.FOURTH_TEST_USER));
 
         System.out.println(memberFunctions.getByClubId(createdClubId));
     }

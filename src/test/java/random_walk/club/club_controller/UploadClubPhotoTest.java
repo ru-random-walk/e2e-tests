@@ -19,6 +19,7 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static random_walk.asserts.ErrorAsserts.checkGraphqlError;
+import static random_walk.automation.domain.enums.UserRoleEnum.FOURTH_TEST_USER;
 import static random_walk.automation.util.ExceptionUtils.toGraphqlErrorResponse;
 
 public class UploadClubPhotoTest extends ClubTest {
@@ -52,7 +53,7 @@ public class UploadClubPhotoTest extends ClubTest {
         var uploadedClubPhoto = clubControllerApi.uploadPhotoForClub(
                 createdClubId,
                 PhotoInput.builder().setBase64(base64Photo).build(),
-                testTokenConfig.getToken());
+                userConfigService.getAccessToken(FOURTH_TEST_USER));
 
         var clubDb = clubFunctions.getById(createdClubId);
 

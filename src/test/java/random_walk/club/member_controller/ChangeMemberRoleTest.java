@@ -31,7 +31,8 @@ public class ChangeMemberRoleTest extends ClubTest {
     void addUserInClub() {
         var userId = userConfigService.getUserByRole(UserRoleEnum.PERSONAL_ACCOUNT).getUuid();
 
-        memberControllerApi.addMemberInClub(createdClubId, userId, testTokenConfig.getToken());
+        memberControllerApi
+                .addMemberInClub(createdClubId, userId, userConfigService.getAccessToken(UserRoleEnum.FOURTH_TEST_USER));
     }
 
     @ParameterizedTest(name = "{0}")
@@ -40,8 +41,11 @@ public class ChangeMemberRoleTest extends ClubTest {
     void changeMemberRoleInClub(MemberRole memberRole) {
         var userId = userConfigService.getUserByRole(UserRoleEnum.PERSONAL_ACCOUNT).getUuid();
 
-        var changeMemberRoleResponse = memberControllerApi
-                .changeMemberRole(createdClubId, userId, memberRole, testTokenConfig.getToken());
+        var changeMemberRoleResponse = memberControllerApi.changeMemberRole(
+                createdClubId,
+                userId,
+                memberRole,
+                userConfigService.getAccessToken(UserRoleEnum.FOURTH_TEST_USER));
 
         var memberDb = memberFunctions.getClubMember(new MemberPK().setId(userId).setClubId(createdClubId));
 
@@ -74,8 +78,11 @@ public class ChangeMemberRoleTest extends ClubTest {
     void changeAdminRoleToUser() {
         var userId = userConfigService.getUserByRole(UserRoleEnum.TEST_USER).getUuid();
 
-        var changeMemberRoleResponse = memberControllerApi
-                .changeMemberRole(createdClubId, userId, MemberRole.USER, testTokenConfig.getToken());
+        var changeMemberRoleResponse = memberControllerApi.changeMemberRole(
+                createdClubId,
+                userId,
+                MemberRole.USER,
+                userConfigService.getAccessToken(UserRoleEnum.FOURTH_TEST_USER));
 
         System.out.println(memberFunctions.getByClubId(createdClubId));
     }

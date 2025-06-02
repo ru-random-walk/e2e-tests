@@ -2,17 +2,17 @@ package random_walk.automation.database.auth.entities;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.experimental.Accessors;
+import random_walk.automation.domain.enums.AuthType;
 
 import java.util.UUID;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 @Data
 @NoArgsConstructor
 @Entity
 @Table(name = "auth_user")
+@Accessors(chain = true)
 public class AuthUser {
 
     @Id
@@ -28,6 +28,10 @@ public class AuthUser {
     private Boolean enabled;
 
     private String avatar;
+
+    @Column(name = "account_type")
+    @Enumerated(EnumType.STRING)
+    private AuthType authType;
 
     private String description;
 

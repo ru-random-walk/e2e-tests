@@ -21,6 +21,7 @@ import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.equalTo;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static random_walk.asserts.ErrorAsserts.checkGraphqlError;
+import static random_walk.automation.domain.enums.UserRoleEnum.FOURTH_TEST_USER;
 import static random_walk.automation.util.ExceptionUtils.toGraphqlErrorResponse;
 
 public class GetClubTest extends ClubTest {
@@ -38,21 +39,20 @@ public class GetClubTest extends ClubTest {
 
     @BeforeAll
     void createChat() {
+        var userToken = userConfigService.getAccessToken(FOURTH_TEST_USER);
         var inspectorId = userConfigService.getUserByRole(UserRoleEnum.PERSONAL_ACCOUNT).getUuid();
 
-        clubId = UUID.fromString(
-                clubControllerApi.createClub("GivenClub", "Клуб для тестов на получение", testTokenConfig.getAutotestToken())
-                        .getId());
+        clubId = UUID.fromString(clubControllerApi.createClub("GivenClub", "Клуб для тестов на получение", userToken).getId());
 
-        memberControllerApi.addMemberInClub(clubId, inspectorId, testTokenConfig.getAutotestToken());
+        memberControllerApi.addMemberInClub(clubId, inspectorId, userToken);
 
-        memberControllerApi.changeMemberRole(clubId, inspectorId, MemberRole.INSPECTOR, testTokenConfig.getAutotestToken());
+        memberControllerApi.changeMemberRole(clubId, inspectorId, MemberRole.INSPECTOR, userToken);
     }
 
     @Test
     @DisplayName("Получение информации о клубе")
     void getInfoAboutClub() {
-        var clubInfo = clubControllerApi.getClub(clubId, testTokenConfig.getAutotestToken());
+        var clubInfo = clubControllerApi.getClub(clubId, userConfigService.getAccessToken(FOURTH_TEST_USER));
 
         var clubDb = clubFunctions.getById(clubId);
 
@@ -108,6 +108,6 @@ public class GetClubTest extends ClubTest {
 
     @AfterAll
     void deleteChat() {
-        clubControllerApi.removeClub(clubId, testTokenConfig.getAutotestToken());
+        clubControllerApi.removeClub(clubId, userConfigService.getAccessToken(FOURTH_TEST_USER));
     }
 }

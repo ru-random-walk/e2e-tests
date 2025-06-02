@@ -80,10 +80,10 @@ public class WebsocketApi {
             throws InterruptedException,
             ExecutionException {
         WebSocketHttpHeaders httpHeaders = new WebSocketHttpHeaders();
-        httpHeaders.add("Authorization", "Bearer " + token); // Для SockJS HTTP-запросов
+        httpHeaders.add("Authorization", "Bearer " + token);
 
         StompHeaders connectHeaders = new StompHeaders();
-        connectHeaders.add("Authorization", "Bearer " + token); // Для STOMP
+        connectHeaders.add("Authorization", "Bearer " + token);
         log.info("Connecting to {} with token: Bearer {}", websocketConfig.getUrl(), token);
 
         var future = stompClient

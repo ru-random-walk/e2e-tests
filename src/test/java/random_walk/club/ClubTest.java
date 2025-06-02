@@ -12,6 +12,8 @@ import random_walk.automation.domain.enums.UserRoleEnum;
 
 import java.util.UUID;
 
+import static random_walk.automation.domain.enums.UserRoleEnum.FOURTH_TEST_USER;
+
 @Tag("club-e2e")
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class ClubTest extends BaseTest {
@@ -29,16 +31,20 @@ public class ClubTest extends BaseTest {
     @BeforeAll
     public void createTestClub() {
         createdClubId = UUID.fromString(
-                clubControllerApi.createClub("AutotestClub", "Автотестовый создаваемый клуб", testTokenConfig.getToken())
+                clubControllerApi
+                        .createClub(
+                                "AutotestClub",
+                                "Автотестовый создаваемый клуб",
+                                userConfigService.getAccessToken(FOURTH_TEST_USER))
                         .getId());
         memberControllerApi.addMemberInClub(
                 createdClubId,
                 userConfigService.getUserByRole(UserRoleEnum.AUTOTEST_USER).getUuid(),
-                testTokenConfig.getToken());
+                userConfigService.getAccessToken(FOURTH_TEST_USER));
     }
 
     @AfterAll
     public void deleteTestClub() {
-        clubControllerApi.removeClub(createdClubId, testTokenConfig.getToken());
+        clubControllerApi.removeClub(createdClubId, userConfigService.getAccessToken(FOURTH_TEST_USER));
     }
 }

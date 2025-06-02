@@ -19,7 +19,7 @@ public class GetClubPhotoTest extends ClubTest {
     @Test
     @DisplayName("Получение фотографии клуба")
     void getClubPhoto() {
-        var photo = clubControllerApi.getClubPhoto(createdClubId, testTokenConfig.getToken());
+        var photo = clubControllerApi.getClubPhoto(createdClubId, testTokenConfig.getAutotestToken());
 
         assertAll(
                 "Проверяем корректность возвращаемых данных",

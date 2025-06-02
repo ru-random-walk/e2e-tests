@@ -7,9 +7,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import random_walk.automation.api.matcher.service.AppointmentMatcherApi;
 import random_walk.automation.api.matcher.service.InternalMatcherApi;
 import random_walk.automation.database.matcher.functions.AppointmentDetailsFunctions;
+import random_walk.automation.domain.User;
 import random_walk.automation.domain.enums.UserRoleEnum;
 import random_walk.matcher.MatcherTest;
 import ru.random_walk.swagger.matcher_service.model.AppointmentDetailsDto;
+import ru.testit.annotations.Step;
+import ru.testit.annotations.Title;
 
 import java.time.OffsetDateTime;
 import java.util.UUID;
@@ -30,6 +33,10 @@ class ChangeAppointmentStatusTest extends MatcherTest {
 
     @Autowired
     private AppointmentDetailsFunctions appointmentDetailsFunctions;
+
+    private User autotestUserInfo;
+
+    private User testUserInfo;
 
     @Test
     @DisplayName("Проверка смены статуса встречи после ее подтверждения")
@@ -74,8 +81,7 @@ class ChangeAppointmentStatusTest extends MatcherTest {
     @Test
     @DisplayName("Проверка перехода встречи в нужный статус после ее начала")
     void checkChangeAppointmentStatusAfterBegin() throws InterruptedException {
-        var autotestUserInfo = userConfigService.getUserByRole(UserRoleEnum.AUTOTEST_USER);
-        var testUserInfo = userConfigService.getUserByRole(UserRoleEnum.TEST_USER);
+        givenStep();
 
         var startsAt = OffsetDateTime.now().plusSeconds(7);
         var appointmentRequest = internalMatcherApi
@@ -87,10 +93,7 @@ class ChangeAppointmentStatusTest extends MatcherTest {
 
         sleep(7000);
 
-        assertThat(
-                "Проверяем переход встречи в нужный статус",
-                appointmentDetailsFunctions.getById(appointmentId).getStatus(),
-                equalTo(AppointmentDetailsDto.StatusEnum.IN_PROGRESS));
+        thenStep(AppointmentDetailsDto.StatusEnum.IN_PROGRESS);
     }
 
     @AfterEach
@@ -99,5 +102,21 @@ class ChangeAppointmentStatusTest extends MatcherTest {
             matcherService.deleteAppointmentRequest(appointmentId);
             appointmentId = null;
         }
+    }
+
+    @Step
+    @Title("GIVEN: Получены данные о пользователях для назначения встречи")
+    void givenStep() {
+        autotestUserInfo = userConfigService.getUserByRole(UserRoleEnum.AUTOTEST_USER);
+        testUserInfo = userConfigService.getUserByRole(UserRoleEnum.TEST_USER);
+    }
+
+    @Step
+    @Title("THEN: Статус встречи изменен на ожидаемый")
+    void thenStep(AppointmentDetailsDto.StatusEnum status) {
+        assertThat(
+                "Проверяем переход встречи в нужный статус",
+                appointmentDetailsFunctions.getById(appointmentId).getStatus(),
+                equalTo(status));
     }
 }

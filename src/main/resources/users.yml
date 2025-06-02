@@ -12,3 +12,13 @@ users:
     name: Дмитрий
     role: PERSONAL_ACCOUNT
     uuid: 3d154ea6-7d67-41f1-820f-5f6b403caec6
+  -
+    role: FIRST_TEST_USER
+  -
+    role: SECOND_TEST_USER
+  -
+    role: THIRD_TEST_USER
+  -
+    role: FOURTH_TEST_USER
+  -
+    role: FIFTH_TEST_USER

@@ -60,7 +60,7 @@ jobs:
       TMS_CERT_VALIDATION: false
       TMS_AUTO_CREATE_TEST_CASES: true
       TMS_ADAPTER_MODE: 2
-      CURRENT_DATE: (TZ=Europe/Moscow date +'%Y-%m-%d %H:%M:%S')
+      CURRENT_DATE: $(TZ=Europe/Moscow date +'%Y-%m-%d %H:%M:%S')
       TMS_TEST_RUN_NAME: "Random Walk Regress $CURRENT_DATE"
 
     steps:

@@ -5,6 +5,8 @@ import com.kobylynskyi.graphql.codegen.model.graphql.GraphQLRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import random_walk.automation.api.club.BaseGraphqlRequest;
+import ru.testit.annotations.Step;
+import ru.testit.annotations.Title;
 
 import java.util.UUID;
 
@@ -28,6 +30,8 @@ public class ClubControllerApi {
         return baseGraphqlRequest.getDefaultGraphqlRequest(token, requestBody).as(GetClubQueryResponse.class).getClub();
     }
 
+    @Step
+    @Title("Создание клуба {name} с описанием {description}")
     public Club createClub(String name, String description, String token) {
         var request = CreateClubMutationRequest.builder().setName(name).setDescription(description).build();
         var responseData = new ClubResponseProjection().id().name().description();

@@ -40,6 +40,8 @@ public class AppointmentMatcherApi {
                 .execute(Response::andReturn);
     }
 
+    @Step
+
     public void approveAppointment(UUID appointmentId, String token) {
         api.approveAppointment()
                 .appointmentIdPath(appointmentId)
