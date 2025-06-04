@@ -144,7 +144,6 @@ tasks.test {
     systemProperty("tmsConfigurationId", "01963448-e908-74f6-a9a3-1e6214c00622")
     systemProperty("tmsAdapterMode", 2)
     systemProperty("tmsTestRunName", "Test Run")
-    //systemProperty("tmsTestRunId", "9ed700c4-efe7-4346-89e8-baf63c5ca5fe")
     systemProperty("tmsAutomaticCreationTestCases", true)
     systemProperty("tmsCertValidation", false)
     doFirst {
