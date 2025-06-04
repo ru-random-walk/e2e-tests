@@ -98,7 +98,8 @@ public class GetClubTest extends ClubTest {
     @DisplayName("Получение информации о несуществующем клубе")
     void getInfoAboutNonExistingClub() {
         var clubInfo = toGraphqlErrorResponse(
-                () -> clubControllerApi.getClub(UUID.randomUUID(), testTokenConfig.getAutotestToken()));
+                () -> clubControllerApi
+                        .getClub(UUID.randomUUID(), userConfigService.getUserByRole(FOURTH_TEST_USER).getAccessToken()));
 
         var errorCode = "UNAUTHORIZED";
         var errorMessage = "You are not become member of given club!";

@@ -144,7 +144,6 @@ tasks.test {
     systemProperty("tmsConfigurationId", "01963448-e908-74f6-a9a3-1e6214c00622")
     systemProperty("tmsAdapterMode", 2)
     systemProperty("tmsTestRunName", "Test Run")
-    systemProperty("tmsAutomaticCreationTestCases", true)
     systemProperty("tmsCertValidation", false)
     doFirst {
         val weaver: File? = configurations["aspectConfig"].find { it.name.contains("aspectjweaver") }

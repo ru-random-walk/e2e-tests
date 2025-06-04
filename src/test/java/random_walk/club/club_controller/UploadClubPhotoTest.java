@@ -37,7 +37,7 @@ public class UploadClubPhotoTest extends ClubTest {
                 () -> clubControllerApi.uploadPhotoForClub(
                         UUID.randomUUID(),
                         PhotoInput.builder().setBase64(NOT_PHOTO_URL).build(),
-                        testTokenConfig.getToken()));
+                        userConfigService.getUserByRole(FOURTH_TEST_USER).getAccessToken()));
 
         var errorCode = "UNAUTHORIZED";
         var errorMessage = "You are not become member of given club!";

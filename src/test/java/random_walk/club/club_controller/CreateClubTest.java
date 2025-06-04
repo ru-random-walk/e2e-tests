@@ -148,6 +148,8 @@ public class CreateClubTest extends ClubTest {
     @Test
     @DisplayName("Создание клуба с подтверждением от админов")
     void createClubWithApproversConfirm() {
+        givenStep();
+
         var requiredApprovers = 1;
         var approversToNotify = 2;
         var createdClub = clubControllerApi.createClubWithMemberConfirm(
