@@ -6,7 +6,6 @@ import org.junit.jupiter.api.TestInstance;
 import org.springframework.beans.factory.annotation.Autowired;
 import random_walk.BaseTest;
 import random_walk.automation.api.matcher.service.AvailableTimeMatcherApi;
-import random_walk.automation.database.matcher.functions.PersonClubFunctions;
 import random_walk.automation.domain.enums.ClubRole;
 import random_walk.automation.service.MatcherService;
 import ru.random_walk.swagger.matcher_service.model.ClubDto;
@@ -19,9 +18,6 @@ import java.util.UUID;
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @Tag("matcher-e2e")
 public class MatcherTest extends BaseTest {
-
-    @Autowired
-    protected PersonClubFunctions personClubFunctions;
 
     @Autowired
     protected AvailableTimeMatcherApi availableTimeMatcherApi;

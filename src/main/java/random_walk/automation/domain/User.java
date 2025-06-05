@@ -15,4 +15,6 @@ public class User {
     private UserRoleEnum role;
 
     private UUID uuid;
+
+    private String accessToken;
 }

@@ -16,6 +16,7 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static random_walk.asserts.ErrorAsserts.checkGraphqlError;
+import static random_walk.automation.domain.enums.UserRoleEnum.FOURTH_TEST_USER;
 import static random_walk.automation.util.ExceptionUtils.toGraphqlErrorResponse;
 
 class AddMemberTest extends ClubTest {
@@ -28,8 +29,10 @@ class AddMemberTest extends ClubTest {
     void checkAddNewMemberInClub() {
         var userInfo = userConfigService.getUserByRole(UserRoleEnum.PERSONAL_ACCOUNT);
 
-        var addMemberResponse = memberControllerApi
-                .addMemberInClub(createdClubId, userInfo.getUuid(), testTokenConfig.getToken());
+        var addMemberResponse = memberControllerApi.addMemberInClub(
+                createdClubId,
+                userInfo.getUuid(),
+                userConfigService.getUserByRole(FOURTH_TEST_USER).getAccessToken());
 
         var clubMemberDb = memberFunctions.getClubMember(new MemberPK().setId(userInfo.getUuid()).setClubId(createdClubId));
 
@@ -46,7 +49,8 @@ class AddMemberTest extends ClubTest {
                         equalTo(MemberRole.USER)),
                 () -> assertThat(
                         "Пользователь отображается в методе получения информации о клубе",
-                        clubControllerApi.getClub(createdClubId, testTokenConfig.getToken())
+                        clubControllerApi
+                                .getClub(createdClubId, userConfigService.getUserByRole(FOURTH_TEST_USER).getAccessToken())
                                 .getMembers()
                                 .stream()
                                 .anyMatch(user -> user.getId().equals(userInfo.getUuid().toString())),
@@ -58,7 +62,10 @@ class AddMemberTest extends ClubTest {
     @DisplayName("Проверка добавления несуществующего участника")
     void addNonExistingMemberInClub() {
         var addMemberResponse = toGraphqlErrorResponse(
-                () -> memberControllerApi.addMemberInClub(createdClubId, UUID.randomUUID(), testTokenConfig.getToken()));
+                () -> memberControllerApi.addMemberInClub(
+                        createdClubId,
+                        UUID.randomUUID(),
+                        userConfigService.getUserByRole(FOURTH_TEST_USER).getAccessToken()));
 
         var classification = "INTERNAL_ERROR";
         var errorMessage = "Unknown internal error!";

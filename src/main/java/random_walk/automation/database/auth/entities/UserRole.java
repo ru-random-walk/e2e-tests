@@ -2,6 +2,7 @@ package random_walk.automation.database.auth.entities;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.experimental.Accessors;
 
 import java.util.UUID;
 import javax.persistence.Column;
@@ -12,6 +13,7 @@ import javax.persistence.Table;
 @Data
 @NoArgsConstructor
 @Entity
+@Accessors(chain = true)
 @Table(name = "user_role")
 public class UserRole {
 

@@ -6,6 +6,8 @@ import random_walk.automation.config.UsersConfig;
 import random_walk.automation.domain.User;
 import random_walk.automation.domain.enums.UserRoleEnum;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class UserConfigService {
@@ -19,5 +21,9 @@ public class UserConfigService {
                 .filter(client -> client.getRole().equals(role))
                 .findFirst()
                 .orElseThrow(() -> new RuntimeException("Клиент с ролью " + role + " не найден"));
+    }
+
+    public List<User> getUsers() {
+        return usersConfig.getUsers();
     }
 }

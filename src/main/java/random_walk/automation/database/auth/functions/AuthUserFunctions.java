@@ -2,6 +2,7 @@ package random_walk.automation.database.auth.functions;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import random_walk.automation.database.auth.entities.AuthUser;
 import random_walk.automation.database.auth.repos.AuthUserRepository;
 
@@ -24,5 +25,10 @@ public class AuthUserFunctions {
 
     public AuthUser getById(UUID id) {
         return authUserRepository.findById(id).orElse(null);
+    }
+
+    @Transactional(transactionManager = "authTransactionManager")
+    public void save(AuthUser authUser) {
+        authUserRepository.save(authUser);
     }
 }
