@@ -1,6 +1,5 @@
 package random_walk.matcher.person_controller;
 
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import random_walk.automation.api.matcher.service.PersonMatcherApi;
@@ -8,8 +7,10 @@ import random_walk.automation.database.matcher.functions.PersonClubFunctions;
 import random_walk.automation.database.matcher.functions.PersonFunctions;
 import random_walk.automation.domain.enums.UserRoleEnum;
 import random_walk.matcher.MatcherTest;
+import ru.testit.annotations.DisplayName;
+import ru.testit.annotations.Step;
+import ru.testit.annotations.Title;
 
-import static io.qameta.allure.Allure.step;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.equalTo;
@@ -29,30 +30,37 @@ class PersonInfoTest extends MatcherTest {
     @Test
     @DisplayName("Получение информации о пользователе")
     void getUserInfo() {
-        var userUuid = step(
-                "GIVEN: Получен пользователь с ролью TEST_USER",
-                () -> userConfigService.getUserByRole(UserRoleEnum.TEST_USER).getUuid());
+        givenStep();
 
-        var currentUserInfo = step("WHEN: Получена информация о пользователе", () -> personMatcherApi.getInfoAboutUser());
+        var userUuid = userConfigService.getUserByRole(UserRoleEnum.TEST_USER).getUuid();
 
-        step("THEN: Полученные данные совпадают с актуальными", () -> {
-            var userInfoDb = personFunctions.getPersonInfo(userUuid);
-            var userClubs = personClubFunctions.getUserClubs(userUuid);
-            assertAll(
-                    () -> assertThat("Id соответствует ожидаемому", currentUserInfo.getId(), equalTo(userInfoDb.getId())),
-                    () -> assertThat("Возраст соответствует ожидаемому", currentUserInfo.getAge(), equalTo(userInfoDb.getAge())),
-                    () -> assertThat(
-                            "Пол соответствует ожидаемому",
-                            currentUserInfo.getGender(),
-                            equalTo(userInfoDb.getGender())),
-                    () -> assertThat(
-                            "Имя соответствует ожидаемому",
-                            currentUserInfo.getFullName(),
-                            equalTo(userInfoDb.getFullName())),
-                    () -> assertThat(
-                            "Клубы пользователя соответствуют ожидаемому",
-                            currentUserInfo.getClubs(),
-                            containsInAnyOrder(toListClubDto(userClubs).toArray())));
-        });
+        var currentUserInfo = personMatcherApi.getInfoAboutUser();
+
+        var userInfoDb = personFunctions.getPersonInfo(userUuid);
+        var userClubs = personClubFunctions.getUserClubs(userUuid);
+
+        thenStep();
+        assertAll(
+                () -> assertThat("Id соответствует ожидаемому", currentUserInfo.getId(), equalTo(userInfoDb.getId())),
+                () -> assertThat("Возраст соответствует ожидаемому", currentUserInfo.getAge(), equalTo(userInfoDb.getAge())),
+                () -> assertThat("Пол соответствует ожидаемому", currentUserInfo.getGender(), equalTo(userInfoDb.getGender())),
+                () -> assertThat(
+                        "Имя соответствует ожидаемому",
+                        currentUserInfo.getFullName(),
+                        equalTo(userInfoDb.getFullName())),
+                () -> assertThat(
+                        "Клубы пользователя соответствуют ожидаемому",
+                        currentUserInfo.getClubs(),
+                        containsInAnyOrder(toListClubDto(userClubs).toArray())));
+    }
+
+    @Step
+    @Title("GIVEN: Получена информация о пользователе для получения данных о нем")
+    public void givenStep() {
+    }
+
+    @Step
+    @Title("THEN: Информация о пользователе успешно получена")
+    public void thenStep() {
     }
 }

@@ -5,6 +5,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import random_walk.automation.database.auth.entities.AuthUser;
 import random_walk.automation.database.auth.repos.AuthUserRepository;
+import ru.testit.annotations.Description;
+import ru.testit.annotations.Step;
+import ru.testit.annotations.Title;
 
 import java.util.List;
 import java.util.UUID;
@@ -23,6 +26,9 @@ public class AuthUserFunctions {
         return authUserRepository.findByFullName(fullName);
     }
 
+    @Step
+    @Title("AND: Получена информация о пользователе из базы данных")
+    @Description("Получаем запись из auth_user по id = {id}")
     public AuthUser getById(UUID id) {
         return authUserRepository.findById(id).orElse(null);
     }

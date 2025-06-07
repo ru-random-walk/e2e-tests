@@ -7,8 +7,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import random_walk.BaseTest;
 import random_walk.automation.api.matcher.service.AvailableTimeMatcherApi;
 import random_walk.automation.domain.enums.ClubRole;
+import random_walk.automation.domain.enums.UserRoleEnum;
 import random_walk.automation.service.MatcherService;
 import ru.random_walk.swagger.matcher_service.model.ClubDto;
+import ru.testit.annotations.Step;
+import ru.testit.annotations.Title;
 
 import java.time.LocalDate;
 import java.time.OffsetTime;
@@ -30,11 +33,14 @@ public class MatcherTest extends BaseTest {
     protected static final Double LATITUDE = 56.304017;
     protected static final Double LONGITUDE = 43.982207;
 
+    @Step
+    @Title("Добавление свободного времени пользователю TEST_USER и FIRST_TEST_USER")
     @BeforeAll
     public void addUserAvailableTime() {
         if (!isAvailableTimeCalled) {
             var offsetTime = OffsetTime.now();
             var clubId = clubConfigService.getClubByRole(ClubRole.DEFAULT_CLUB).getId();
+            var clubForFirstAndSecondId = clubConfigService.getClubByRole(ClubRole.CLUB_FOR_F_AND_S_USERS).getId();
             try {
                 availableTimeMatcherApi.addAvailableTime(
                         testTokenConfig.getToken(),
@@ -53,6 +59,28 @@ public class MatcherTest extends BaseTest {
                         OffsetTime.of(12, 0, 0, offsetTime.getNano(), offsetTime.getOffset()),
                         OffsetTime.of(13, 0, 0, offsetTime.getNano(), offsetTime.getOffset()),
                         LocalDate.now().plusDays(1),
+                        LATITUDE,
+                        LONGITUDE);
+            } catch (Exception ignored) {
+            }
+            try {
+                availableTimeMatcherApi.addAvailableTime(
+                        userConfigService.getUserByRole(UserRoleEnum.FIRST_TEST_USER).getAccessToken(),
+                        clubForFirstAndSecondId,
+                        OffsetTime.of(12, 0, 0, offsetTime.getNano(), offsetTime.getOffset()),
+                        OffsetTime.of(23, 0, 0, offsetTime.getNano(), offsetTime.getOffset()),
+                        LocalDate.now().plusDays(1),
+                        LATITUDE,
+                        LONGITUDE);
+            } catch (Exception ignored) {
+            }
+            try {
+                availableTimeMatcherApi.addAvailableTime(
+                        userConfigService.getUserByRole(UserRoleEnum.FIRST_TEST_USER).getAccessToken(),
+                        clubForFirstAndSecondId,
+                        OffsetTime.of(15, 0, 0, offsetTime.getNano(), offsetTime.getOffset()),
+                        OffsetTime.of(17, 0, 0, offsetTime.getNano(), offsetTime.getOffset()),
+                        LocalDate.now().plusDays(2),
                         LATITUDE,
                         LONGITUDE);
             } catch (Exception ignored) {

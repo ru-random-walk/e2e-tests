@@ -2,7 +2,6 @@ package random_walk.club.club_controller;
 
 import club_service.graphql.model.*;
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import random_walk.automation.api.club.services.ClubControllerApi;
@@ -12,6 +11,8 @@ import random_walk.automation.database.club.functions.MemberFunctions;
 import random_walk.automation.domain.User;
 import random_walk.automation.util.ApprovementConverterUtils;
 import random_walk.club.ClubTest;
+import ru.testit.annotations.DisplayName;
+import ru.testit.annotations.ExternalId;
 import ru.testit.annotations.Step;
 import ru.testit.annotations.Title;
 
@@ -50,6 +51,7 @@ public class CreateClubTest extends ClubTest {
     private String userToken;
 
     @Test
+    @ExternalId("club_service.create_club")
     @DisplayName("Проверка создания клуба пользователем")
     void createClub() {
         givenStep();
@@ -60,7 +62,14 @@ public class CreateClubTest extends ClubTest {
         var clubDb = clubFunctions.getById(UUID.fromString(firstClubId));
         var clubMembers = memberFunctions.getByClubId(UUID.fromString(firstClubId));
 
-        thenStep(createdClub, clubMembers, clubDb, user.getUuid());
+        thenStep();
+        assertAll(
+                "Проверка корректности создания клуба",
+                () -> assertThat(createdClub.getName(), equalTo(clubDb.getName())),
+                () -> assertThat(createdClub.getDescription(), equalTo(clubDb.getDescription())),
+                () -> assertThat(clubMembers.size(), equalTo(1)),
+                () -> assertThat(clubMembers.get(0).getId(), equalTo(user.getUuid())),
+                () -> assertThat(clubMembers.get(0).getRole(), equalTo(MemberRole.ADMIN)));
     }
 
     @Step
@@ -72,30 +81,20 @@ public class CreateClubTest extends ClubTest {
 
     @Step
     @Title("THEN: Клуб с ожидаемыми параметрами успешно создан")
-    void thenStep(Club createdClub,
-                  List<random_walk.automation.database.club.entities.Member> clubMembers,
-                  random_walk.automation.database.club.entities.Club clubDb,
-                  UUID userId) {
-        assertAll(
-                "Проверка корректности создания клуба",
-                () -> assertThat(createdClub.getName(), equalTo(clubDb.getName())),
-                () -> assertThat(createdClub.getDescription(), equalTo(clubDb.getDescription())),
-                () -> assertThat(clubMembers.size(), equalTo(1)),
-                () -> assertThat(clubMembers.get(0).getId(), equalTo(userId)),
-                () -> assertThat(clubMembers.get(0).getRole(), equalTo(MemberRole.ADMIN)));
+    void thenStep() {
     }
 
     @Test
     @DisplayName("Попытка создать количество клубов, превышающее допустимое для пользователя")
     void createClubAfterReachingMaxCountOfClubs() {
-        var userAccessToken = userConfigService.getUserByRole(FIFTH_TEST_USER).getAccessToken();
+        givenStep();
 
-        firstClubId = clubControllerApi.createClub("Первый клуб", "Первое описание", userAccessToken).getId();
-        secondClubId = clubControllerApi.createClub("Второй клуб", "Второе описание", userAccessToken).getId();
-        thirdClubId = clubControllerApi.createClub("Третий клуб", "Третье описание", userAccessToken).getId();
+        firstClubId = clubControllerApi.createClub("Первый клуб", "Первое описание", userToken).getId();
+        secondClubId = clubControllerApi.createClub("Второй клуб", "Второе описание", userToken).getId();
+        thirdClubId = clubControllerApi.createClub("Третий клуб", "Третье описание", userToken).getId();
 
         var error = toGraphqlErrorResponse(
-                () -> clubControllerApi.createClub("Несозданный клуб", "Несозданное описание", userAccessToken));
+                () -> clubControllerApi.createClub("Несозданный клуб", "Несозданное описание", userToken));
 
         var errorCode = "BAD_REQUEST";
         var errorMessage = "You are reached maximum count of clubs!";
@@ -126,6 +125,7 @@ public class CreateClubTest extends ClubTest {
         var clubDb = clubFunctions.getById(UUID.fromString(firstClubId));
 
         var approvementData = ApprovementConverterUtils.getFormApprovementData(approvements.get(0).getData());
+        thenStep();
         assertAll(
                 "Проверяем создание клуба с тестами",
                 () -> assertThat(createdClub.getName(), equalTo(clubDb.getName())),
@@ -164,6 +164,7 @@ public class CreateClubTest extends ClubTest {
         var clubDb = clubFunctions.getById(UUID.fromString(firstClubId));
 
         var approvementData = ApprovementConverterUtils.getConfirmApprovementData(approvements.get(0).getData());
+        thenStep();
         assertAll(
                 "Проверяем создание клуба с тестами",
                 () -> assertThat(createdClub.getName(), equalTo(clubDb.getName())),

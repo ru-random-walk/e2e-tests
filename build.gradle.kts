@@ -41,21 +41,17 @@ apply {
 
 
 dependencies {
-    val springVersion = "2.7.5"
-    val allureVersion = "2.27.0"
     val aspectjVersion = "1.9.22"
 
     implementation("org.postgresql:postgresql:42.6.0")
 
     implementation("io.rest-assured:rest-assured")
-    implementation("io.qameta.allure:allure-rest-assured:$allureVersion")
-    implementation("io.qameta.allure:allure-junit5:$allureVersion")
     implementation("com.github.mwiede:jsch:0.2.17")
 
-    implementation("org.springframework.boot:spring-boot-starter-data-jpa:$springVersion")
-    implementation("org.springframework.boot:spring-boot-starter-validation:$springVersion")
-    implementation("org.springframework.boot:spring-boot-starter-test:$springVersion")
-    implementation("org.springframework.boot:spring-boot-starter-websocket:$springVersion")
+    implementation("org.springframework.boot:spring-boot-starter-data-jpa")
+    implementation("org.springframework.boot:spring-boot-starter-validation")
+    implementation("org.springframework.boot:spring-boot-starter-test")
+    implementation("org.springframework.boot:spring-boot-starter-websocket")
 
     implementation("org.springframework.retry:spring-retry:1.3.3")
     implementation("ch.qos.logback:logback-core:1.2.9")
@@ -67,7 +63,6 @@ dependencies {
     implementation("mil.nga.sf:sf-wkt:1.2.3")
     implementation("org.locationtech.jts:jts-core:1.19.0")
 
-    implementation("io.qameta.allure:allure-java-commons:2.27.0")
     implementation("org.apache.commons:commons-text:1.10.0")
     implementation("commons-codec:commons-codec:1.13")
 

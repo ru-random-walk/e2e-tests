@@ -1,6 +1,5 @@
 package random_walk.matcher.available_time_controller;
 
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import random_walk.automation.api.matcher.service.PersonMatcherApi;
@@ -8,6 +7,9 @@ import random_walk.automation.database.matcher.functions.AvailableTimeFunctions;
 import random_walk.automation.domain.enums.ClubRole;
 import random_walk.automation.domain.enums.UserRoleEnum;
 import random_walk.matcher.MatcherTest;
+import ru.testit.annotations.DisplayName;
+import ru.testit.annotations.Step;
+import ru.testit.annotations.Title;
 
 import java.time.LocalDate;
 import java.time.OffsetTime;
@@ -29,12 +31,14 @@ public class DeleteAvailableTimeTest extends MatcherTest {
     @Autowired
     private PersonMatcherApi personMatcherApi;
 
+    private UUID testUserId;
+
+    private UUID clubId;
+
     @Test
     @DisplayName("Проверка удаления свободного времени из базы данных")
     void checkDeleteAvailableTimeFromDatabase() {
-        var testUserId = userConfigService.getUserByRole(UserRoleEnum.TEST_USER).getUuid();
-
-        var clubId = clubConfigService.getClubByRole(ClubRole.DEFAULT_CLUB).getId();
+        givenStep();
 
         var offsetTime = OffsetTime.now();
         var date = LocalDate.now().plusDays(2);
@@ -66,6 +70,8 @@ public class DeleteAvailableTimeTest extends MatcherTest {
                                 .isEmpty())
                 .orElse(false);
 
+        thenStep();
+
         assertAll(
                 "Проверяем корректность удаления свободного времени",
                 () -> assertThat(
@@ -81,6 +87,7 @@ public class DeleteAvailableTimeTest extends MatcherTest {
     @Test
     @DisplayName("Удаление несуществующего свободного времени")
     void checkDeleteNonExistingAvailableTime() {
+        givenNonExistStep();
         var availableTimeId = UUID.randomUUID();
 
         var notFoundError = toDefaultErrorResponse(() -> availableTimeMatcherApi.deleteAvailableTime(availableTimeId));
@@ -89,5 +96,22 @@ public class DeleteAvailableTimeTest extends MatcherTest {
         var errorCode = 404;
 
         checkError(notFoundError, errorCode, errorMessage);
+    }
+
+    @Step
+    @Title("GIVEN: Получена информация о тестовом пользователе и группе, в которой он состоит")
+    public void givenStep() {
+        testUserId = userConfigService.getUserByRole(UserRoleEnum.TEST_USER).getUuid();
+        clubId = clubConfigService.getClubByRole(ClubRole.DEFAULT_CLUB).getId();
+    }
+
+    @Step
+    @Title("THEN: Свободное время пользователя успешно удалено")
+    public void thenStep() {
+    }
+
+    @Step
+    @Title("GIVEN: Получен id несуществующего свободного времени")
+    public void givenNonExistStep() {
     }
 }

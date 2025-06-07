@@ -16,7 +16,7 @@ public class ExceptionUtils {
 
     @SneakyThrows
     @Step
-    @Title("Получаем ошибку при выполнении метода")
+    @Title("WHEN: Получаем ошибку при выполнении метода")
     public static DefaultErrorResponse toDefaultErrorResponse(Executable executable) {
         try {
             executable.execute();
@@ -27,6 +27,8 @@ public class ExceptionUtils {
     }
 
     @SneakyThrows
+    @Step
+    @Title("WHEN: Во время выполнения запроса GraphQL получена ошибка")
     public static DefaultGraphqlErrorResponse toGraphqlErrorResponse(Executable executable) {
         try {
             executable.execute();

@@ -32,7 +32,8 @@ class WebsocketTest extends ChatTest {
     public static final String SECOND_MESSAGE = "How are you?";
 
     @Step
-    @Description("Очистка старого и создание нового пустого чата для пользователей 490689d5-4e63-4724-8ab5-4fb32750b263 и 3d154ea6-7d67-41f1-820f-5f6b403caec6")
+    @Title("Очистка старого и создание нового пустого чата")
+    @Description("Пользователи - 490689d5-4e63-4724-8ab5-4fb32750b263 и 3d154ea6-7d67-41f1-820f-5f6b403caec6")
     @BeforeAll
     public void createChatWithoutMessages() {
         if (chatMembersFunctions.getUsersChat(secondUser.getUuid(), thirdUser.getUuid()) != null) {

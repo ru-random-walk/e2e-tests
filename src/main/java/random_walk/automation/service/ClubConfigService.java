@@ -6,6 +6,7 @@ import random_walk.automation.config.ClubsConfig;
 import random_walk.automation.domain.UserClub;
 import random_walk.automation.domain.enums.ClubRole;
 
+import java.util.List;
 import java.util.Objects;
 
 @Service
@@ -20,5 +21,9 @@ public class ClubConfigService {
                 .filter(club -> Objects.equals(club.getRole(), role))
                 .findFirst()
                 .orElseThrow(() -> new IllegalArgumentException("Клуб с ролью " + role + " не найден"));
+    }
+
+    public List<UserClub> getClubs() {
+        return config.getClubs();
     }
 }

@@ -1,6 +1,5 @@
 package random_walk.automation.api.matcher.service;
 
-import io.qameta.allure.Step;
 import org.springframework.stereotype.Service;
 import random_walk.automation.api.matcher.MatcherConfigurationProperties;
 import random_walk.automation.config.TestTokenConfig;
@@ -9,6 +8,9 @@ import ru.random_walk.swagger.matcher_service.api.InternalControllerApi;
 import ru.random_walk.swagger.matcher_service.invoker.ApiClient;
 import ru.random_walk.swagger.matcher_service.model.AppointmentDetailsDto;
 import ru.random_walk.swagger.matcher_service.model.RequestForAppointmentDto;
+import ru.testit.annotations.Description;
+import ru.testit.annotations.Step;
+import ru.testit.annotations.Title;
 
 import java.time.OffsetDateTime;
 import java.util.UUID;
@@ -29,7 +31,9 @@ public class InternalMatcherApi {
         this.token = testTokenConfig.getAutotestToken();
     }
 
-    @Step("[MATCHER_SERVICE: /internal/appointment/request] Создание запроса на прогулку пользователем {requesterId}")
+    @Step
+    @Description("MATCHER_SERVICE: POST /internal/appointment/request")
+    @Title("WHEN: Пользователь {requesterId} создает запрос на прогулку для пользователя {partnerId}")
     public AppointmentDetailsDto getAppointmentRequest(UUID requesterId,
                                                        UUID partnerId,
                                                        OffsetDateTime startTime,

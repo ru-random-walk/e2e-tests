@@ -1,6 +1,5 @@
 package random_walk.automation.api.auth.service;
 
-import io.restassured.response.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import random_walk.automation.api.auth.AuthServiceConfigurationProperties;
@@ -63,8 +62,8 @@ public class AuthServiceApi {
     }
 
     @Step
-    @Title("[AUTH_SERVICE: POST /token]")
-    @Description("Получаем access и refresh токены для пользователя")
+    @Description("[AUTH_SERVICE: POST /token]")
+    @Title("WHEN: Получаем access и refresh токены для пользователя")
     public TokenResponse getAuthTokens(String accessToken) {
         var mapOfRequestParams = Map.of(
                 "grant_type",
@@ -95,8 +94,8 @@ public class AuthServiceApi {
     }
 
     @Step
-    @Title("[AUTH_SERVICE: POST /token]")
-    @Description("Обновляем access_token по полученному refresh_token")
+    @Description("[AUTH_SERVICE: POST /token]")
+    @Title("WHEN: Обновляем access_token по полученному refresh_token")
     public TokenResponse refreshAuthToken(String refreshToken) {
         var mapOfRequestParams = Map.of("grant_type", "refresh_token", "refresh_token", refreshToken);
 
@@ -108,8 +107,8 @@ public class AuthServiceApi {
     }
 
     @Step
-    @Title("[AUTH_SERVICE: GET /users]")
-    @Description("Получаем список пользователей по их id")
+    @Description("[AUTH_SERVICE: GET /users]")
+    @Title("WHEN: Получаем список пользователей по их id")
     public PagedModelUserDto getUsersById(List<UUID> ids, @Nullable Integer size, @Nullable Integer page, @Nullable String sort) {
 
         var getUsersRequest = userControllerApi.getUsers();
@@ -135,29 +134,21 @@ public class AuthServiceApi {
     }
 
     @Step
-    @Title("[AUTH_SERVICE: GET /userinfo/me]")
-    @Description("Получение собственной информации пользователем")
-    public DetailedUserDto getUserSelfInfo() {
+    @Description("[AUTH_SERVICE: GET /userinfo/me]")
+    @Title("WHEN: Получение собственной информации пользователем")
+    public DetailedUserDto getUserSelfInfo(String token) {
         return userControllerApi.getSelfInfo()
                 .reqSpec(r -> r.addFilter(new BearerAuthToken(token)))
                 .execute(r -> r.as(DetailedUserDto.class));
     }
 
+    @Step
+    @Description("AUTH_SERVICE: PUT /userinfo/change")
+    @Title("WHEN: Изменение собственной информации о пользователе")
     public DetailedUserDto changeInfoAboutUser(String token, String fullName, String description) {
         return userControllerApi.changeSelfInfo()
                 .reqSpec(r -> r.addFilter(new BearerAuthToken(token)))
                 .body(new ChangeUserInfoDto().fullName(fullName).aboutMe(description))
                 .execute(r -> r.as(DetailedUserDto.class));
-    }
-
-    public void logout(String token) {
-        userControllerApi.logOut().reqSpec(r -> r.addFilter(new BearerAuthToken(token))).execute(Response::andReturn);
-    }
-
-    public void sendOneTimePassword(String email) {
-        tokenControllerApi.issueOtp()
-                .reqSpec(r -> r.addFilter(new BasicAuthFilter(username, password)))
-                .body(new EmailAuthDto().email(email))
-                .execute(Response::andReturn);
     }
 }

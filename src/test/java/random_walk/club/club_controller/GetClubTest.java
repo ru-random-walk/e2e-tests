@@ -4,7 +4,6 @@ import club_service.graphql.model.Approvement;
 import club_service.graphql.model.MemberRole;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +12,9 @@ import random_walk.automation.database.club.functions.ClubFunctions;
 import random_walk.automation.database.club.functions.MemberFunctions;
 import random_walk.automation.domain.enums.UserRoleEnum;
 import random_walk.club.ClubTest;
+import ru.testit.annotations.DisplayName;
+import ru.testit.annotations.Step;
+import ru.testit.annotations.Title;
 
 import java.util.UUID;
 
@@ -37,9 +39,13 @@ public class GetClubTest extends ClubTest {
 
     private UUID clubId;
 
+    private String userToken;
+
     @BeforeAll
-    void createChat() {
-        var userToken = userConfigService.getUserByRole(FOURTH_TEST_USER).getAccessToken();
+    @Step
+    @Title("Создан клуб для его получения в тестах")
+    void createClub() {
+        userToken = userConfigService.getUserByRole(FOURTH_TEST_USER).getAccessToken();
         var inspectorId = userConfigService.getUserByRole(UserRoleEnum.PERSONAL_ACCOUNT).getUuid();
 
         clubId = UUID.fromString(clubControllerApi.createClub("GivenClub", "Клуб для тестов на получение", userToken).getId());
@@ -52,7 +58,8 @@ public class GetClubTest extends ClubTest {
     @Test
     @DisplayName("Получение информации о клубе")
     void getInfoAboutClub() {
-        var clubInfo = clubControllerApi.getClub(clubId, userConfigService.getUserByRole(FOURTH_TEST_USER).getAccessToken());
+        givenStep();
+        var clubInfo = clubControllerApi.getClub(clubId, userToken);
 
         var clubDb = clubFunctions.getById(clubId);
 
@@ -60,6 +67,7 @@ public class GetClubTest extends ClubTest {
 
         var approvements = approvementFunctions.getByClubId(clubId);
 
+        thenStep();
         assertAll(
                 "Проверяем полученную о клубе информацию",
                 () -> assertThat(
@@ -97,6 +105,7 @@ public class GetClubTest extends ClubTest {
     @Test
     @DisplayName("Получение информации о несуществующем клубе")
     void getInfoAboutNonExistingClub() {
+        givenStep();
         var clubInfo = toGraphqlErrorResponse(
                 () -> clubControllerApi
                         .getClub(UUID.randomUUID(), userConfigService.getUserByRole(FOURTH_TEST_USER).getAccessToken()));
@@ -107,7 +116,20 @@ public class GetClubTest extends ClubTest {
         checkGraphqlError(clubInfo, errorCode, errorMessage);
     }
 
+    @Step
+    @Title("GIVEN: Получены данные пользователя-админа созданного клуба")
+    public void givenStep() {
+        userToken = userConfigService.getUserByRole(FOURTH_TEST_USER).getAccessToken();
+    }
+
+    @Step
+    @Title("THEN: Информация о клубе успешно получена")
+    public void thenStep() {
+    }
+
     @AfterAll
+    @Step
+    @Title("Удален ранее созданный тестовый клуб")
     void deleteChat() {
         clubControllerApi.removeClub(clubId, userConfigService.getUserByRole(FOURTH_TEST_USER).getAccessToken());
     }

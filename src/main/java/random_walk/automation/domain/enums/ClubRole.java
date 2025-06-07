@@ -4,5 +4,6 @@ import lombok.NoArgsConstructor;
 
 @NoArgsConstructor
 public enum ClubRole {
-    DEFAULT_CLUB
+    DEFAULT_CLUB,
+    CLUB_FOR_F_AND_S_USERS
 }

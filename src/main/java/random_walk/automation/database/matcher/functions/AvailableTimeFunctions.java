@@ -5,6 +5,9 @@ import org.springframework.stereotype.Service;
 import random_walk.automation.database.matcher.entities.AvailableTime;
 import random_walk.automation.database.matcher.repos.AvailableTimeRepository;
 import random_walk.automation.util.PointConverterUtils;
+import ru.testit.annotations.Description;
+import ru.testit.annotations.Step;
+import ru.testit.annotations.Title;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -16,14 +19,13 @@ public class AvailableTimeFunctions {
 
     private final AvailableTimeRepository availableTimeRepository;
 
-    public List<AvailableTime> getUserAvailableTime(UUID personId) {
-        return availableTimeRepository.findByPersonId(personId);
-    }
-
     public AvailableTime getById(UUID id) {
         return availableTimeRepository.findById(id).orElse(null);
     }
 
+    @Step
+    @Title("AND: Получаем свободное время пользователя из базы данных")
+    @Description("Записи из таблицы available_time по date = {date} и person_id = {personId}")
     public List<AvailableTime> getUserAvailableTimeByDateAndPersonId(LocalDate date, UUID personId) {
         return availableTimeRepository.findByDateAndPersonId(date, personId)
                 .stream()
@@ -39,6 +41,9 @@ public class AvailableTimeFunctions {
         availableTimeRepository.deleteById(id);
     }
 
+    @Step
+    @Title("AND: Получаем все записи о свободном времени из базы данных")
+    @Description("Все записи из таблицы available_time")
     public List<AvailableTime> getAllAvailableTime() {
         return availableTimeRepository.findAll();
     }

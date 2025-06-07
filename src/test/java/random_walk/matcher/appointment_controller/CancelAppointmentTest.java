@@ -4,7 +4,6 @@ import org.awaitility.Awaitility;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import random_walk.automation.api.matcher.service.AppointmentMatcherApi;
@@ -15,6 +14,10 @@ import random_walk.automation.database.matcher.functions.DayLimitFunctions;
 import random_walk.automation.domain.enums.ClubRole;
 import random_walk.automation.domain.enums.UserRoleEnum;
 import random_walk.matcher.MatcherTest;
+import ru.testit.annotations.Description;
+import ru.testit.annotations.DisplayName;
+import ru.testit.annotations.Step;
+import ru.testit.annotations.Title;
 
 import java.time.LocalDate;
 import java.time.OffsetTime;
@@ -25,6 +28,8 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static random_walk.asserts.ErrorAsserts.checkError;
+import static random_walk.automation.domain.enums.UserRoleEnum.AUTOTEST_USER;
+import static random_walk.automation.domain.enums.UserRoleEnum.TEST_USER;
 import static random_walk.automation.util.ExceptionUtils.toDefaultErrorResponse;
 
 public class CancelAppointmentTest extends MatcherTest {
@@ -41,6 +46,12 @@ public class CancelAppointmentTest extends MatcherTest {
     @Autowired
     private AvailableTimeFunctions availableTimeFunctions;
 
+    private UUID testUserId;
+
+    private UUID autotestUserId;
+
+    @Step
+    @Title("Обновляем лимиты количества встреч для тестовых пользователей")
     @BeforeAll
     public void changeUserDayLimits() {
         var autotestUserId = userConfigService.getUserByRole(UserRoleEnum.AUTOTEST_USER).getUuid();
@@ -54,8 +65,7 @@ public class CancelAppointmentTest extends MatcherTest {
     @Test
     @DisplayName("Отмена прогулки пользователем")
     void checkCancelAppointment() {
-        var autotestUserId = userConfigService.getUserByRole(UserRoleEnum.AUTOTEST_USER).getUuid();
-        var testUserId = userConfigService.getUserByRole(UserRoleEnum.TEST_USER).getUuid();
+        givenStep();
 
         var offsetTime = OffsetTime.now();
         var clubId = clubConfigService.getClubByRole(ClubRole.DEFAULT_CLUB).getId();
@@ -82,6 +92,8 @@ public class CancelAppointmentTest extends MatcherTest {
         var testDayLimit = dayLimitFunctions.getById(new DayLimitPK().setPersonId(testUserId).setDate(LocalDate.now()));
         var autotestDayLimit = dayLimitFunctions.getById(new DayLimitPK().setPersonId(autotestUserId).setDate(LocalDate.now()));
 
+        thenStep();
+
         assertAll(
                 "Проверяем выставленные параметры после отмены встречи",
                 () -> assertThat(
@@ -101,6 +113,8 @@ public class CancelAppointmentTest extends MatcherTest {
     @Test
     @DisplayName("Отмена несуществующей встречи")
     void checkCancelNonExistingAppointment() {
+        givenStep();
+
         var notFoundError = toDefaultErrorResponse(
                 () -> appointmentMatcherApi.cancelAppointment(UUID.randomUUID(), testTokenConfig.getToken()));
 
@@ -110,7 +124,22 @@ public class CancelAppointmentTest extends MatcherTest {
         checkError(notFoundError, errorCode, errorMessage);
     }
 
+    @Step
+    @Title("GIVEN: Получена информация о тестовых пользователях")
+    @Description("Пользователи - 58e953ef-0153-4918-9a26-17bcb2213c12 и 490689d5-4e63-4724-8ab5-4fb32750b263")
+    public void givenStep() {
+        testUserId = userConfigService.getUserByRole(TEST_USER).getUuid();
+        autotestUserId = userConfigService.getUserByRole(AUTOTEST_USER).getUuid();
+    }
+
+    @Step
+    @Title("THEN: Прогулка успешно отменена пользователем")
+    public void thenStep() {
+    }
+
     @AfterEach
+    @Step
+    @Title("Удаляем свободное время для пользователя AUTOTEST_USER")
     public void deleteAvailableTime() {
         try {
             availableTimeFunctions.deleteUserAvailableTime(userConfigService.getUserByRole(UserRoleEnum.AUTOTEST_USER).getUuid());

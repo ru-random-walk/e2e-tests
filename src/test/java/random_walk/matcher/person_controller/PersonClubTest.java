@@ -1,16 +1,17 @@
 package random_walk.matcher.person_controller;
 
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import random_walk.automation.api.matcher.service.PersonMatcherApi;
 import random_walk.automation.database.matcher.functions.PersonClubFunctions;
 import random_walk.automation.domain.enums.UserRoleEnum;
 import random_walk.matcher.MatcherTest;
+import ru.testit.annotations.DisplayName;
+import ru.testit.annotations.Step;
+import ru.testit.annotations.Title;
 
 import java.util.Arrays;
 
-import static io.qameta.allure.Allure.step;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsInAnyOrder;
 
@@ -25,20 +26,25 @@ class PersonClubTest extends MatcherTest {
     @Test
     @DisplayName("Получение информации о клубах пользователя")
     void getInfoAboutUserClubs() {
-        var userUuid = step(
-                "GIVEN: Получена информация о пользователе с ролью TEST_USER",
-                () -> userConfigService.getUserByRole(UserRoleEnum.TEST_USER).getUuid());
+        givenStep();
 
-        var userClubs = step(
-                "WHEN: Получены клубы, в которых состоит пользователь",
-                () -> Arrays.stream(personMatcherApi.getInfoAboutUserClubs()).toList());
+        var userUuid = userConfigService.getUserByRole(UserRoleEnum.TEST_USER).getUuid();
 
-        step("THEN: Информация о полученных клубах успешно получена", () -> {
-            var userClubsDb = personClubFunctions.getUserClubs(userUuid);
-            assertThat(
-                    "Список клубов соответствует ожидаемому",
-                    userClubs,
-                    containsInAnyOrder(toListClubDto(userClubsDb).toArray()));
-        });
+        var userClubs = Arrays.stream(personMatcherApi.getInfoAboutUserClubs()).toList();
+
+        var userClubsDb = personClubFunctions.getUserClubs(userUuid);
+        thenStep();
+
+        assertThat("Список клубов соответствует ожидаемому", userClubs, containsInAnyOrder(toListClubDto(userClubsDb).toArray()));
+    }
+
+    @Step
+    @Title("GIVEN: Получена информация о пользователе для получения данных о нем")
+    public void givenStep() {
+    }
+
+    @Step
+    @Title("THEN: Клубы пользователя успешно получены")
+    public void thenStep() {
     }
 }

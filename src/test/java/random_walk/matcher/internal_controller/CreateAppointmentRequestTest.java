@@ -1,7 +1,6 @@
 package random_walk.matcher.internal_controller;
 
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import random_walk.automation.api.matcher.service.AppointmentMatcherApi;
@@ -12,6 +11,9 @@ import random_walk.automation.database.matcher.functions.AppointmentFunctions;
 import random_walk.automation.domain.enums.UserRoleEnum;
 import random_walk.matcher.MatcherTest;
 import ru.random_walk.swagger.matcher_service.model.AppointmentDetailsDto;
+import ru.testit.annotations.DisplayName;
+import ru.testit.annotations.Step;
+import ru.testit.annotations.Title;
 
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
@@ -47,6 +49,8 @@ class CreateAppointmentRequestTest extends MatcherTest {
     @Test
     @DisplayName("Проверка создания запроса на встречу")
     void checkCorrectAppointmentRequest() {
+        givenStep();
+
         var autotestUserInfo = userConfigService.getUserByRole(UserRoleEnum.AUTOTEST_USER);
         var testUserInfo = userConfigService.getUserByRole(UserRoleEnum.TEST_USER);
 
@@ -62,6 +66,8 @@ class CreateAppointmentRequestTest extends MatcherTest {
 
         var testAppointmentSchedule = personMatcherApi.getInfoAboutSchedule(testTokenConfig.getToken());
         var autotestAppointmentSchedule = personMatcherApi.getInfoAboutSchedule(testTokenConfig.getAutotestToken());
+        thenStep();
+
         assertAll(
                 "Проверяем детали предложенной встречи",
                 () -> assertThat(
@@ -113,6 +119,7 @@ class CreateAppointmentRequestTest extends MatcherTest {
     @Test
     @DisplayName("Попытка запросить прогулку для прошедшего времени")
     void checkAppointmentRequestInPast() {
+        givenStep();
         var autotestUserInfo = userConfigService.getUserByRole(UserRoleEnum.AUTOTEST_USER);
         var testUserInfo = userConfigService.getUserByRole(UserRoleEnum.TEST_USER);
 
@@ -133,6 +140,8 @@ class CreateAppointmentRequestTest extends MatcherTest {
     @Test
     @DisplayName("Проверка отсутствия отмененной встречи в расписании")
     void checkCancelAppointmentInSchedule() {
+        givenStep();
+
         var autotestUserInfo = userConfigService.getUserByRole(UserRoleEnum.AUTOTEST_USER);
         var testUserInfo = userConfigService.getUserByRole(UserRoleEnum.TEST_USER);
 
@@ -146,6 +155,8 @@ class CreateAppointmentRequestTest extends MatcherTest {
         appointmentMatcherApi.rejectAppointment(appointmentId, testTokenConfig.getToken());
 
         var appointmentDetails = appointmentDetailsFunctions.getById(appointmentId);
+        thenStep();
+
         assertAll(
                 "Проверяем параметры встречи",
                 () -> assertThat("Проставлено время окончания встречи", appointmentDetails.getEndedAt(), notNullValue()),
@@ -190,6 +201,8 @@ class CreateAppointmentRequestTest extends MatcherTest {
     @Test
     @DisplayName("Невозможно запросить прогулку, если на запрашиваемое время уже есть встреча")
     void checkAppointmentRequestByPlannedTimeFrame() {
+        givenStep();
+
         var autotestUserInfo = userConfigService.getUserByRole(UserRoleEnum.AUTOTEST_USER);
         var testUserInfo = userConfigService.getUserByRole(UserRoleEnum.TEST_USER);
 
@@ -218,6 +231,8 @@ class CreateAppointmentRequestTest extends MatcherTest {
     @Test
     @DisplayName("Проверка автоматической отмены запроса на прогулку при принятии другого запроса на это время")
     void checkCancelAppointmentRequestAfterApproveOtherRequestAtSameTimeFrame() {
+        givenStep();
+
         var autotestUserInfo = userConfigService.getUserByRole(UserRoleEnum.AUTOTEST_USER);
         var testUserInfo = userConfigService.getUserByRole(UserRoleEnum.TEST_USER);
 
@@ -234,6 +249,7 @@ class CreateAppointmentRequestTest extends MatcherTest {
 
         var firstAppointmentDatabase = appointmentDetailsFunctions.getById(appointmentId);
 
+        thenStep();
         assertAll(
                 "Проверяем параметры встречи",
                 () -> assertThat("Проставлено время окончания встречи", firstAppointmentDatabase.getEndedAt(), notNullValue()),
@@ -245,7 +261,19 @@ class CreateAppointmentRequestTest extends MatcherTest {
         matcherService.deleteAppointmentRequest(secondAppointmentRequest.getId());
     }
 
+    @Step
+    @Title("GIVEN: Получена информация о пользователях для назначения встреч между ними")
+    public void givenStep() {
+    }
+
+    @Step
+    @Title("THEN: Прогулка успешно отображается у пользователей")
+    public void thenStep() {
+    }
+
     @AfterEach
+    @Step
+    @Title("Удаление созданного запроса на прогулку")
     void deleteAppointmentRequest() {
         if (appointmentId != null) {
             matcherService.deleteAppointmentRequest(appointmentId);
