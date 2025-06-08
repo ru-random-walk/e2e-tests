@@ -108,6 +108,10 @@ public abstract class BaseTest {
                     clubConfigService.getClubByRole(ClubRole.DEFAULT_CLUB).getId(),
                     userConfigService.getUserByRole(UserRoleEnum.FIRST_TEST_USER).getUuid(),
                     firstUserAccessToken);
+            memberControllerApi.addMemberInClub(
+                    clubConfigService.getClubByRole(ClubRole.DEFAULT_CLUB).getId(),
+                    userConfigService.getUserByRole(UserRoleEnum.THIRD_TEST_USER).getUuid(),
+                    firstUserAccessToken);
             isUsersCreated = true;
         }
     }

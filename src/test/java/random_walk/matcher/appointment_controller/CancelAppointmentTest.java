@@ -28,8 +28,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static random_walk.asserts.ErrorAsserts.checkError;
-import static random_walk.automation.domain.enums.UserRoleEnum.AUTOTEST_USER;
-import static random_walk.automation.domain.enums.UserRoleEnum.TEST_USER;
+import static random_walk.automation.domain.enums.UserRoleEnum.*;
 import static random_walk.automation.util.ExceptionUtils.toDefaultErrorResponse;
 
 public class CancelAppointmentTest extends MatcherTest {
@@ -54,8 +53,8 @@ public class CancelAppointmentTest extends MatcherTest {
     @Title("Обновляем лимиты количества встреч для тестовых пользователей")
     @BeforeAll
     public void changeUserDayLimits() {
-        var autotestUserId = userConfigService.getUserByRole(UserRoleEnum.AUTOTEST_USER).getUuid();
-        var testUserId = userConfigService.getUserByRole(UserRoleEnum.TEST_USER).getUuid();
+        var autotestUserId = userConfigService.getUserByRole(UserRoleEnum.FIRST_TEST_USER).getUuid();
+        var testUserId = userConfigService.getUserByRole(UserRoleEnum.THIRD_TEST_USER).getUuid();
 
         availableTimeFunctions.deleteUserAvailableTime(autotestUserId);
         dayLimitFunctions.setDayLimitByDateAndPersonId(new DayLimitPK().setDate(LocalDate.now()).setPersonId(testUserId));
@@ -70,11 +69,11 @@ public class CancelAppointmentTest extends MatcherTest {
         var offsetTime = OffsetTime.now();
         var clubId = clubConfigService.getClubByRole(ClubRole.DEFAULT_CLUB).getId();
         availableTimeMatcherApi.addAvailableTime(
-                testTokenConfig.getAutotestToken(),
+                userConfigService.getUserByRole(THIRD_TEST_USER).getAccessToken(),
                 clubId,
-                offsetTime,
-                OffsetTime.of(23, 59, 0, offsetTime.getNano(), offsetTime.getOffset()),
-                LocalDate.now(),
+                OffsetTime.of(15, 0, 0, offsetTime.getNano(), offsetTime.getOffset()),
+                OffsetTime.of(17, 0, 0, offsetTime.getNano(), offsetTime.getOffset()),
+                LocalDate.now().plusDays(2),
                 LATITUDE,
                 LONGITUDE);
 
@@ -87,7 +86,7 @@ public class CancelAppointmentTest extends MatcherTest {
 
         var appointmentId = appointmentFunctions.getUsersAppointment(autotestUserId, testUserId).get(0);
 
-        appointmentMatcherApi.cancelAppointment(appointmentId, testTokenConfig.getToken());
+        appointmentMatcherApi.cancelAppointment(appointmentId, userConfigService.getUserByRole(FIRST_TEST_USER).getAccessToken());
 
         var testDayLimit = dayLimitFunctions.getById(new DayLimitPK().setPersonId(testUserId).setDate(LocalDate.now()));
         var autotestDayLimit = dayLimitFunctions.getById(new DayLimitPK().setPersonId(autotestUserId).setDate(LocalDate.now()));
@@ -128,8 +127,8 @@ public class CancelAppointmentTest extends MatcherTest {
     @Title("GIVEN: Получена информация о тестовых пользователях")
     @Description("Пользователи - 58e953ef-0153-4918-9a26-17bcb2213c12 и 490689d5-4e63-4724-8ab5-4fb32750b263")
     public void givenStep() {
-        testUserId = userConfigService.getUserByRole(TEST_USER).getUuid();
-        autotestUserId = userConfigService.getUserByRole(AUTOTEST_USER).getUuid();
+        testUserId = userConfigService.getUserByRole(FIRST_TEST_USER).getUuid();
+        autotestUserId = userConfigService.getUserByRole(THIRD_TEST_USER).getUuid();
     }
 
     @Step
