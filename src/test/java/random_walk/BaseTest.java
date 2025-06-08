@@ -25,6 +25,8 @@ import random_walk.automation.domain.enums.UserRoleEnum;
 import random_walk.automation.service.ClubConfigService;
 import random_walk.automation.service.UserConfigService;
 import random_walk.extensions.RestAssuredExtension;
+import ru.testit.annotations.Step;
+import ru.testit.annotations.Title;
 
 import java.time.LocalDateTime;
 import java.util.Random;
@@ -69,6 +71,8 @@ public abstract class BaseTest {
     private MemberControllerApi memberControllerApi;
 
     @BeforeAll
+    @Step
+    @Title("Генерация тестовых пользователей и создания клуба для тестов")
     public void generateUsers() {
         var users = userConfigService.getUsers();
         for (User user : users) {
@@ -94,25 +98,21 @@ public abstract class BaseTest {
                 clubTestControllerApi.addMemberInClubService(userId, fullName);
                 user.setUuid(userId);
                 user.setAccessToken(api.refreshAuthToken(userRefreshToken.toString()).getAccessToken());
-
-                var newClub = clubControllerApi
-                        .createClub(
-                                "def club",
-                                "club",
-                                userConfigService.getUserByRole(UserRoleEnum.FIRST_TEST_USER).getAccessToken())
-                        .getId();
-                memberControllerApi.addMemberInClub(
-                        UUID.fromString(newClub),
-                        userConfigService.getUserByRole(UserRoleEnum.SECOND_TEST_USER).getUuid(),
-                        userConfigService.getUserByRole(UserRoleEnum.FIRST_TEST_USER).getAccessToken());
-
-                clubConfigService.getClubs()
-                        .stream()
-                        .filter(r -> r.getRole() == ClubRole.CLUB_FOR_F_AND_S_USERS)
-                        .findFirst()
-                        .get()
-                        .setId(UUID.fromString(newClub));
             }
         }
+
+        var firstUserAccessToken = userConfigService.getUserByRole(UserRoleEnum.FIRST_TEST_USER).getAccessToken();
+        var newClub = clubControllerApi.createClub("def club", "club", firstUserAccessToken).getId();
+        memberControllerApi.addMemberInClub(
+                UUID.fromString(newClub),
+                userConfigService.getUserByRole(UserRoleEnum.SECOND_TEST_USER).getUuid(),
+                firstUserAccessToken);
+
+        clubConfigService.getClubs()
+                .stream()
+                .filter(r -> r.getRole() == ClubRole.CLUB_FOR_F_AND_S_USERS)
+                .findFirst()
+                .get()
+                .setId(UUID.fromString(newClub));
     }
 }
