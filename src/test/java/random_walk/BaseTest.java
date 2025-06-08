@@ -7,7 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import random_walk.automation.Application;
 import random_walk.automation.api.auth.service.AuthServiceApi;
-import random_walk.automation.api.club.services.ClubControllerApi;
 import random_walk.automation.api.club.services.ClubTestControllerApi;
 import random_walk.automation.api.club.services.MemberControllerApi;
 import random_walk.automation.api.matcher.service.TestControllerApi;
@@ -59,16 +58,13 @@ public abstract class BaseTest {
     private TestControllerApi testControllerApi;
 
     @Autowired
+    private MemberControllerApi memberControllerApi;
+
+    @Autowired
     private ClubTestControllerApi clubTestControllerApi;
 
     @Autowired
     private AuthServiceApi api;
-
-    @Autowired
-    private ClubControllerApi clubControllerApi;
-
-    @Autowired
-    private MemberControllerApi memberControllerApi;
 
     private static Boolean isUsersCreated = false;
 
@@ -103,20 +99,15 @@ public abstract class BaseTest {
                     user.setAccessToken(api.refreshAuthToken(userRefreshToken.toString()).getAccessToken());
                 }
             }
-
-            var firstUserAccessToken = userConfigService.getUserByRole(UserRoleEnum.FIRST_TEST_USER).getAccessToken();
-            var newClub = clubControllerApi.createClub("def club", "club", firstUserAccessToken).getId();
+            var firstUserAccessToken = testTokenConfig.getAutotestToken();
             memberControllerApi.addMemberInClub(
-                    UUID.fromString(newClub),
+                    clubConfigService.getClubByRole(ClubRole.DEFAULT_CLUB).getId(),
                     userConfigService.getUserByRole(UserRoleEnum.SECOND_TEST_USER).getUuid(),
                     firstUserAccessToken);
-
-            clubConfigService.getClubs()
-                    .stream()
-                    .filter(r -> r.getRole() == ClubRole.CLUB_FOR_F_AND_S_USERS)
-                    .findFirst()
-                    .get()
-                    .setId(UUID.fromString(newClub));
+            memberControllerApi.addMemberInClub(
+                    clubConfigService.getClubByRole(ClubRole.DEFAULT_CLUB).getId(),
+                    userConfigService.getUserByRole(UserRoleEnum.FIRST_TEST_USER).getUuid(),
+                    firstUserAccessToken);
             isUsersCreated = true;
         }
     }

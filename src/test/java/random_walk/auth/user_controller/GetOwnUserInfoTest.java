@@ -12,7 +12,6 @@ import ru.testit.annotations.Title;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static random_walk.automation.domain.enums.UserRoleEnum.FIFTH_TEST_USER;
-import static random_walk.automation.domain.enums.UserRoleEnum.TEST_USER;
 
 class GetOwnUserInfoTest extends AuthTest {
 
@@ -26,7 +25,7 @@ class GetOwnUserInfoTest extends AuthTest {
 
         var userInfo = authServiceApi.getUserSelfInfo(userToken);
 
-        var userInfoDb = authUserFunctions.getById(userConfigService.getUserByRole(TEST_USER).getUuid());
+        var userInfoDb = authUserFunctions.getById(userConfigService.getUserByRole(FIFTH_TEST_USER).getUuid());
 
         thenStep(userInfo, userInfoDb);
     }

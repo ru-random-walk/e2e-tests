@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.TestInstance;
 import org.springframework.beans.factory.annotation.Autowired;
 import random_walk.BaseTest;
+import random_walk.automation.api.club.services.MemberControllerApi;
 import random_walk.automation.api.matcher.service.AvailableTimeMatcherApi;
 import random_walk.automation.domain.enums.ClubRole;
 import random_walk.automation.domain.enums.UserRoleEnum;
@@ -28,6 +29,9 @@ public class MatcherTest extends BaseTest {
     @Autowired
     protected MatcherService matcherService;
 
+    @Autowired
+    private MemberControllerApi memberControllerApi;
+
     private static Boolean isAvailableTimeCalled = false;
 
     protected static final Double LATITUDE = 56.304017;
@@ -40,7 +44,6 @@ public class MatcherTest extends BaseTest {
         if (!isAvailableTimeCalled) {
             var offsetTime = OffsetTime.now();
             var clubId = clubConfigService.getClubByRole(ClubRole.DEFAULT_CLUB).getId();
-            var clubForFirstAndSecondId = clubConfigService.getClubByRole(ClubRole.CLUB_FOR_F_AND_S_USERS).getId();
             try {
                 availableTimeMatcherApi.addAvailableTime(
                         testTokenConfig.getToken(),
@@ -66,7 +69,7 @@ public class MatcherTest extends BaseTest {
             try {
                 availableTimeMatcherApi.addAvailableTime(
                         userConfigService.getUserByRole(UserRoleEnum.FIRST_TEST_USER).getAccessToken(),
-                        clubForFirstAndSecondId,
+                        clubId,
                         OffsetTime.of(12, 0, 0, offsetTime.getNano(), offsetTime.getOffset()),
                         OffsetTime.of(23, 0, 0, offsetTime.getNano(), offsetTime.getOffset()),
                         LocalDate.now().plusDays(1),
@@ -77,7 +80,7 @@ public class MatcherTest extends BaseTest {
             try {
                 availableTimeMatcherApi.addAvailableTime(
                         userConfigService.getUserByRole(UserRoleEnum.FIRST_TEST_USER).getAccessToken(),
-                        clubForFirstAndSecondId,
+                        clubId,
                         OffsetTime.of(15, 0, 0, offsetTime.getNano(), offsetTime.getOffset()),
                         OffsetTime.of(17, 0, 0, offsetTime.getNano(), offsetTime.getOffset()),
                         LocalDate.now().plusDays(2),

@@ -13,6 +13,7 @@ import random_walk.automation.domain.enums.ClubRole;
 import random_walk.automation.domain.enums.UserRoleEnum;
 import random_walk.automation.service.ChatService;
 import random_walk.matcher.MatcherTest;
+import ru.testit.annotations.ExternalId;
 import ru.testit.annotations.Step;
 import ru.testit.annotations.Title;
 
@@ -51,7 +52,7 @@ class CreateChatAfterAppointmentRequestTest extends MatcherTest {
             chatService.deleteChatBetweenUsers(autotestUserId, testUserId);
         } catch (Exception ignored) {
         }
-        availableTimeFunctions.deleteUserAvailableTime(autotestUserId);
+        availableTimeFunctions.deleteUserAvailableTime(testUserId);
         var appointmentIds = appointmentFunctions.getUsersAppointment(autotestUserId, testUserId);
         if (!appointmentIds.isEmpty()) {
             appointmentIds.forEach(appointmentId -> matcherService.deleteAppointmentRequest(appointmentId));
@@ -61,6 +62,7 @@ class CreateChatAfterAppointmentRequestTest extends MatcherTest {
     }
 
     @Test
+    @ExternalId("chat_service.create_chat_after_appointment_request")
     @DisplayName("Проверка создания чата после назначения встречи")
     void checkCreatingChatAfterAppointmentRequest() {
         givenStep();
@@ -69,7 +71,7 @@ class CreateChatAfterAppointmentRequestTest extends MatcherTest {
         var testUserId = userConfigService.getUserByRole(UserRoleEnum.SECOND_TEST_USER).getUuid();
 
         var offsetTime = OffsetTime.now();
-        var clubId = clubConfigService.getClubByRole(ClubRole.CLUB_FOR_F_AND_S_USERS).getId();
+        var clubId = clubConfigService.getClubByRole(ClubRole.DEFAULT_CLUB).getId();
         availableTimeMatcherApi.addAvailableTime(
                 userConfigService.getUserByRole(UserRoleEnum.SECOND_TEST_USER).getAccessToken(),
                 clubId,
@@ -113,8 +115,8 @@ class CreateChatAfterAppointmentRequestTest extends MatcherTest {
     @Step
     @Title("Удаление встречи между пользователями после назначения")
     public void deleteAppointment() {
-        var testUserId = userConfigService.getUserByRole(UserRoleEnum.TEST_USER).getUuid();
-        var autotestUserId = userConfigService.getUserByRole(UserRoleEnum.AUTOTEST_USER).getUuid();
+        var testUserId = userConfigService.getUserByRole(UserRoleEnum.FIRST_TEST_USER).getUuid();
+        var autotestUserId = userConfigService.getUserByRole(UserRoleEnum.SECOND_TEST_USER).getUuid();
         availableTimeFunctions.deleteUserAvailableTime(autotestUserId);
         try {
             chatService.deleteChatBetweenUsers(testUserId, autotestUserId);
