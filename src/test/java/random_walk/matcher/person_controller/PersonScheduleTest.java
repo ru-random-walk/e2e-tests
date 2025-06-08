@@ -1,6 +1,5 @@
 package random_walk.matcher.person_controller;
 
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import random_walk.automation.api.matcher.model.UserSchedule;
@@ -11,6 +10,9 @@ import random_walk.automation.database.matcher.functions.AvailableTimeFunctions;
 import random_walk.automation.database.matcher.functions.DayLimitFunctions;
 import random_walk.automation.domain.enums.UserRoleEnum;
 import random_walk.matcher.MatcherTest;
+import ru.testit.annotations.DisplayName;
+import ru.testit.annotations.Step;
+import ru.testit.annotations.Title;
 
 import java.time.LocalDate;
 import java.time.OffsetTime;
@@ -37,13 +39,21 @@ class PersonScheduleTest extends MatcherTest {
     @Test
     @DisplayName("Проверка получения заданного времени для поиска прогулок")
     void getPersonScheduleTest() {
-        var testUserInfo = userConfigService.getUserByRole(UserRoleEnum.TEST_USER);
+        givenStep();
 
-        var personSchedule = Arrays.stream(personMatcherApi.getInfoAboutSchedule(testTokenConfig.getToken())).toList();
+        var testUserInfo = userConfigService.getUserByRole(UserRoleEnum.FIRST_TEST_USER);
+
+        var personSchedule = Arrays
+                .stream(
+                        personMatcherApi.getInfoAboutSchedule(
+                                userConfigService.getUserByRole(UserRoleEnum.FIRST_TEST_USER).getAccessToken()))
+                .toList();
 
         personSchedule.forEach(availableTime -> {
             var timeFrames = availableTimeFunctions
                     .getUserAvailableTimeByDateAndPersonId(LocalDate.parse(availableTime.getDate()), testUserInfo.getUuid());
+            thenStep();
+
             assertAll(
                     "Проверяем по дате " + availableTime.getDate(),
                     () -> assertThat(
@@ -84,5 +94,15 @@ class PersonScheduleTest extends MatcherTest {
                                                 timeFrame.getLocation().getLatitude()))));
 
         return resp;
+    }
+
+    @Step
+    @Title("GIVEN: Получена информация о пользователе для получения данных о нем")
+    public void givenStep() {
+    }
+
+    @Step
+    @Title("THEN: Расписание пользователя успешно получено")
+    public void thenStep() {
     }
 }

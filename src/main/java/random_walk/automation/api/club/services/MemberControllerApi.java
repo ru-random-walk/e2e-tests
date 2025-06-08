@@ -5,6 +5,9 @@ import com.kobylynskyi.graphql.codegen.model.graphql.GraphQLRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import random_walk.automation.api.club.BaseGraphqlRequest;
+import ru.testit.annotations.Description;
+import ru.testit.annotations.Step;
+import ru.testit.annotations.Title;
 
 import java.util.UUID;
 
@@ -14,6 +17,9 @@ public class MemberControllerApi {
 
     private final BaseGraphqlRequest baseGraphqlRequest;
 
+    @Step
+    @Title("WHEN: Администратор добавляет нового пользователя в клуб")
+    @Description("В клуб {clubId} добавлен пользователь {memberId}")
     public Member addMemberInClub(UUID clubId, UUID memberId, String token) {
         var request = AddMemberInClubMutationRequest.builder()
                 .setClubId(clubId.toString())
@@ -27,6 +33,9 @@ public class MemberControllerApi {
                 .addMemberInClub();
     }
 
+    @Step
+    @Title("WHEN: Администратор удаляет пользователя из группы")
+    @Description("Пользователь {memberId} удален из клуба {clubId}")
     public String removeMemberFromClub(UUID clubId, UUID memberId, String token) {
         var request = RemoveMemberFromClubMutationRequest.builder()
                 .setClubId(clubId.toString())
@@ -39,6 +48,9 @@ public class MemberControllerApi {
                 .removeMemberFromClub();
     }
 
+    @Step
+    @Title("WHEN: Администратор изменяет роль пользователя в клубе")
+    @Description("Роль пользователя {memberId} в клубе {clubId} изменена на {memberRole}")
     public Member changeMemberRole(UUID clubId, UUID memberId, MemberRole memberRole, String token) {
         var request = ChangeMemberRoleMutationRequest.builder()
                 .setClubId(clubId.toString())

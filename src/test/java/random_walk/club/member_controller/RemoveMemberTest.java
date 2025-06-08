@@ -7,6 +7,7 @@ import random_walk.automation.database.club.entities.prkeys.MemberPK;
 import random_walk.automation.database.club.functions.MemberFunctions;
 import random_walk.automation.domain.enums.UserRoleEnum;
 import random_walk.club.ClubTest;
+import ru.testit.annotations.Step;
 import ru.testit.annotations.Title;
 
 import java.util.UUID;
@@ -30,6 +31,7 @@ public class RemoveMemberTest extends ClubTest {
 
     private String adminToken;
 
+    @Step
     @Title("Создание тестового клуба для проверки удаления пользователей")
     @BeforeAll
     void createClub() {
@@ -41,6 +43,7 @@ public class RemoveMemberTest extends ClubTest {
         memberControllerApi.addMemberInClub(newClubId, userConfigService.getUserByRole(SECOND_TEST_USER).getUuid(), adminToken);
     }
 
+    @Step
     @Title("Добавление в клуб удаленного ранее пользователя")
     @BeforeEach
     void addUserInClub() {
@@ -51,9 +54,13 @@ public class RemoveMemberTest extends ClubTest {
     @Test
     @DisplayName("Проверка корректного удаления пользователя из клуба")
     void removeMemberFromClub() {
+        givenStep();
+
         var userId = userConfigService.getUserByRole(UserRoleEnum.PERSONAL_ACCOUNT).getUuid();
 
         var removedUser = memberControllerApi.removeMemberFromClub(newClubId, userId, adminToken);
+
+        thenStep();
 
         assertAll(
                 "Проверяем успешное удаление пользователя из клуба",
@@ -74,9 +81,13 @@ public class RemoveMemberTest extends ClubTest {
     @Test
     @DisplayName("Проверка корректного выхода пользователя из группы")
     void selfRemoveMemberFromClub() {
+        givenStep();
+
         var user = userConfigService.getUserByRole(SECOND_TEST_USER);
 
         var removedUser = memberControllerApi.removeMemberFromClub(newClubId, user.getUuid(), user.getAccessToken());
+
+        thenStep();
 
         assertAll(
                 "Проверяем успешное удаление пользователя из клуба",
@@ -97,6 +108,8 @@ public class RemoveMemberTest extends ClubTest {
     @Test
     @DisplayName("Проверка повторного удаления пользователя")
     void removeAlreadyRemovedMemberFromClub() {
+        givenStep();
+
         var userId = userConfigService.getUserByRole(UserRoleEnum.PERSONAL_ACCOUNT).getUuid();
 
         memberControllerApi.removeMemberFromClub(newClubId, userId, adminToken);
@@ -112,6 +125,8 @@ public class RemoveMemberTest extends ClubTest {
     @Test
     @DisplayName("Проверка удаления пользователя из несуществующего клуба")
     void removeMemberFromNonExistingClub() {
+        givenStep();
+
         var userId = userConfigService.getUserByRole(UserRoleEnum.PERSONAL_ACCOUNT).getUuid();
 
         var removeNonExistingUser = toGraphqlErrorResponse(
@@ -126,7 +141,8 @@ public class RemoveMemberTest extends ClubTest {
     @Test
     @DisplayName("Проверка удаления пользователя из клуба участником, не являющимся админом")
     void removeMemberFromClubByNotClubAdmin() {
-        System.out.println(memberFunctions.getByClubId(newClubId));
+        givenStep();
+
         var userId = userConfigService.getUserByRole(UserRoleEnum.PERSONAL_ACCOUNT).getUuid();
 
         var removeNonExistingUser = toGraphqlErrorResponse(
@@ -144,6 +160,8 @@ public class RemoveMemberTest extends ClubTest {
     @Test
     @DisplayName("Проверка удаления админом самого себя из клуба, когда админ единственный")
     void removeAdminMemberByHimself() {
+        givenStep();
+
         var userId = userConfigService.getUserByRole(FOURTH_TEST_USER).getUuid();
 
         var changeMemberRoleResponse = toGraphqlErrorResponse(
@@ -155,6 +173,17 @@ public class RemoveMemberTest extends ClubTest {
         checkGraphqlError(changeMemberRoleResponse, errorCode, errorMessage);
     }
 
+    @Step
+    @Title("GIVEN: Получена информация о пользователе, который будет удален из клуба")
+    public void givenStep() {
+    }
+
+    @Step
+    @Title("THEN: Пользователь успешно удален из клуба")
+    public void thenStep() {
+    }
+
+    @Step
     @AfterAll
     @Title("Удаление созданного тестового клуба")
     void deleteClub() {

@@ -16,7 +16,6 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Stream;
 
-import static io.qameta.allure.Allure.step;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static random_walk.asserts.PaginationAsserts.checkPagination;
 
@@ -31,9 +30,7 @@ class MessageListTest extends ChatTest {
     void getMessageListFromChatWithoutFilters() {
         givenStep();
 
-        var messageList = step(
-                "WHEN: Получаем список сообщений для чата " + chatId,
-                () -> chatApi.getChatMessageList(chatId, null, null, 100, null, null, null));
+        var messageList = chatApi.getChatMessageList(chatId, null, null, 100, null, null, null);
 
         var messagesWithoutFilters = messageFunctions.getMessagesByChatId(chatId);
 

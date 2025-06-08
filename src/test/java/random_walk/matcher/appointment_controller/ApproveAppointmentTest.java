@@ -1,14 +1,17 @@
 package random_walk.matcher.appointment_controller;
 
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import random_walk.automation.api.matcher.service.AppointmentMatcherApi;
 import random_walk.automation.api.matcher.service.InternalMatcherApi;
 import random_walk.automation.api.matcher.service.PersonMatcherApi;
-import random_walk.automation.domain.enums.UserRoleEnum;
+import random_walk.automation.domain.User;
 import random_walk.matcher.MatcherTest;
+import ru.testit.annotations.Description;
+import ru.testit.annotations.DisplayName;
+import ru.testit.annotations.Step;
+import ru.testit.annotations.Title;
 
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
@@ -20,6 +23,8 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static random_walk.asserts.ErrorAsserts.checkError;
+import static random_walk.automation.domain.enums.UserRoleEnum.AUTOTEST_USER;
+import static random_walk.automation.domain.enums.UserRoleEnum.TEST_USER;
 import static random_walk.automation.util.ExceptionUtils.toDefaultErrorResponse;
 
 class ApproveAppointmentTest extends MatcherTest {
@@ -35,11 +40,14 @@ class ApproveAppointmentTest extends MatcherTest {
 
     private UUID appointmentId;
 
+    private User autotestUserInfo;
+
+    private User testUserInfo;
+
     @Test
     @DisplayName("Подтверждение встречи пользователем, предложившим ее")
     void checkApproveAppointmentByRequester() {
-        var autotestUserInfo = userConfigService.getUserByRole(UserRoleEnum.AUTOTEST_USER);
-        var testUserInfo = userConfigService.getUserByRole(UserRoleEnum.TEST_USER);
+        givenStep();
 
         var startsAt = OffsetDateTime.now().plusHours(1);
         var appointmentRequest = internalMatcherApi
@@ -59,8 +67,7 @@ class ApproveAppointmentTest extends MatcherTest {
     @Test
     @DisplayName("Повторное подтверждение встречи")
     void checkApproveAlreadyApprovedAppointment() {
-        var autotestUserInfo = userConfigService.getUserByRole(UserRoleEnum.AUTOTEST_USER);
-        var testUserInfo = userConfigService.getUserByRole(UserRoleEnum.TEST_USER);
+        givenStep();
 
         var startsAt = OffsetDateTime.now().plusHours(1);
         var appointmentRequest = internalMatcherApi
@@ -82,8 +89,7 @@ class ApproveAppointmentTest extends MatcherTest {
     @Test
     @DisplayName("Подтверждение отмененной встречи")
     void checkApproveCancelledAppointment() {
-        var autotestUserInfo = userConfigService.getUserByRole(UserRoleEnum.AUTOTEST_USER);
-        var testUserInfo = userConfigService.getUserByRole(UserRoleEnum.TEST_USER);
+        givenStep();
 
         var startsAt = OffsetDateTime.now().plusHours(1);
         var appointmentRequest = internalMatcherApi
@@ -105,8 +111,7 @@ class ApproveAppointmentTest extends MatcherTest {
     @Test
     @DisplayName("Проверка расписания пользователей после назначенной встречи")
     void checkScheduleAfterAppointmentRequest() {
-        var autotestUserInfo = userConfigService.getUserByRole(UserRoleEnum.AUTOTEST_USER);
-        var testUserInfo = userConfigService.getUserByRole(UserRoleEnum.TEST_USER);
+        givenStep();
 
         var offsetDateTime = OffsetDateTime.now();
         var startsAt = OffsetDateTime
@@ -133,6 +138,8 @@ class ApproveAppointmentTest extends MatcherTest {
                 .orElse(null)
                 .getTimeFrames();
 
+        thenStep();
+
         assertAll(
                 () -> assertThat(
                         "После назначения встречи available_time разделилось, второй диапазон не создан",
@@ -145,7 +152,22 @@ class ApproveAppointmentTest extends MatcherTest {
                         equalTo(0)));
     }
 
+    @Step
+    @Title("GIVEN: Получена информация о тестовых пользователях")
+    @Description("Пользователи - 58e953ef-0153-4918-9a26-17bcb2213c12 и 490689d5-4e63-4724-8ab5-4fb32750b263")
+    public void givenStep() {
+        testUserInfo = userConfigService.getUserByRole(TEST_USER);
+        autotestUserInfo = userConfigService.getUserByRole(AUTOTEST_USER);
+    }
+
+    @Step
+    @Title("THEN: Проверяем расписание пользователей после назначенной встречи")
+    public void thenStep() {
+    }
+
     @AfterEach
+    @Step
+    @Title("Удаление запроса на встречу, созданного в тесте")
     void deleteAppointment() {
         if (appointmentId != null) {
             matcherService.deleteAppointmentRequest(appointmentId);

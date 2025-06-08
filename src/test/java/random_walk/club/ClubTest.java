@@ -9,6 +9,8 @@ import random_walk.BaseTest;
 import random_walk.automation.api.club.services.ClubControllerApi;
 import random_walk.automation.api.club.services.MemberControllerApi;
 import random_walk.automation.domain.enums.UserRoleEnum;
+import ru.testit.annotations.Step;
+import ru.testit.annotations.Title;
 
 import java.util.UUID;
 
@@ -28,6 +30,8 @@ public class ClubTest extends BaseTest {
 
     protected static final String NOT_PHOTO_URL = "aHR0cHM6Ly9saDMuZ29vZ2xldXNlcmNvbnRlbnQuY29tL2EvQUNnOG9jSkxZRW5zVzhvcnFyUm5oSDI3bi1HUGh2LXNabHM5UkpmQVJEeENmQ2FOejRjWGlnPXM5Ni1j";
 
+    @Step
+    @Title("Создан тестовый клуб пользователем FOURTH_TEST_USER, в него добавлен AUTOTEST_USER")
     @BeforeAll
     public void createTestClub() {
         createdClubId = UUID.fromString(
@@ -43,6 +47,8 @@ public class ClubTest extends BaseTest {
                 userConfigService.getUserByRole(FOURTH_TEST_USER).getAccessToken());
     }
 
+    @Step
+    @Title("Удален ранее созданный тестовый клуб")
     @AfterAll
     public void deleteTestClub() {
         clubControllerApi.removeClub(createdClubId, userConfigService.getUserByRole(FOURTH_TEST_USER).getAccessToken());

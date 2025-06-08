@@ -1,9 +1,15 @@
 package random_walk.auth.user_controller;
 
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import random_walk.auth.AuthTest;
+import random_walk.automation.database.auth.entities.AuthUser;
+import random_walk.automation.domain.User;
 import random_walk.automation.domain.enums.UserRoleEnum;
+import ru.random_walk.swagger.auth_service.model.DetailedUserDto;
+import ru.testit.annotations.DisplayName;
+import ru.testit.annotations.ExternalId;
+import ru.testit.annotations.Step;
+import ru.testit.annotations.Title;
 
 import java.util.Random;
 
@@ -13,10 +19,13 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 
 class ChangeUserInfoTest extends AuthTest {
 
+    private User userInfo;
+
     @Test
+    @ExternalId("auth_service.change_user_info")
     @DisplayName("Изменение информации о пользователе")
     void changeInfoAboutUser() {
-        var userInfo = userConfigService.getUserByRole(UserRoleEnum.AUTOTEST_USER);
+        givenStep();
 
         var newName = "Автотест " + new Random().nextInt(1, 100);
         var newDescription = "Тестовое описание " + new Random().nextInt(1, 100);
@@ -25,8 +34,19 @@ class ChangeUserInfoTest extends AuthTest {
 
         var userDb = authUserFunctions.getById(userInfo.getUuid());
 
+        thenStep(changedUserInfo, newName, newDescription, userDb);
+    }
+
+    @Step
+    @Title("GIVEN: Получена информация о пользователе AUTOTEST_USER")
+    public void givenStep() {
+        userInfo = userConfigService.getUserByRole(UserRoleEnum.AUTOTEST_USER);
+    }
+
+    @Step
+    @Title("THEN: Информация о пользователе успешно изменена")
+    public void thenStep(DetailedUserDto changedUserInfo, String newName, String newDescription, AuthUser userDb) {
         assertAll(
-                "Проверяем отредактированную информацию",
                 () -> assertThat("Имя успешно отредактировано", changedUserInfo.getFullName(), equalTo(userDb.getFullName())),
                 () -> assertThat("Имя изменено на ожидаемое", changedUserInfo.getFullName(), equalTo(newName)),
                 () -> assertThat(

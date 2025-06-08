@@ -4,7 +4,6 @@ import club_service.graphql.model.AnswerType;
 import club_service.graphql.model.FormInput;
 import club_service.graphql.model.QuestionInput;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import random_walk.automation.api.club.services.ClubControllerApi;
@@ -13,6 +12,9 @@ import random_walk.automation.database.club.functions.ApprovementFunctions;
 import random_walk.automation.database.club.functions.ClubFunctions;
 import random_walk.automation.database.club.functions.MemberFunctions;
 import random_walk.club.ClubTest;
+import ru.testit.annotations.DisplayName;
+import ru.testit.annotations.Step;
+import ru.testit.annotations.Title;
 
 import java.util.List;
 import java.util.UUID;
@@ -44,6 +46,8 @@ public class RemoveClubTest extends ClubTest {
     private UUID clubId;
 
     @BeforeAll
+    @Step
+    @Title("Создан клуб с тестами для его удаления")
     void createClubWithApprovement() {
         var club = clubControllerApi.createClubWithFormApprovement(
                 "Клуб с тестом",
@@ -71,6 +75,8 @@ public class RemoveClubTest extends ClubTest {
     @Test
     @DisplayName("Проверка удаления клуба")
     void removeClubWithAllInfo() {
+        givenStep();
+
         var removedClub = clubControllerApi.removeClub(clubId, testTokenConfig.getAutotestToken());
 
         var removedClubId = UUID.fromString(removedClub);
@@ -79,6 +85,7 @@ public class RemoveClubTest extends ClubTest {
 
         var answers = approvements.stream().map(approvement -> answerFunctions.getByApprovementId(approvement.getId())).toList();
 
+        thenStep();
         assertAll(
                 "Все данные о клубе удалены",
                 () -> assertThat(clubFunctions.getById(removedClubId), nullValue()),
@@ -90,11 +97,23 @@ public class RemoveClubTest extends ClubTest {
     @Test
     @DisplayName("Проверка удаления несуществующего клуба")
     void removeNonExistingClub() {
+        givenStep();
+
         var error = toGraphqlErrorResponse(() -> clubControllerApi.removeClub(UUID.randomUUID(), testTokenConfig.getToken()));
 
         var errorCode = "UNAUTHORIZED";
         var errorMessage = "You are not become member of given club!";
 
         checkGraphqlError(error, errorCode, errorMessage);
+    }
+
+    @Step
+    @Title("GIVEN: Получены данные администратора удаляемого клуба")
+    public void givenStep() {
+    }
+
+    @Step
+    @Title("THEN: Вся информация о клубе успешно удалена")
+    public void thenStep() {
     }
 }

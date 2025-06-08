@@ -1,7 +1,6 @@
 package random_walk.matcher.available_time_controller;
 
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import random_walk.automation.api.matcher.service.AvailableTimeMatcherApi;
@@ -10,6 +9,9 @@ import random_walk.automation.domain.enums.ClubRole;
 import random_walk.automation.domain.enums.UserRoleEnum;
 import random_walk.automation.util.PointConverterUtils;
 import random_walk.matcher.MatcherTest;
+import ru.testit.annotations.DisplayName;
+import ru.testit.annotations.Step;
+import ru.testit.annotations.Title;
 
 import java.time.LocalDate;
 import java.time.OffsetTime;
@@ -35,12 +37,14 @@ class AddAvailableTimeTest extends MatcherTest {
 
     private UUID availableTimeId;
 
+    private UUID testUserId;
+
+    private UUID clubId;
+
     @Test
     @DisplayName("Добавление свободного времени для пользователя")
     void addAvailableTimeForUser() {
-        var testUserId = userConfigService.getUserByRole(UserRoleEnum.TEST_USER).getUuid();
-
-        var clubId = clubConfigService.getClubByRole(ClubRole.DEFAULT_CLUB).getId();
+        givenStep();
 
         var offsetTime = OffsetTime.now(ZoneId.of("Europe/Moscow"));
         var timeUntil = OffsetTime.of(23, 59, 0, offsetTime.getNano(), offsetTime.getOffset());
@@ -71,9 +75,7 @@ class AddAvailableTimeTest extends MatcherTest {
     @Test
     @DisplayName("Добавление пересекающегося свободного времени")
     void addIntersectAvailableTime() {
-        var testUserId = userConfigService.getUserByRole(UserRoleEnum.TEST_USER).getUuid();
-
-        var clubId = clubConfigService.getClubByRole(ClubRole.DEFAULT_CLUB).getId();
+        givenStep();
 
         var offsetTime = OffsetTime.now();
         var timeUntil = OffsetTime.of(23, 59, 0, offsetTime.getNano(), offsetTime.getOffset());
@@ -99,7 +101,7 @@ class AddAvailableTimeTest extends MatcherTest {
     @Test
     @DisplayName("Добавление свободного времени с разными таймзонами начала и конца")
     void addAvailableTimeWithDifferentTimeZone() {
-        var clubId = clubConfigService.getClubByRole(ClubRole.DEFAULT_CLUB).getId();
+        givenStep();
 
         var offsetTime = OffsetTime.now(ZoneId.of("Europe/Moscow"));
         var timeUntil = OffsetTime
@@ -120,7 +122,7 @@ class AddAvailableTimeTest extends MatcherTest {
     @Test
     @DisplayName("Добавление времени с датой начала большей, чем дата окончания")
     void addAvailableTimeWithTimeFromGreaterThanTimeUntil() {
-        var clubId = clubConfigService.getClubByRole(ClubRole.DEFAULT_CLUB).getId();
+        givenStep();
 
         var offsetTime = OffsetTime.now();
         var timeUntil = OffsetTime.of(23, 59, 0, offsetTime.getNano(), offsetTime.getOffset());
@@ -136,7 +138,16 @@ class AddAvailableTimeTest extends MatcherTest {
         checkError(timeFromGreaterThanTimeUntil, errorCode, errorMessage);
     }
 
+    @Step
+    @Title("GIVEN: Получена информация о тестовом пользователе и группе, в которой он состоит")
+    public void givenStep() {
+        testUserId = userConfigService.getUserByRole(UserRoleEnum.TEST_USER).getUuid();
+        clubId = clubConfigService.getClubByRole(ClubRole.DEFAULT_CLUB).getId();
+    }
+
     @AfterEach
+    @Step
+    @Title("Удаление свободного времени, добавленного в тестах")
     void deleteAvailableTime() {
         if (availableTimeId != null) {
             availableTimeFunctions.deleteById(availableTimeId);

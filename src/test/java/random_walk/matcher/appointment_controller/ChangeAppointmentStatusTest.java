@@ -1,7 +1,6 @@
 package random_walk.matcher.appointment_controller;
 
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import random_walk.automation.api.matcher.service.AppointmentMatcherApi;
@@ -11,6 +10,7 @@ import random_walk.automation.domain.User;
 import random_walk.automation.domain.enums.UserRoleEnum;
 import random_walk.matcher.MatcherTest;
 import ru.random_walk.swagger.matcher_service.model.AppointmentDetailsDto;
+import ru.testit.annotations.DisplayName;
 import ru.testit.annotations.Step;
 import ru.testit.annotations.Title;
 
@@ -41,8 +41,7 @@ class ChangeAppointmentStatusTest extends MatcherTest {
     @Test
     @DisplayName("Проверка смены статуса встречи после ее подтверждения")
     void checkChangeAppointmentStatusAfterAgreement() {
-        var autotestUserInfo = userConfigService.getUserByRole(UserRoleEnum.AUTOTEST_USER);
-        var testUserInfo = userConfigService.getUserByRole(UserRoleEnum.TEST_USER);
+        givenStep();
 
         var startsAt = OffsetDateTime.now().plusHours(1);
         var appointmentRequest = internalMatcherApi
@@ -51,6 +50,8 @@ class ChangeAppointmentStatusTest extends MatcherTest {
         appointmentId = appointmentRequest.getId();
 
         appointmentMatcherApi.approveAppointment(appointmentId, testTokenConfig.getToken());
+
+        thenStep();
 
         assertThat(
                 "Проверяем переход встречи в нужный статус",
@@ -61,8 +62,7 @@ class ChangeAppointmentStatusTest extends MatcherTest {
     @Test
     @DisplayName("Проверка смены статуса встречи после ее отмены")
     void checkChangeAppointmentStatusAfterDisagreement() {
-        var autotestUserInfo = userConfigService.getUserByRole(UserRoleEnum.AUTOTEST_USER);
-        var testUserInfo = userConfigService.getUserByRole(UserRoleEnum.TEST_USER);
+        givenStep();
 
         var startsAt = OffsetDateTime.now().plusHours(1);
         var appointmentRequest = internalMatcherApi
@@ -71,6 +71,8 @@ class ChangeAppointmentStatusTest extends MatcherTest {
         appointmentId = appointmentRequest.getId();
 
         appointmentMatcherApi.rejectAppointment(appointmentId, testTokenConfig.getToken());
+
+        thenStep();
 
         assertThat(
                 "Проверяем переход встречи в нужный статус",
@@ -93,7 +95,12 @@ class ChangeAppointmentStatusTest extends MatcherTest {
 
         sleep(7000);
 
-        thenStep(AppointmentDetailsDto.StatusEnum.IN_PROGRESS);
+        thenStep();
+
+        assertThat(
+                "Проверяем переход встречи в нужный статус",
+                appointmentDetailsFunctions.getById(appointmentId).getStatus(),
+                equalTo(AppointmentDetailsDto.StatusEnum.IN_PROGRESS));
     }
 
     @AfterEach
@@ -113,10 +120,6 @@ class ChangeAppointmentStatusTest extends MatcherTest {
 
     @Step
     @Title("THEN: Статус встречи изменен на ожидаемый")
-    void thenStep(AppointmentDetailsDto.StatusEnum status) {
-        assertThat(
-                "Проверяем переход встречи в нужный статус",
-                appointmentDetailsFunctions.getById(appointmentId).getStatus(),
-                equalTo(status));
+    void thenStep() {
     }
 }

@@ -1,7 +1,6 @@
 package random_walk.matcher.available_time_controller;
 
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import random_walk.automation.api.matcher.service.AvailableTimeMatcherApi;
@@ -10,6 +9,9 @@ import random_walk.automation.domain.enums.ClubRole;
 import random_walk.automation.domain.enums.UserRoleEnum;
 import random_walk.automation.util.PointConverterUtils;
 import random_walk.matcher.MatcherTest;
+import ru.testit.annotations.DisplayName;
+import ru.testit.annotations.Step;
+import ru.testit.annotations.Title;
 
 import java.time.LocalDate;
 import java.time.OffsetTime;
@@ -35,12 +37,14 @@ public class ChangeAvailableTimeTest extends MatcherTest {
 
     private UUID availableTimeId;
 
+    private UUID testUserId;
+
+    private UUID clubId;
+
     @Test
     @DisplayName("Изменение существующего свободного времени")
     void changeAvailableTime() {
-        var testUserId = userConfigService.getUserByRole(UserRoleEnum.TEST_USER).getUuid();
-
-        var clubId = clubConfigService.getClubByRole(ClubRole.DEFAULT_CLUB).getId();
+        givenStep();
 
         var offsetTime = OffsetTime.now(ZoneId.of("Europe/Moscow"));
         var timeUntil = OffsetTime.of(23, 59, 0, offsetTime.getNano(), offsetTime.getOffset());
@@ -68,6 +72,8 @@ public class ChangeAvailableTimeTest extends MatcherTest {
 
         var changedAvailableTime = availableTimeFunctions.getUserAvailableTimeByDateAndPersonId(date, testUserId).get(0);
 
+        thenStep();
+
         assertAll(
                 "Проверяем поля свободного времени после изменения",
                 () -> assertThat(changedAvailableTime.getTimeFrom(), equalTo(newTimeFrom.truncatedTo(ChronoUnit.SECONDS))),
@@ -86,9 +92,7 @@ public class ChangeAvailableTimeTest extends MatcherTest {
     @Test
     @DisplayName("Проверка попытки изменения даты свободного времени")
     void changeDateOfAvailableTime() {
-        var testUserId = userConfigService.getUserByRole(UserRoleEnum.TEST_USER).getUuid();
-
-        var clubId = clubConfigService.getClubByRole(ClubRole.DEFAULT_CLUB).getId();
+        givenStep();
 
         var offsetTime = OffsetTime.now(ZoneId.of("Europe/Moscow"));
         var timeUntil = OffsetTime.of(23, 59, 0, offsetTime.getNano(), offsetTime.getOffset());
@@ -119,9 +123,7 @@ public class ChangeAvailableTimeTest extends MatcherTest {
     @Test
     @DisplayName("Изменение свободного времени на время с разными таймзонами")
     void changeAvailableTimeWithDifferentTimeZone() {
-        var testUserId = userConfigService.getUserByRole(UserRoleEnum.TEST_USER).getUuid();
-
-        var clubId = clubConfigService.getClubByRole(ClubRole.DEFAULT_CLUB).getId();
+        givenStep();
 
         var offsetTime = OffsetTime.now(ZoneId.of("Europe/Moscow"));
         var timeUntil = OffsetTime.of(23, 59, 0, offsetTime.getNano(), offsetTime.getOffset());
@@ -156,9 +158,7 @@ public class ChangeAvailableTimeTest extends MatcherTest {
     @Test
     @DisplayName("Изменение времени с датой начала большей, чем дата окончания")
     void changeAvailableTimeWithTimeFromGreaterThanTimeUntil() {
-        var testUserId = userConfigService.getUserByRole(UserRoleEnum.TEST_USER).getUuid();
-
-        var clubId = clubConfigService.getClubByRole(ClubRole.DEFAULT_CLUB).getId();
+        givenStep();
 
         var offsetTime = OffsetTime.now(ZoneId.of("Europe/Moscow"));
         var timeUntil = OffsetTime.of(23, 59, 0, offsetTime.getNano(), offsetTime.getOffset());
@@ -179,7 +179,21 @@ public class ChangeAvailableTimeTest extends MatcherTest {
         checkError(changeAvailableTimeWithTimeFromGreaterThanTimeUntil, errorCode, errorMessage);
     }
 
+    @Step
+    @Title("GIVEN: Получена информация о тестовом пользователе и группе, в которой он состоит")
+    public void givenStep() {
+        testUserId = userConfigService.getUserByRole(UserRoleEnum.TEST_USER).getUuid();
+        clubId = clubConfigService.getClubByRole(ClubRole.DEFAULT_CLUB).getId();
+    }
+
+    @Step
+    @Title("THEN: Существующее свободное время пользователя успешно изменено")
+    public void thenStep() {
+    }
+
     @AfterEach
+    @Step
+    @Title("Удаление свободного времени, добавленного в тестах")
     void deleteAvailableTime() {
         if (availableTimeId != null) {
             availableTimeFunctions.deleteById(availableTimeId);

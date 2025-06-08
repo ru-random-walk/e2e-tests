@@ -5,6 +5,7 @@ import com.kobylynskyi.graphql.codegen.model.graphql.GraphQLRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import random_walk.automation.api.club.BaseGraphqlRequest;
+import ru.testit.annotations.Description;
 import ru.testit.annotations.Step;
 import ru.testit.annotations.Title;
 
@@ -40,6 +41,9 @@ public class ClubControllerApi {
         return baseGraphqlRequest.getDefaultGraphqlRequest(token, requestBody).as(CreateClubMutationResponse.class).createClub();
     }
 
+    @Step
+    @Title("WHEN: Пользователь создает клуб {name} с тестами на вступление")
+    @Description("Тесты - {form}")
     public Club createClubWithFormApprovement(String name, String description, FormInput form, String token) {
         var request = CreateClubWithFormApprovementMutationRequest.builder()
                 .setName(name)
@@ -54,6 +58,9 @@ public class ClubControllerApi {
                 .createClubWithFormApprovement();
     }
 
+    @Step
+    @Title("WHEN: Пользователь создает клуб {name} с подтверждением вступления")
+    @Description("Необходимое количество подтверждений - {requiredConfirmationNumber}")
     public Club createClubWithMemberConfirm(String name,
                                             String description,
                                             Integer requiredConfirmationNumber,
@@ -86,6 +93,9 @@ public class ClubControllerApi {
                 .uploadPhotoForClub();
     }
 
+    @Step
+    @Title("WHEN: Получена фотография существующего клуба")
+    @Description("Клуб - {clubId}")
     public PhotoUrl getClubPhoto(UUID clubId, String token) {
         var request = GetClubPhotoQueryRequest.builder().setClubId(clubId.toString()).build();
         var responseData = new PhotoUrlResponseProjection().clubId().url().expiresInMinutes();
@@ -94,6 +104,9 @@ public class ClubControllerApi {
         return baseGraphqlRequest.getDefaultGraphqlRequest(token, requestBody).as(GetClubPhotoQueryResponse.class).getClubPhoto();
     }
 
+    @Step
+    @Title("WHEN: Администратор удаляет существующий клуб")
+    @Description("Клуб - {clubId}")
     public String removeClub(UUID clubId, String token) {
         var request = RemoveClubWithAllItsDataMutationRequest.builder().setClubId(clubId.toString()).build();
         var requestBody = new GraphQLRequest(request).toHttpJsonBody();

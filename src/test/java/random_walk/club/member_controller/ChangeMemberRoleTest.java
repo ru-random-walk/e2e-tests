@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import random_walk.automation.database.club.entities.prkeys.MemberPK;
 import random_walk.automation.database.club.functions.MemberFunctions;
 import random_walk.club.ClubTest;
+import ru.testit.annotations.Step;
 import ru.testit.annotations.Title;
 
 import java.util.UUID;
@@ -30,6 +31,7 @@ public class ChangeMemberRoleTest extends ClubTest {
 
     private UUID newClubId;
 
+    @Step
     @Title("Создание тестового клуба для проверки удаления пользователей")
     @BeforeAll
     void createClub() {
@@ -44,6 +46,8 @@ public class ChangeMemberRoleTest extends ClubTest {
     @EnumSource(value = MemberRole.class)
     @DisplayName("Проверка корректной смены роли участника клуба на")
     void changeMemberRoleInClub(MemberRole memberRole) {
+        givenStep();
+
         var userId = userConfigService.getUserByRole(THIRD_TEST_USER).getUuid();
 
         var changeMemberRoleResponse = memberControllerApi.changeMemberRole(newClubId, userId, memberRole, adminToken);
@@ -74,9 +78,10 @@ public class ChangeMemberRoleTest extends ClubTest {
     }
 
     @Test
-    // @Disabled("Должна быть ошибка, зайду к Максу")
     @DisplayName("Проверка смены роли единственного админа на обычного пользователя")
     void changeAdminRoleToUser() {
+        givenStep();
+
         var userId = userConfigService.getUserByRole(FOURTH_TEST_USER).getUuid();
 
         var changeMemberRoleResponse = toGraphqlErrorResponse(
@@ -95,6 +100,8 @@ public class ChangeMemberRoleTest extends ClubTest {
     @Test
     @DisplayName("Проверка смены роли в клубе пользователю участником, не являющимся админом")
     void changeMemberRoleByNotClubAdmin() {
+        givenStep();
+
         var userId = userConfigService.getUserByRole(THIRD_TEST_USER).getUuid();
 
         var changeMemberRoleResponse = toGraphqlErrorResponse(
@@ -113,6 +120,8 @@ public class ChangeMemberRoleTest extends ClubTest {
     @Test
     @DisplayName("Проверка смены роли несуществующему пользователю")
     void changeMemberRoleToNonExistingMember() {
+        givenStep();
+
         var changeMemberRoleResponse = toGraphqlErrorResponse(
                 () -> memberControllerApi.changeMemberRole(newClubId, UUID.randomUUID(), MemberRole.USER, adminToken));
 
@@ -120,6 +129,16 @@ public class ChangeMemberRoleTest extends ClubTest {
         var errorMessage = "Member not found in club %s".formatted(newClubId);
 
         checkGraphqlError(changeMemberRoleResponse, classification, errorMessage);
+    }
+
+    @Step
+    @Title("GIVEN: Получена информация о пользователе, для которого будет изменена роль")
+    public void givenStep() {
+    }
+
+    @Step
+    @Title("THEN: Роль пользователя в клубе успешно изменена")
+    public void thenStep() {
     }
 
     @AfterAll

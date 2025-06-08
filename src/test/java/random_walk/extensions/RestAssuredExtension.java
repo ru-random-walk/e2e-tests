@@ -1,6 +1,5 @@
 package random_walk.extensions;
 
-import io.qameta.allure.restassured.AllureRestAssured;
 import io.restassured.RestAssured;
 import io.restassured.filter.Filter;
 import io.restassured.filter.log.LogDetail;
@@ -19,7 +18,6 @@ public class RestAssuredExtension implements BeforeAllCallback {
         RestAssured.reset();
         RestAssured.useRelaxedHTTPSValidation();
         RestAssured.enableLoggingOfRequestAndResponseIfValidationFails(LogDetail.ALL);
-        RestAssured
-                .filters(Arrays.asList(new AllureRestAssured(), new RequestLoggingFilter(), new ResponseLoggingFilter(), filter));
+        RestAssured.filters(Arrays.asList(new RequestLoggingFilter(), new ResponseLoggingFilter(), filter));
     }
 }
