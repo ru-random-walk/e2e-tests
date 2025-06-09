@@ -91,7 +91,7 @@ jobs:
             -DtmsPrivateToken=$TMS_PRIVATE_TOKEN \
             -DtmsProjectId=$TMS_PROJECT_ID \
             -DtmsConfigurationId=$TMS_CONFIGURATION_ID \
-            -DtmsAdapterMode=0 \
+            -DtmsAdapterMode=1 \
             -DtmsTestRunId=${{ github.event.inputs.tmsRunId }} \
             -DtmsTestRunName="Random Walk Regress $CURRENT_DATE" \
             -DtmsAutomaticCreationTestCases=$TMS_AUTO_CREATE_TEST_CASES \
