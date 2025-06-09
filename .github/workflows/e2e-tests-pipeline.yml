@@ -19,7 +19,9 @@ on:
           - chat-e2e
           - club-e2e
           - matcher-e2e
-
+      tmsRunId:
+        description: Тег для запуска тест-планов из Test IT
+        required: false
 
 jobs:
   checkout-repo:
@@ -81,27 +83,40 @@ jobs:
           echo "Текущая дата = $CURRENT_DATE"
           echo "$TMS_ADAPTER_MODE"
           echo "$TMS_URL"
-          if [[ "${{ github.event.inputs.testTag }}" == "all" ]]; then
+          if [[ -n "${{ github.event.inputs.tmsRunId }}" ]]; then
+            echo "Custom TMS Run ID detected"
+            echo "${{ github.event.inputs.tmsRunId }}"
             ./gradlew test \
-              -DtmsUrl=$TMS_URL \
-              -DtmsPrivateToken=$TMS_PRIVATE_TOKEN \
-              -DtmsProjectId=$TMS_PROJECT_ID \
-              -DtmsConfigurationId=$TMS_CONFIGURATION_ID \
-              -DtmsAdapterMode=$TMS_ADAPTER_MODE \
-              -DtmsTestRunName="Random Walk Regress $CURRENT_DATE" \
-              -DtmsAutomaticCreationTestCases=$TMS_AUTO_CREATE_TEST_CASES \
-              -DtmsCertValidation=$TMS_CERT_VALIDATION 
+            -DtmsUrl=$TMS_URL \
+            -DtmsPrivateToken=$TMS_PRIVATE_TOKEN \
+            -DtmsProjectId=$TMS_PROJECT_ID \
+            -DtmsConfigurationId=$TMS_CONFIGURATION_ID \
+            -DtmsAdapterMode=0 \
+            -DtmsTestRunId=${{ github.event.inputs.tmsRunId }} \
+            -DtmsTestRunName="Random Walk Regress $CURRENT_DATE" \
+            -DtmsAutomaticCreationTestCases=$TMS_AUTO_CREATE_TEST_CASES \
+            -DtmsCertValidation=$TMS_CERT_VALIDATION
+          elif [[ "${{ github.event.inputs.testTag }}" == "all" ]]; then
+            ./gradlew test \
+            -DtmsUrl=$TMS_URL \
+            -DtmsPrivateToken=$TMS_PRIVATE_TOKEN \
+            -DtmsProjectId=$TMS_PROJECT_ID \
+            -DtmsConfigurationId=$TMS_CONFIGURATION_ID \
+            -DtmsAdapterMode=$TMS_ADAPTER_MODE \
+            -DtmsTestRunName="Random Walk Regress $CURRENT_DATE" \
+            -DtmsAutomaticCreationTestCases=$TMS_AUTO_CREATE_TEST_CASES \
+            -DtmsCertValidation=$TMS_CERT_VALIDATION
           else
             ./gradlew test \
-              -PincludeTags=${{ github.event.inputs.testTag }} \
-              -DtmsUrl=$TMS_URL \
-              -DtmsPrivateToken=$TMS_PRIVATE_TOKEN \
-              -DtmsProjectId=$TMS_PROJECT_ID \
-              -DtmsConfigurationId=$TMS_CONFIGURATION_ID \
-              -DtmsAdapterMode=$TMS_ADAPTER_MODE \
-              -DtmsTestRunName="Random Walk ${{ github.event.inputs.testTag }} $CURRENT_DATE" \
-              -DtmsAutomaticCreationTestCases=$TMS_AUTO_CREATE_TEST_CASES \
-              -DtmsCertValidation=$TMS_CERT_VALIDATION
+            -PincludeTags=${{ github.event.inputs.testTag }} \
+            -DtmsUrl=$TMS_URL \
+            -DtmsPrivateToken=$TMS_PRIVATE_TOKEN \
+            -DtmsProjectId=$TMS_PROJECT_ID \
+            -DtmsConfigurationId=$TMS_CONFIGURATION_ID \
+            -DtmsAdapterMode=$TMS_ADAPTER_MODE \
+            -DtmsTestRunName="Random Walk ${{ github.event.inputs.testTag }} $CURRENT_DATE" \
+            -DtmsAutomaticCreationTestCases=$TMS_AUTO_CREATE_TEST_CASES \
+            -DtmsCertValidation=$TMS_CERT_VALIDATION
           fi
 
       - name: Generate test report

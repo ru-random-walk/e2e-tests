@@ -140,6 +140,7 @@ tasks.test {
     systemProperty("tmsAdapterMode", 2)
     systemProperty("tmsTestRunName", "Test Run")
     systemProperty("tmsCertValidation", false)
+    systemProperty("org.aspectj.weaver.Dump.exception", "false")
     doFirst {
         val weaver: File? = configurations["aspectConfig"].find { it.name.contains("aspectjweaver") }
         jvmArgs("-javaagent:${weaver?.absolutePath}")
