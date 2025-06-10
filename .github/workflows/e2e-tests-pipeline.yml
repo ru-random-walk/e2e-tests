@@ -62,6 +62,7 @@ jobs:
       TMS_CERT_VALIDATION: false
       TMS_AUTO_CREATE_TEST_CASES: true
       TMS_ADAPTER_MODE: 2
+      TEST_IT_TMS_ADAPTER_MODE: 1
       CURRENT_DATE: $(TZ=Europe/Moscow date +'%Y-%m-%d %H:%M:%S')
       TMS_TEST_RUN_NAME: "Random Walk Regress $CURRENT_DATE"
 
@@ -91,7 +92,7 @@ jobs:
             -DtmsPrivateToken=$TMS_PRIVATE_TOKEN \
             -DtmsProjectId=$TMS_PROJECT_ID \
             -DtmsConfigurationId=$TMS_CONFIGURATION_ID \
-            -DtmsAdapterMode=1 \
+            -DtmsAdapterMode=$TEST_IT_TMS_ADAPTER_MODE \
             -DtmsTestRunId=${{ github.event.inputs.tmsRunId }} \
             -DtmsCertValidation=$TMS_CERT_VALIDATION
           elif [[ "${{ github.event.inputs.testTag }}" == "all" ]]; then
