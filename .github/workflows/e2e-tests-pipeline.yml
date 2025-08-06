@@ -1,9 +1,6 @@
 name: Random Walk E2E
 
 on:
-  schedule:
-    - cron: '0 0 * * *'
-    - cron: '0 12 * * *'
   pull_request:
     branches: [ "master" ]
   workflow_dispatch:
